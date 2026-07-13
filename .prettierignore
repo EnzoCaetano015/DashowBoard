@@ -1,0 +1,14 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+dist-ssr/
+src-tauri/target/
+
+# Generated Tauri schemas
+src-tauri/gen/
+
+# Package manager lockfiles
+pnpm-lock.yaml
+src-tauri/Cargo.lock

@@ -18,6 +18,7 @@ export const IntegrationCard = ({
     onConfigurar: () => void
 }) => {
     const conectada = integracao.status === Enum.StatusIntegracao.Conectado
+    const emBreve = integracao.status === Enum.StatusIntegracao.EmBreve
 
     return (
         <Card
@@ -43,17 +44,21 @@ export const IntegrationCard = ({
                     <span
                         className={cn(
                             "inline-flex shrink-0 items-center gap-1.5 rounded-full border px-2 py-0.5 text-xs",
-                            conectada
+                            emBreve
+                                ? "border-border bg-surface-2 text-muted-foreground"
+                                : conectada
                                 ? "border-success/40 bg-success/10 text-success"
                                 : "border-destructive/40 bg-destructive/10 text-destructive"
                         )}
                     >
-                        {conectada ? (
+                        {emBreve ? (
+                            <Clock className="size-3" />
+                        ) : conectada ? (
                             <CheckCircle2 className="size-3" />
                         ) : (
                             <AlertCircle className="size-3" />
                         )}
-                        {conectada ? "Conectado" : "Desconectado"}
+                        {emBreve ? "Em breve" : conectada ? "Conectado" : "Desconectado"}
                     </span>
                 </div>
                 {integracao.erro && (
@@ -67,7 +72,7 @@ export const IntegrationCard = ({
                     Última sincronização:{" "}
                     <span className="text-foreground">{integracao.ultimaSincronizacao}</span>
                 </div>
-                <div className="mt-4 flex flex-wrap gap-2">
+                {!emBreve && <div className="mt-4 flex flex-wrap gap-2">
                     <Button
                         size="sm"
                         variant="outline"
@@ -83,7 +88,7 @@ export const IntegrationCard = ({
                         <KeyRound />
                         {conectada ? "Atualizar token" : "Configurar token"}
                     </Button>
-                </div>
+                </div>}
             </CardContent>
         </Card>
     )

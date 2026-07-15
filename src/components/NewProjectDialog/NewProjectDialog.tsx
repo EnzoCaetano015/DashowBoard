@@ -80,8 +80,19 @@ export const NewProjectDialog = () => {
                     {dialog.etapa === 1 && <InformacoesStep />}
                     {dialog.etapa === 2 && (
                         <RepositoriosStep
-                            selecionados={dialog.repositorios}
+                            repositorios={dialog.repositorios}
+                            selecionados={dialog.repositoriosSelecionados}
+                            runtimeDisponivel={dialog.runtimeDisponivel}
+                            quantidadeConexoes={dialog.quantidadeConexoes}
+                            isLoading={dialog.repositoriosIsLoading}
+                            isFetching={dialog.repositoriosIsFetching}
+                            isError={dialog.repositoriosIsError}
+                            erro={dialog.repositoriosErro}
+                            falhas={dialog.repositoriosFalhas}
                             alternar={dialog.alternarRepositorio}
+                            alterarTag={dialog.alterarTagRepositorio}
+                            tentarNovamente={() => void dialog.tentarNovamenteRepositorios()}
+                            atualizar={() => void dialog.atualizarRepositorios()}
                         />
                     )}
                     {dialog.etapa === 3 && (
@@ -90,7 +101,9 @@ export const NewProjectDialog = () => {
                             alternar={dialog.alternarServico}
                         />
                     )}
-                    {dialog.etapa === 4 && <RelacionamentosStep />}
+                    {dialog.etapa === 4 && (
+                        <RelacionamentosStep repositorios={dialog.repositoriosRelacionamento} />
+                    )}
                     {dialog.etapa === 5 && <MonitoramentoStep />}
                 </div>
                 <DialogFooter className="m-0 flex-row items-center justify-between rounded-none border-t border-border bg-surface-1 p-4">

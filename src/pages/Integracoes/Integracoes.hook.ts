@@ -1,18 +1,67 @@
-import { toast } from "sonner"
+import { useMemo, useState } from "react"
 
+import { useObterConexoesGitHub } from "@/backend/api/controllers/github"
 import { useObterIntegracoes } from "@/backend/api/controllers/integracao"
-import type { Enum } from "@/backend/api/enums/enum"
-import { labelProvider } from "@/lib/utils/status"
+import { Enum } from "@/backend/api/enums/enum"
+import type { ObterIntegracoes } from "@/backend/api/models/integracao.types"
+import { formatarDataHora } from "@/lib/utils/date"
+import { possuiRuntimeTauri } from "@/lib/utils/tauri"
 
 export const useIntegracoes = () => {
-    const consulta = useObterIntegracoes()
+    const [githubDialogOpen, setGitHubDialogOpen] = useState(false)
+    const integrationsQuery = useObterIntegracoes()
+    const connectionsQuery = useObterConexoesGitHub()
+    const runtimeDisponivel = possuiRuntimeTauri()
+
+    const githubIntegration = useMemo<ObterIntegracoes.Integracao>(() => {
+        const connections = connectionsQuery.data ?? []
+        const validConnections = connections.filter(
+            (connection) => connection.status === Enum.StatusIntegracao.Conectado
+        )
+        const failedConnections = connections.filter(
+            (connection) => connection.status === Enum.StatusIntegracao.Erro
+        )
+        const latestSync = [...connections]
+            .sort((left, right) => right.ultimaSincronizacao.localeCompare(left.ultimaSincronizacao))[0]
+            ?.ultimaSincronizacao
+
+        if (!runtimeDisponivel) {
+            return {
+                provider: Enum.Provider.GitHub,
+                conta: "Disponível no aplicativo desktop",
+                status: Enum.StatusIntegracao.Desconectado,
+                ultimaSincronizacao: "Não disponível",
+            }
+        }
+
+        return {
+            provider: Enum.Provider.GitHub,
+            conta:
+                connections.length === 0
+                    ? "Nenhuma conexão configurada"
+                    : `${connections.length} conex${connections.length === 1 ? "ão" : "ões"} · ${validConnections.length} válida${validConnections.length === 1 ? "" : "s"}`,
+            status:
+                failedConnections.length > 0
+                    ? Enum.StatusIntegracao.Erro
+                    : validConnections.length > 0
+                      ? Enum.StatusIntegracao.Conectado
+                      : Enum.StatusIntegracao.Desconectado,
+            erro:
+                failedConnections.length > 0
+                    ? `${failedConnections.length} conexão(ões) precisa(m) de atenção. As demais continuam disponíveis.`
+                    : undefined,
+            ultimaSincronizacao: latestSync ? formatarDataHora(latestSync) : "Nunca",
+        }
+    }, [connectionsQuery.data, runtimeDisponivel])
 
     return {
-        integracoes: consulta.data ?? [],
-        isLoading: consulta.isLoading,
-        isError: consulta.isError,
-        tentarNovamente: consulta.refetch,
-        testar: (provider: Enum.Provider) =>
-            toast.success(`Teste visual de ${labelProvider[provider]} concluído.`),
+        integracoes: [githubIntegration, ...(integrationsQuery.data ?? [])],
+        isLoading: integrationsQuery.isLoading || (runtimeDisponivel && connectionsQuery.isLoading),
+        isError: integrationsQuery.isError || (runtimeDisponivel && connectionsQuery.isError),
+        githubDialogOpen,
+        setGitHubDialogOpen,
+        tentarNovamente: async () => {
+            await Promise.all([integrationsQuery.refetch(), connectionsQuery.refetch()])
+        },
     }
 }

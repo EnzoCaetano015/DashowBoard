@@ -62,6 +62,16 @@ export namespace Enum {
         Conectado = "connected",
         Desconectado = "disconnected",
         Erro = "error",
+        EmBreve = "coming-soon",
     }
 
+    export enum TipoConexaoGitHub {
+        Pessoal = "personal",
+        Organizacao = "organization",
+    }
+
+    export enum GitHubQueryKey {
+        Conexoes = "github-conexoes",
+        Repositorios = "github-repositorios",
+    }
 }

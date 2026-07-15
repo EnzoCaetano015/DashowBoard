@@ -1,11 +1,11 @@
 import { AlertCircle } from "lucide-react"
-import { toast } from "sonner"
 
+import { Enum } from "@/backend/api/enums/enum"
+import { GitHubIntegrationDialog } from "@/components/GitHubIntegrationDialog"
 import { IntegrationCard } from "@/components/IntegrationCard"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
-import { labelProvider } from "@/lib/utils/status"
 import { useIntegracoes } from "@/pages/Integracoes/Integracoes.hook"
 
 export const IntegracoesPage = () => {
@@ -22,10 +22,7 @@ export const IntegracoesPage = () => {
             {pagina.isLoading ? (
                 <div className="grid gap-4 md:grid-cols-2">
                     {Array.from({ length: 4 }, (_, indice) => (
-                        <Skeleton
-                            key={indice}
-                            className="h-56 rounded-lg"
-                        />
+                        <Skeleton key={indice} className="h-56 rounded-lg" />
                     ))}
                 </div>
             ) : pagina.isError ? (
@@ -33,10 +30,7 @@ export const IntegracoesPage = () => {
                     <CardContent className="py-12 text-center">
                         <AlertCircle className="mx-auto size-8 text-destructive" />
                         <h2 className="mt-3 font-medium">Falha ao carregar integrações</h2>
-                        <Button
-                            className="mt-4"
-                            onClick={() => void pagina.tentarNovamente()}
-                        >
+                        <Button className="mt-4" onClick={() => void pagina.tentarNovamente()}>
                             Tentar novamente
                         </Button>
                     </CardContent>
@@ -47,16 +41,24 @@ export const IntegracoesPage = () => {
                         <IntegrationCard
                             key={integracao.provider}
                             integracao={integracao}
-                            onTestar={() => pagina.testar(integracao.provider)}
-                            onConfigurar={() =>
-                                toast.info(
-                                    `Configuração visual de ${labelProvider[integracao.provider]}.`
-                                )
-                            }
+                            onTestar={() => {
+                                if (integracao.provider === Enum.Provider.GitHub) {
+                                    pagina.setGitHubDialogOpen(true)
+                                }
+                            }}
+                            onConfigurar={() => {
+                                if (integracao.provider === Enum.Provider.GitHub) {
+                                    pagina.setGitHubDialogOpen(true)
+                                }
+                            }}
                         />
                     ))}
                 </div>
             )}
+            <GitHubIntegrationDialog
+                open={pagina.githubDialogOpen}
+                onOpenChange={pagina.setGitHubDialogOpen}
+            />
         </div>
     )
 }

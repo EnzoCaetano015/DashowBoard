@@ -429,29 +429,22 @@ const projetos: ObterProjetos.Projeto[] = [
 
 const integracoes: ObterIntegracoes.Integracao[] = [
     {
-        provider: Enum.Provider.GitHub,
-        conta: "caetanogama · 18 repositórios",
-        status: Enum.StatusIntegracao.Conectado,
-        ultimaSincronizacao: "hoje, 22:44",
-    },
-    {
         provider: Enum.Provider.Vercel,
-        conta: "caetano-gama · equipe pessoal",
-        status: Enum.StatusIntegracao.Conectado,
-        ultimaSincronizacao: "hoje, 22:43",
+        conta: "Integração ainda não implementada",
+        status: Enum.StatusIntegracao.EmBreve,
+        ultimaSincronizacao: "Não disponível",
     },
     {
         provider: Enum.Provider.Railway,
-        conta: "Workspace pessoal · 6 serviços",
-        status: Enum.StatusIntegracao.Conectado,
-        ultimaSincronizacao: "hoje, 22:42",
+        conta: "Integração ainda não implementada",
+        status: Enum.StatusIntegracao.EmBreve,
+        ultimaSincronizacao: "Não disponível",
     },
     {
         provider: Enum.Provider.Supabase,
-        conta: "Conta pessoal",
-        status: Enum.StatusIntegracao.Erro,
-        erro: "Token expirado. Atualize a credencial para retomar a sincronização.",
-        ultimaSincronizacao: "ontem, 18:12",
+        conta: "Integração ainda não implementada",
+        status: Enum.StatusIntegracao.EmBreve,
+        ultimaSincronizacao: "Não disponível",
     },
 ]
 

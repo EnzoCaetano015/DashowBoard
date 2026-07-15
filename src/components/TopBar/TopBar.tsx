@@ -92,7 +92,9 @@ export const TopBar = () => {
                             {labelProvider[integracao.provider]} ·{" "}
                             {integracao.status === Enum.StatusIntegracao.Conectado
                                 ? "conectado"
-                                : (integracao.erro ?? "desconectado")}
+                                : integracao.status === Enum.StatusIntegracao.EmBreve
+                                  ? "em breve"
+                                  : (integracao.erro ?? "desconectado")}
                         </TooltipContent>
                     </Tooltip>
                 ))}

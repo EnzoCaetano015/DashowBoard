@@ -2,15 +2,19 @@ import { useMemo, useState } from "react"
 
 import { useObterConexoesGitHub } from "@/backend/api/controllers/github"
 import { useObterIntegracoes } from "@/backend/api/controllers/integracao"
+import { useObterConexaoVercel } from "@/backend/api/controllers/vercel"
 import { Enum } from "@/backend/api/enums/enum"
 import type { ObterIntegracoes } from "@/backend/api/models/integracao.types"
 import { formatarDataHora } from "@/lib/utils/date"
 import { possuiRuntimeTauri } from "@/lib/utils/tauri"
+import { normalizarErroVercel } from "@/lib/utils/vercel"
 
 export const useIntegracoes = () => {
     const [githubDialogOpen, setGitHubDialogOpen] = useState(false)
+    const [vercelDialogOpen, setVercelDialogOpen] = useState(false)
     const integrationsQuery = useObterIntegracoes()
     const connectionsQuery = useObterConexoesGitHub()
+    const vercelConnectionQuery = useObterConexaoVercel()
     const runtimeDisponivel = possuiRuntimeTauri()
 
     const githubIntegration = useMemo<ObterIntegracoes.Integracao>(() => {
@@ -54,14 +58,58 @@ export const useIntegracoes = () => {
         }
     }, [connectionsQuery.data, runtimeDisponivel])
 
+    const vercelIntegration = useMemo<ObterIntegracoes.Integracao>(() => {
+        if (!runtimeDisponivel) {
+            return {
+                provider: Enum.Provider.Vercel,
+                conta: "Disponível no aplicativo desktop",
+                status: Enum.StatusIntegracao.Desconectado,
+                ultimaSincronizacao: "Não disponível",
+            }
+        }
+        if (vercelConnectionQuery.isError) {
+            return {
+                provider: Enum.Provider.Vercel,
+                conta: "Não foi possível consultar a conexão",
+                status: Enum.StatusIntegracao.Erro,
+                erro: normalizarErroVercel(vercelConnectionQuery.error).message,
+                ultimaSincronizacao: "Não disponível",
+            }
+        }
+        const connection = vercelConnectionQuery.data
+        if (!connection) {
+            return {
+                provider: Enum.Provider.Vercel,
+                conta: "Nenhuma conexão configurada",
+                status: Enum.StatusIntegracao.Desconectado,
+                ultimaSincronizacao: "Nunca",
+            }
+        }
+        return {
+            provider: Enum.Provider.Vercel,
+            conta: `@${connection.username} · ${connection.quantidadeTimes} time(s) · ${connection.quantidadeProjetos} projeto(s)`,
+            status: connection.status,
+            erro: connection.erro ?? undefined,
+            ultimaSincronizacao: formatarDataHora(connection.ultimaSincronizacao),
+        }
+    }, [runtimeDisponivel, vercelConnectionQuery.data, vercelConnectionQuery.error, vercelConnectionQuery.isError])
+
     return {
-        integracoes: [githubIntegration, ...(integrationsQuery.data ?? [])],
-        isLoading: integrationsQuery.isLoading || (runtimeDisponivel && connectionsQuery.isLoading),
+        integracoes: [githubIntegration, vercelIntegration, ...(integrationsQuery.data ?? [])],
+        isLoading:
+            integrationsQuery.isLoading ||
+            (runtimeDisponivel && (connectionsQuery.isLoading || vercelConnectionQuery.isLoading)),
         isError: integrationsQuery.isError || (runtimeDisponivel && connectionsQuery.isError),
         githubDialogOpen,
+        vercelDialogOpen,
         setGitHubDialogOpen,
+        setVercelDialogOpen,
         tentarNovamente: async () => {
-            await Promise.all([integrationsQuery.refetch(), connectionsQuery.refetch()])
+            await Promise.all([
+                integrationsQuery.refetch(),
+                connectionsQuery.refetch(),
+                vercelConnectionQuery.refetch(),
+            ])
         },
     }
 }

@@ -70,8 +70,4 @@ export namespace Enum {
         Organizacao = "organization",
     }
 
-    export enum GitHubQueryKey {
-        Conexoes = "github-conexoes",
-        Repositorios = "github-repositorios",
-    }
 }

@@ -13,12 +13,6 @@ export const etapasNovoProjeto = [
 
 export const servicosDisponiveis: ServicoDisponivel[] = [
     {
-        id: "servico-web",
-        nome: "easyrifas-web (prod)",
-        provider: Enum.Provider.Vercel,
-        tipo: Enum.TipoServico.Frontend,
-    },
-    {
         id: "servico-api",
         nome: "easyrifas-api",
         provider: Enum.Provider.Railway,

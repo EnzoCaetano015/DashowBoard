@@ -60,7 +60,6 @@ export const useGitHubIntegrationDialog = () => {
                 resourceOwner,
                 token,
             })
-            setToken("")
             resetForm()
             toast.success(connectionId ? "Conexão atualizada." : "Conexão GitHub adicionada.")
         } catch (error) {

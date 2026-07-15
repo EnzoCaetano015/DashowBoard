@@ -8,6 +8,13 @@ import { Card, CardContent } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 import { labelProvider } from "@/lib/utils/status"
 
+const labelStatus: Record<Enum.StatusIntegracao, string> = {
+    [Enum.StatusIntegracao.Conectado]: "Conectado",
+    [Enum.StatusIntegracao.Desconectado]: "Desconectado",
+    [Enum.StatusIntegracao.Erro]: "Erro",
+    [Enum.StatusIntegracao.EmBreve]: "Em breve",
+}
+
 export const IntegrationCard = ({
     integracao,
     onTestar,
@@ -58,7 +65,7 @@ export const IntegrationCard = ({
                         ) : (
                             <AlertCircle className="size-3" />
                         )}
-                        {emBreve ? "Em breve" : conectada ? "Conectado" : "Desconectado"}
+                        {labelStatus[integracao.status]}
                     </span>
                 </div>
                 {integracao.erro && (

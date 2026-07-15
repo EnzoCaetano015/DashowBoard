@@ -5,14 +5,21 @@ import {
     useObterConexoesGitHub,
     useObterRepositoriosGitHub,
 } from "@/backend/api/controllers/github"
+import {
+    useObterConexaoVercel,
+    useObterProjetosVercel,
+} from "@/backend/api/controllers/vercel"
 import { Enum } from "@/backend/api/enums/enum"
 import type { RepositorioGitHub } from "@/backend/api/models/github.types"
+import type { ProjetoVercel } from "@/backend/api/models/vercel.types"
 import type {
     EtapaNovoProjeto,
     RepositorioSelecionado,
+    ServicoSelecionado,
 } from "@/components/NewProjectDialog/NewProjectDialog.types"
 import { normalizarErroGitHub } from "@/lib/utils/github"
 import { possuiRuntimeTauri } from "@/lib/utils/tauri"
+import { normalizarErroVercel } from "@/lib/utils/vercel"
 
 export const useNewProjectDialog = () => {
     const [aberto, setAberto] = useState(false)
@@ -20,16 +27,37 @@ export const useNewProjectDialog = () => {
     const [repositoriosSelecionados, setRepositoriosSelecionados] = useState<
         RepositorioSelecionado[]
     >([])
-    const [servicos, setServicos] = useState<string[]>([])
+    const [servicos, setServicos] = useState<ServicoSelecionado[]>([])
     const connectionsQuery = useObterConexoesGitHub()
     const repositoriesQuery = useObterRepositoriosGitHub(
         {},
         aberto && (connectionsQuery.data?.length ?? 0) > 0
     )
+    const vercelConnectionQuery = useObterConexaoVercel()
+    const vercelProjectsQuery = useObterProjetosVercel(
+        aberto && Boolean(vercelConnectionQuery.data)
+    )
 
-    const alternarServico = (id: string) => {
+    const alternarServico = (project: ProjetoVercel) => {
         setServicos((values) =>
-            values.includes(id) ? values.filter((value) => value !== id) : [...values, id]
+            values.some(
+                (value) =>
+                    value.externalProjectId === project.id && value.scopeId === project.escopo.id
+            )
+                ? values.filter(
+                      (value) =>
+                          value.externalProjectId !== project.id ||
+                          value.scopeId !== project.escopo.id
+                  )
+                : [
+                      ...values,
+                      {
+                          provider: Enum.Provider.Vercel,
+                          externalProjectId: project.id,
+                          scopeId: project.escopo.id,
+                          tipo: Enum.TipoServico.Frontend,
+                      },
+                  ]
         )
     }
 
@@ -68,7 +96,7 @@ export const useNewProjectDialog = () => {
     const concluir = () => {
         alterarAberto(false)
         toast.info("Projeto ainda não persistido nesta etapa.", {
-            description: `${repositoriosSelecionados.length} repositório(s) real(is) selecionado(s).`,
+            description: `${repositoriosSelecionados.length} repositório(s) e ${servicos.length} serviço(s) Vercel selecionado(s).`,
         })
     }
 
@@ -91,6 +119,17 @@ export const useNewProjectDialog = () => {
         quantidadeConexoes: connectionsQuery.data?.length ?? 0,
         runtimeDisponivel: possuiRuntimeTauri(),
         servicos,
+        projetosVercel: vercelProjectsQuery.data?.projects ?? [],
+        vercelConfigurada: Boolean(vercelConnectionQuery.data),
+        vercelIsLoading:
+            vercelConnectionQuery.isLoading ||
+            (Boolean(vercelConnectionQuery.data) && vercelProjectsQuery.isLoading),
+        vercelIsFetching: vercelProjectsQuery.isFetching,
+        vercelIsError: vercelConnectionQuery.isError || vercelProjectsQuery.isError,
+        vercelErro: normalizarErroVercel(
+            vercelConnectionQuery.error ?? vercelProjectsQuery.error
+        ).message,
+        vercelFalhas: vercelProjectsQuery.data?.failures ?? [],
         alterarAberto,
         voltar,
         continuar,
@@ -102,5 +141,9 @@ export const useNewProjectDialog = () => {
             await Promise.all([connectionsQuery.refetch(), repositoriesQuery.refetch()])
         },
         atualizarRepositorios: repositoriesQuery.refetch,
+        tentarNovamenteVercel: async () => {
+            await Promise.all([vercelConnectionQuery.refetch(), vercelProjectsQuery.refetch()])
+        },
+        atualizarVercel: vercelProjectsQuery.refetch,
     }
 }

@@ -1,5 +1,10 @@
 import type { Enum } from "@/backend/api/enums/enum"
 
+export enum GitHubQueryKeys {
+    Conexoes = "github-conexoes",
+    Repositorios = "github-repositorios",
+}
+
 export type ErroGitHub = {
     code: string
     message: string

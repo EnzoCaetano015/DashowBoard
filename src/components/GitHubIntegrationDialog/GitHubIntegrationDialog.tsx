@@ -37,6 +37,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
+import { formatarDataHora } from "@/lib/utils/date"
 import { normalizarErroGitHub } from "@/lib/utils/github"
 
 export const GitHubIntegrationDialog = ({ open, onOpenChange }: GitHubIntegrationDialogProps) => {
@@ -146,9 +147,7 @@ export const GitHubIntegrationDialog = ({ open, onOpenChange }: GitHubIntegratio
                                         </p>
                                         <p className="mt-1 text-xs text-muted-foreground">
                                             {connection.quantidadeRepositorios} repositórios ·{" "}
-                                            {new Date(
-                                                connection.ultimaSincronizacao
-                                            ).toLocaleString("pt-BR")}
+                                            {formatarDataHora(connection.ultimaSincronizacao)}
                                         </p>
                                         {connection.erro && (
                                             <p className="mt-2 text-xs text-destructive">

@@ -429,12 +429,6 @@ const projetos: ObterProjetos.Projeto[] = [
 
 const integracoes: ObterIntegracoes.Integracao[] = [
     {
-        provider: Enum.Provider.Vercel,
-        conta: "Integração ainda não implementada",
-        status: Enum.StatusIntegracao.EmBreve,
-        ultimaSincronizacao: "Não disponível",
-    },
-    {
         provider: Enum.Provider.Railway,
         conta: "Integração ainda não implementada",
         status: Enum.StatusIntegracao.EmBreve,

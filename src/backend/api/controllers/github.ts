@@ -1,6 +1,5 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
 
-import { Enum } from "@/backend/api/enums/enum"
 import {
     obterConexoesGitHub,
     obterRepositoriosGitHub,
@@ -14,27 +13,18 @@ import type {
     SalvarConexaoGitHub,
     TestarConexaoGitHub,
 } from "@/backend/api/models/github.types"
+import { GitHubQueryKeys } from "@/backend/api/models/github.types"
 import { TEMPO_CACHE_REPOSITORIOS_GITHUB } from "@/lib/config/monitoring"
-import { possuiRuntimeTauri } from "@/lib/utils/tauri"
 import { queryClient } from "@/lib/config/query-client"
+import { deveTentarNovamenteGitHub } from "@/lib/utils/github"
+import { possuiRuntimeTauri } from "@/lib/utils/tauri"
 
 export const useObterConexoesGitHub = () => {
     return useQuery({
-        queryKey: [Enum.GitHubQueryKey.Conexoes],
+        queryKey: [GitHubQueryKeys.Conexoes],
         queryFn: obterConexoesGitHub,
         enabled: possuiRuntimeTauri(),
-        retry: (failureCount, error) => {
-            const code =
-                typeof error === "object" && error !== null && "code" in error
-                    ? error.code
-                    : undefined
-            return failureCount < 1 && ![
-                "GITHUB_TOKEN_INVALIDO",
-                "GITHUB_TOKEN_EXPIRADO",
-                "GITHUB_SEM_PERMISSAO",
-                "GITHUB_RATE_LIMIT",
-            ].includes(String(code))
-        },
+        retry: deveTentarNovamenteGitHub,
     })
 }
 
@@ -42,8 +32,8 @@ export const useSalvarConexaoGitHub = () => {
     return useMutation({
         mutationFn: (request: SalvarConexaoGitHub.Request) => salvarConexaoGitHub(request),
         onSuccess: async () => {
-            await queryClient.invalidateQueries({ queryKey: [Enum.GitHubQueryKey.Conexoes] })
-            await queryClient.invalidateQueries({ queryKey: [Enum.GitHubQueryKey.Repositorios] })
+            await queryClient.invalidateQueries({ queryKey: [GitHubQueryKeys.Conexoes] })
+            await queryClient.invalidateQueries({ queryKey: [GitHubQueryKeys.Repositorios] })
         },
     })
 }
@@ -52,8 +42,8 @@ export const useTestarConexaoGitHub = () => {
     return useMutation({
         mutationFn: (request: TestarConexaoGitHub.Request) => testarConexaoGitHub(request),
         onSuccess: async () => {
-            await queryClient.invalidateQueries({ queryKey: [Enum.GitHubQueryKey.Conexoes] })
-            await queryClient.invalidateQueries({ queryKey: [Enum.GitHubQueryKey.Repositorios] })
+            await queryClient.invalidateQueries({ queryKey: [GitHubQueryKeys.Conexoes] })
+            await queryClient.invalidateQueries({ queryKey: [GitHubQueryKeys.Repositorios] })
         },
     })
 }
@@ -62,8 +52,8 @@ export const useRemoverConexaoGitHub = () => {
     return useMutation({
         mutationFn: (request: RemoverConexaoGitHub.Request) => removerConexaoGitHub(request),
         onSuccess: async () => {
-            await queryClient.invalidateQueries({ queryKey: [Enum.GitHubQueryKey.Conexoes] })
-            await queryClient.invalidateQueries({ queryKey: [Enum.GitHubQueryKey.Repositorios] })
+            await queryClient.invalidateQueries({ queryKey: [GitHubQueryKeys.Conexoes] })
+            await queryClient.invalidateQueries({ queryKey: [GitHubQueryKeys.Repositorios] })
         },
     })
 }
@@ -73,22 +63,11 @@ export const useObterRepositoriosGitHub = (
     enabled = true
 ) => {
     return useQuery({
-        queryKey: [Enum.GitHubQueryKey.Repositorios, request.connectionIds ?? []],
+        queryKey: [GitHubQueryKeys.Repositorios, request.connectionIds ?? []],
         queryFn: () => obterRepositoriosGitHub(request),
         enabled: enabled && possuiRuntimeTauri(),
         staleTime: TEMPO_CACHE_REPOSITORIOS_GITHUB,
         refetchOnReconnect: true,
-        retry: (failureCount, error) => {
-            const code =
-                typeof error === "object" && error !== null && "code" in error
-                    ? error.code
-                    : undefined
-            return failureCount < 1 && ![
-                "GITHUB_TOKEN_INVALIDO",
-                "GITHUB_TOKEN_EXPIRADO",
-                "GITHUB_SEM_PERMISSAO",
-                "GITHUB_RATE_LIMIT",
-            ].includes(String(code))
-        },
+        retry: deveTentarNovamenteGitHub,
     })
 }

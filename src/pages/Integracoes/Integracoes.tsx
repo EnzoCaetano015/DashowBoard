@@ -3,6 +3,7 @@ import { AlertCircle } from "lucide-react"
 import { Enum } from "@/backend/api/enums/enum"
 import { GitHubIntegrationDialog } from "@/components/GitHubIntegrationDialog"
 import { IntegrationCard } from "@/components/IntegrationCard"
+import { VercelIntegrationDialog } from "@/components/VercelIntegrationDialog"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -45,10 +46,16 @@ export const IntegracoesPage = () => {
                                 if (integracao.provider === Enum.Provider.GitHub) {
                                     pagina.setGitHubDialogOpen(true)
                                 }
+                                if (integracao.provider === Enum.Provider.Vercel) {
+                                    pagina.setVercelDialogOpen(true)
+                                }
                             }}
                             onConfigurar={() => {
                                 if (integracao.provider === Enum.Provider.GitHub) {
                                     pagina.setGitHubDialogOpen(true)
+                                }
+                                if (integracao.provider === Enum.Provider.Vercel) {
+                                    pagina.setVercelDialogOpen(true)
                                 }
                             }}
                         />
@@ -58,6 +65,10 @@ export const IntegracoesPage = () => {
             <GitHubIntegrationDialog
                 open={pagina.githubDialogOpen}
                 onOpenChange={pagina.setGitHubDialogOpen}
+            />
+            <VercelIntegrationDialog
+                open={pagina.vercelDialogOpen}
+                onOpenChange={pagina.setVercelDialogOpen}
             />
         </div>
     )

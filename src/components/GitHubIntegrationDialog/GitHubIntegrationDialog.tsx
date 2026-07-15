@@ -1,12 +1,4 @@
-import {
-    AlertCircle,
-    CheckCircle2,
-    KeyRound,
-    Plus,
-    RefreshCw,
-    ShieldCheck,
-    Trash2,
-} from "lucide-react"
+import { AlertCircle, CheckCircle2, KeyRound, Plus, RefreshCw, ShieldCheck, Trash2 } from "lucide-react"
 
 import { Enum } from "@/backend/api/enums/enum"
 import { useGitHubIntegrationDialog } from "@/components/GitHubIntegrationDialog/GitHubIntegrationDialog.hook"
@@ -55,8 +47,8 @@ export const GitHubIntegrationDialog = ({ open, onOpenChange }: GitHubIntegratio
                 <DialogHeader>
                     <DialogTitle>Conexões GitHub</DialogTitle>
                     <DialogDescription>
-                        Cadastre uma conexão para sua conta pessoal e outra para organizações como
-                        a Nexus.
+                        Cadastre uma conexão para sua conta pessoal e outra para organizações como a
+                        Nexus.
                     </DialogDescription>
                 </DialogHeader>
 
@@ -72,7 +64,10 @@ export const GitHubIntegrationDialog = ({ open, onOpenChange }: GitHubIntegratio
                 ) : dialog.isLoading ? (
                     <div className="space-y-3">
                         {Array.from({ length: 2 }, (_, index) => (
-                            <Skeleton key={index} className="h-28" />
+                            <Skeleton
+                                key={index}
+                                className="h-28"
+                            />
                         ))}
                     </div>
                 ) : dialog.isError ? (
@@ -119,8 +114,7 @@ export const GitHubIntegrationDialog = ({ open, onOpenChange }: GitHubIntegratio
                                             <span
                                                 className={cn(
                                                     "inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px]",
-                                                    connection.status ===
-                                                        Enum.StatusIntegracao.Conectado
+                                                    connection.status === Enum.StatusIntegracao.Conectado
                                                         ? "border-success/40 bg-success/10 text-success"
                                                         : "border-destructive/40 bg-destructive/10 text-destructive"
                                                 )}
@@ -131,16 +125,14 @@ export const GitHubIntegrationDialog = ({ open, onOpenChange }: GitHubIntegratio
                                                 ) : (
                                                     <AlertCircle className="size-3" />
                                                 )}
-                                                {connection.status ===
-                                                Enum.StatusIntegracao.Conectado
+                                                {connection.status === Enum.StatusIntegracao.Conectado
                                                     ? "Conectada"
                                                     : "Erro"}
                                             </span>
                                         </div>
                                         <p className="text-xs text-muted-foreground">
                                             @{connection.login} ·{" "}
-                                            {connection.tipo ===
-                                            Enum.TipoConexaoGitHub.Organizacao
+                                            {connection.tipo === Enum.TipoConexaoGitHub.Organizacao
                                                 ? "Organização"
                                                 : "Pessoal"}{" "}
                                             · {connection.resourceOwner}
@@ -190,16 +182,14 @@ export const GitHubIntegrationDialog = ({ open, onOpenChange }: GitHubIntegratio
                                                         Remover {connection.nome}?
                                                     </AlertDialogTitle>
                                                     <AlertDialogDescription>
-                                                        O token desta conexão será removido do cofre.
-                                                        As outras conexões permanecem intactas.
+                                                        O token desta conexão será removido do cofre. As
+                                                        outras conexões permanecem intactas.
                                                     </AlertDialogDescription>
                                                 </AlertDialogHeader>
                                                 <AlertDialogFooter>
                                                     <AlertDialogCancel>Cancelar</AlertDialogCancel>
                                                     <AlertDialogAction
-                                                        onClick={() =>
-                                                            void dialog.remove(connection.id)
-                                                        }
+                                                        onClick={() => void dialog.remove(connection.id)}
                                                     >
                                                         Remover
                                                     </AlertDialogAction>
@@ -230,8 +220,7 @@ export const GitHubIntegrationDialog = ({ open, onOpenChange }: GitHubIntegratio
                                 <Select
                                     value={dialog.tipo}
                                     onValueChange={(value) =>
-                                        value &&
-                                        dialog.setTipo(value as Enum.TipoConexaoGitHub)
+                                        value && dialog.setTipo(value as Enum.TipoConexaoGitHub)
                                     }
                                 >
                                     <SelectTrigger className="w-full">
@@ -252,9 +241,7 @@ export const GitHubIntegrationDialog = ({ open, onOpenChange }: GitHubIntegratio
                                 <Input
                                     id="github-resource-owner"
                                     value={dialog.resourceOwner}
-                                    onChange={(event) =>
-                                        dialog.setResourceOwner(event.target.value)
-                                    }
+                                    onChange={(event) => dialog.setResourceOwner(event.target.value)}
                                     placeholder="seu-login ou Nexus"
                                 />
                             </div>
@@ -274,8 +261,7 @@ export const GitHubIntegrationDialog = ({ open, onOpenChange }: GitHubIntegratio
                             <ShieldCheck className="mt-0.5 size-4 shrink-0 text-success" />
                             <span>
                                 Use um fine-grained PAT somente leitura, limitado aos repositórios
-                                necessários. O token fica no cofre nativo e nunca é exibido
-                                novamente.
+                                necessários. O token fica no cofre nativo e nunca é exibido novamente.
                             </span>
                         </div>
                         <div className="flex justify-end gap-2">

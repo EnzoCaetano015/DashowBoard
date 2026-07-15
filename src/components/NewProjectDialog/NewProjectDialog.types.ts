@@ -1,5 +1,6 @@
 import type { Enum } from "@/backend/api/enums/enum"
 import type { ObterRepositoriosGitHub, RepositorioGitHub } from "@/backend/api/models/github.types"
+import type { ObterProjetosSupabase, ProjetoSupabase } from "@/backend/api/models/supabase.types"
 import type { ObterProjetosVercel, ProjetoVercel } from "@/backend/api/models/vercel.types"
 
 export type EtapaNovoProjeto = 1 | 2 | 3 | 4 | 5
@@ -18,13 +19,13 @@ export type ServicoDisponivel = {
 }
 
 export type ServicoSelecionado = {
-    provider: Enum.Provider.Vercel
+    provider: Enum.Provider.Vercel | Enum.Provider.Supabase
     externalProjectId: string
     scopeId: string | null
-    tipo: Enum.TipoServico.Frontend
+    tipo: Enum.TipoServico
 }
 
-export type ServicosStepProps = {
+export type VercelProjectsSectionProps = {
     projetos: ProjetoVercel[]
     selecionados: ServicoSelecionado[]
     runtimeDisponivel: boolean
@@ -37,6 +38,27 @@ export type ServicosStepProps = {
     alternar: (projeto: ProjetoVercel) => void
     tentarNovamente: () => void
     atualizar: () => void
+}
+
+export type SupabaseProjectsSectionProps = {
+    projetos: ProjetoSupabase[]
+    selecionados: ServicoSelecionado[]
+    runtimeDisponivel: boolean
+    configurada: boolean
+    isLoading: boolean
+    isFetching: boolean
+    isError: boolean
+    erro?: string
+    falhas: ObterProjetosSupabase.Falha[]
+    alternar: (projeto: ProjetoSupabase) => void
+    tentarNovamente: () => void
+    atualizar: () => void
+}
+
+export type ServicosStepProps = {
+    selecionados: ServicoSelecionado[]
+    vercel: Omit<VercelProjectsSectionProps, "selecionados">
+    supabase: Omit<SupabaseProjectsSectionProps, "selecionados">
 }
 
 export type RepositoriosStepProps = {

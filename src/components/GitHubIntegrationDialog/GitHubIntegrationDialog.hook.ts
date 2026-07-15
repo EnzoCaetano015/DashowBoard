@@ -55,10 +55,10 @@ export const useGitHubIntegrationDialog = () => {
         try {
             await saveConnection.mutateAsync({
                 connectionId,
-                nome,
+                nome: nome.trim(),
                 tipo,
-                resourceOwner,
-                token,
+                resourceOwner: resourceOwner.trim(),
+                token: token.trim(),
             })
             resetForm()
             toast.success(connectionId ? "Conexão atualizada." : "Conexão GitHub adicionada.")
@@ -96,8 +96,7 @@ export const useGitHubIntegrationDialog = () => {
         isLoading: connections.isLoading,
         isError: connections.isError,
         error: connections.error,
-        isPending:
-            saveConnection.isPending || testConnection.isPending || removeConnection.isPending,
+        isPending: saveConnection.isPending || testConnection.isPending || removeConnection.isPending,
         formVisible,
         connectionId,
         nome,

@@ -3,6 +3,7 @@ import { AlertCircle } from "lucide-react"
 import { Enum } from "@/backend/api/enums/enum"
 import { GitHubIntegrationDialog } from "@/components/GitHubIntegrationDialog"
 import { IntegrationCard } from "@/components/IntegrationCard"
+import { SupabaseIntegrationDialog } from "@/components/SupabaseIntegrationDialog"
 import { VercelIntegrationDialog } from "@/components/VercelIntegrationDialog"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -23,7 +24,10 @@ export const IntegracoesPage = () => {
             {pagina.isLoading ? (
                 <div className="grid gap-4 md:grid-cols-2">
                     {Array.from({ length: 4 }, (_, indice) => (
-                        <Skeleton key={indice} className="h-56 rounded-lg" />
+                        <Skeleton
+                            key={indice}
+                            className="h-56 rounded-lg"
+                        />
                     ))}
                 </div>
             ) : pagina.isError ? (
@@ -31,7 +35,10 @@ export const IntegracoesPage = () => {
                     <CardContent className="py-12 text-center">
                         <AlertCircle className="mx-auto size-8 text-destructive" />
                         <h2 className="mt-3 font-medium">Falha ao carregar integrações</h2>
-                        <Button className="mt-4" onClick={() => void pagina.tentarNovamente()}>
+                        <Button
+                            className="mt-4"
+                            onClick={() => void pagina.tentarNovamente()}
+                        >
                             Tentar novamente
                         </Button>
                     </CardContent>
@@ -42,33 +49,29 @@ export const IntegracoesPage = () => {
                         <IntegrationCard
                             key={integracao.provider}
                             integracao={integracao}
-                            onTestar={() => {
-                                if (integracao.provider === Enum.Provider.GitHub) {
-                                    pagina.setGitHubDialogOpen(true)
-                                }
-                                if (integracao.provider === Enum.Provider.Vercel) {
-                                    pagina.setVercelDialogOpen(true)
-                                }
-                            }}
-                            onConfigurar={() => {
-                                if (integracao.provider === Enum.Provider.GitHub) {
-                                    pagina.setGitHubDialogOpen(true)
-                                }
-                                if (integracao.provider === Enum.Provider.Vercel) {
-                                    pagina.setVercelDialogOpen(true)
-                                }
-                            }}
+                            onTestar={() => pagina.abrirDialogo(integracao.provider)}
+                            onConfigurar={() => pagina.abrirDialogo(integracao.provider)}
                         />
                     ))}
                 </div>
             )}
             <GitHubIntegrationDialog
-                open={pagina.githubDialogOpen}
-                onOpenChange={pagina.setGitHubDialogOpen}
+                open={pagina.dialogoAtivo === Enum.Provider.GitHub}
+                onOpenChange={(open) =>
+                    open ? pagina.abrirDialogo(Enum.Provider.GitHub) : pagina.fecharDialogo()
+                }
             />
             <VercelIntegrationDialog
-                open={pagina.vercelDialogOpen}
-                onOpenChange={pagina.setVercelDialogOpen}
+                open={pagina.dialogoAtivo === Enum.Provider.Vercel}
+                onOpenChange={(open) =>
+                    open ? pagina.abrirDialogo(Enum.Provider.Vercel) : pagina.fecharDialogo()
+                }
+            />
+            <SupabaseIntegrationDialog
+                open={pagina.dialogoAtivo === Enum.Provider.Supabase}
+                onOpenChange={(open) =>
+                    open ? pagina.abrirDialogo(Enum.Provider.Supabase) : pagina.fecharDialogo()
+                }
             />
         </div>
     )

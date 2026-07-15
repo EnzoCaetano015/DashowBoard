@@ -1,9 +1,17 @@
-import { AlertCircle, CheckCircle2, KeyRound, RefreshCw, ShieldCheck, Trash2 } from "lucide-react"
+import {
+    AlertCircle,
+    CheckCircle2,
+    ExternalLink,
+    KeyRound,
+    RefreshCw,
+    ShieldCheck,
+    Trash2,
+} from "lucide-react"
 
 import { Enum } from "@/backend/api/enums/enum"
 import { ProviderIcon } from "@/components/ProviderIcon"
-import { useVercelIntegrationDialog } from "@/components/VercelIntegrationDialog/VercelIntegrationDialog.hook"
-import type { VercelIntegrationDialogProps } from "@/components/VercelIntegrationDialog/VercelIntegrationDialog.types"
+import { useSupabaseIntegrationDialog } from "@/components/SupabaseIntegrationDialog/SupabaseIntegrationDialog.hook"
+import type { SupabaseIntegrationDialogProps } from "@/components/SupabaseIntegrationDialog/SupabaseIntegrationDialog.types"
 import {
     AlertDialog,
     AlertDialogAction,
@@ -30,10 +38,13 @@ import { Label } from "@/components/ui/label"
 import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
 import { formatarDataHora } from "@/lib/utils/date"
-import { normalizarErroVercel } from "@/lib/utils/vercel"
+import { normalizarErroSupabase } from "@/lib/utils/supabase"
+import { abrirUrlExterna } from "@/lib/utils/tauri"
 
-export const VercelIntegrationDialog = ({ open, onOpenChange }: VercelIntegrationDialogProps) => {
-    const dialog = useVercelIntegrationDialog()
+const TOKENS_URL = "https://supabase.com/dashboard/account/tokens"
+
+export const SupabaseIntegrationDialog = ({ open, onOpenChange }: SupabaseIntegrationDialogProps) => {
+    const dialog = useSupabaseIntegrationDialog()
     const connection = dialog.connection
 
     return (
@@ -46,9 +57,9 @@ export const VercelIntegrationDialog = ({ open, onOpenChange }: VercelIntegratio
         >
             <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-2xl">
                 <DialogHeader>
-                    <DialogTitle>Integração Vercel</DialogTitle>
+                    <DialogTitle>Integração Supabase</DialogTitle>
                     <DialogDescription>
-                        Consulte projetos pessoais e dos times acessíveis ao seu token.
+                        Consulte organizações e projetos pela Management API, somente para leitura.
                     </DialogDescription>
                 </DialogHeader>
 
@@ -57,24 +68,28 @@ export const VercelIntegrationDialog = ({ open, onOpenChange }: VercelIntegratio
                         <CardContent className="py-10 text-center">
                             <KeyRound className="mx-auto size-8 text-muted-foreground" />
                             <p className="mt-3 text-sm">
-                                A integração Vercel está disponível no aplicativo desktop.
+                                A integração Supabase está disponível no aplicativo desktop.
                             </p>
                         </CardContent>
                     </Card>
                 ) : dialog.isLoading ? (
                     <Skeleton className="h-48" />
-                ) : dialog.isError ? (
+                ) : dialog.isError && !dialog.formVisible ? (
                     <Card className="border-destructive/40">
                         <CardContent className="py-8 text-center">
                             <AlertCircle className="mx-auto size-7 text-destructive" />
-                            <p className="mt-2 text-sm">{normalizarErroVercel(dialog.error).message}</p>
-                            <Button
-                                variant="outline"
-                                className="mt-4"
-                                onClick={() => void dialog.retry()}
-                            >
-                                Tentar novamente
-                            </Button>
+                            <p className="mt-2 text-sm">
+                                {normalizarErroSupabase(dialog.error).message}
+                            </p>
+                            <div className="mt-4 flex justify-center gap-2">
+                                <Button
+                                    variant="outline"
+                                    onClick={() => void dialog.retry()}
+                                >
+                                    Tentar novamente
+                                </Button>
+                                <Button onClick={dialog.startUpdate}>Substituir token</Button>
+                            </div>
                         </CardContent>
                     </Card>
                 ) : (
@@ -88,22 +103,12 @@ export const VercelIntegrationDialog = ({ open, onOpenChange }: VercelIntegratio
                                 )}
                             >
                                 <CardContent className="flex flex-wrap items-start gap-3 px-4">
-                                    {connection.avatarUrl ? (
-                                        <img
-                                            src={connection.avatarUrl}
-                                            alt=""
-                                            className="size-11 rounded-lg ring-1 ring-border"
-                                        />
-                                    ) : (
-                                        <span className="flex size-11 items-center justify-center rounded-lg bg-surface-2 ring-1 ring-border">
-                                            <ProviderIcon provider={Enum.Provider.Vercel} />
-                                        </span>
-                                    )}
+                                    <span className="flex size-11 items-center justify-center rounded-lg bg-surface-2 ring-1 ring-border">
+                                        <ProviderIcon provider={Enum.Provider.Supabase} />
+                                    </span>
                                     <div className="min-w-0 flex-1">
                                         <div className="flex flex-wrap items-center gap-2">
-                                            <h3 className="font-medium">
-                                                {connection.nome || `@${connection.username}`}
-                                            </h3>
+                                            <h3 className="font-medium">@{connection.username}</h3>
                                             <span
                                                 className={cn(
                                                     "inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px]",
@@ -124,8 +129,8 @@ export const VercelIntegrationDialog = ({ open, onOpenChange }: VercelIntegratio
                                             </span>
                                         </div>
                                         <p className="text-xs text-muted-foreground">
-                                            @{connection.username} · {connection.quantidadeTimes} time(s)
-                                            · {connection.quantidadeProjetos} projeto(s)
+                                            {connection.email} · {connection.quantidadeOrganizacoes}{" "}
+                                            organização(ões) · {connection.quantidadeProjetos} projeto(s)
                                         </p>
                                         <p className="mt-1 text-xs text-muted-foreground">
                                             Última sincronização:{" "}
@@ -169,10 +174,10 @@ export const VercelIntegrationDialog = ({ open, onOpenChange }: VercelIntegratio
                                             <AlertDialogContent>
                                                 <AlertDialogHeader>
                                                     <AlertDialogTitle>
-                                                        Remover conexão Vercel?
+                                                        Remover conexão Supabase?
                                                     </AlertDialogTitle>
                                                     <AlertDialogDescription>
-                                                        O token será removido do cofre nativo do sistema.
+                                                        O PAT será removido do cofre nativo do sistema.
                                                     </AlertDialogDescription>
                                                 </AlertDialogHeader>
                                                 <AlertDialogFooter>
@@ -193,20 +198,27 @@ export const VercelIntegrationDialog = ({ open, onOpenChange }: VercelIntegratio
                         {dialog.showForm && (
                             <div className="space-y-4 rounded-lg border border-border bg-surface-2 p-4">
                                 <div className="space-y-2">
-                                    <Label htmlFor="vercel-token">Token Vercel</Label>
+                                    <Label htmlFor="supabase-token">Personal Access Token</Label>
                                     <Input
-                                        id="vercel-token"
+                                        id="supabase-token"
                                         type="password"
                                         autoComplete="off"
                                         value={dialog.token}
                                         onChange={(event) => dialog.setToken(event.target.value)}
-                                        placeholder="••••••••••••••••"
+                                        placeholder="sbp_••••••••••••••••"
                                     />
+                                    <Button
+                                        variant="link"
+                                        className="h-auto p-0 text-xs"
+                                        onClick={() => void abrirUrlExterna(TOKENS_URL)}
+                                    >
+                                        Criar token em Account → Access Tokens <ExternalLink />
+                                    </Button>
                                 </div>
                                 <div className="flex items-start gap-2 rounded-md border border-success/30 bg-success/10 p-3 text-xs text-muted-foreground">
                                     <ShieldCheck className="mt-0.5 size-4 shrink-0 text-success" />
                                     <span>
-                                        O token é validado antes de ser salvo e fica somente no cofre
+                                        O PAT é validado antes de ser salvo e permanece somente no cofre
                                         nativo do sistema operacional.
                                     </span>
                                 </div>

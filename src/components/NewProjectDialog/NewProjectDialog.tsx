@@ -97,18 +97,9 @@ export const NewProjectDialog = () => {
                     )}
                     {dialog.etapa === 3 && (
                         <ServicosStep
-                            projetos={dialog.projetosVercel}
                             selecionados={dialog.servicos}
-                            runtimeDisponivel={dialog.runtimeDisponivel}
-                            configurada={dialog.vercelConfigurada}
-                            isLoading={dialog.vercelIsLoading}
-                            isFetching={dialog.vercelIsFetching}
-                            isError={dialog.vercelIsError}
-                            erro={dialog.vercelErro}
-                            falhas={dialog.vercelFalhas}
-                            alternar={dialog.alternarServico}
-                            tentarNovamente={() => void dialog.tentarNovamenteVercel()}
-                            atualizar={() => void dialog.atualizarVercel()}
+                            vercel={dialog.vercel}
+                            supabase={dialog.supabase}
                         />
                     )}
                     {dialog.etapa === 4 && (

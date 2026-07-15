@@ -27,9 +27,7 @@ export const RepositoriosStep = ({
     atualizar,
 }: RepositoriosStepProps) => {
     if (!runtimeDisponivel) {
-        return (
-            <EstadoConexao descricao="A integração GitHub está disponível no aplicativo desktop." />
-        )
+        return <EstadoConexao descricao="A integração GitHub está disponível no aplicativo desktop." />
     }
     if (!isLoading && quantidadeConexoes === 0) {
         return <EstadoConexao descricao="Conecte sua conta GitHub para listar os repositórios." />
@@ -38,7 +36,10 @@ export const RepositoriosStep = ({
         return (
             <div className="space-y-3">
                 {Array.from({ length: 4 }, (_, index) => (
-                    <Skeleton key={index} className="h-28" />
+                    <Skeleton
+                        key={index}
+                        className="h-28"
+                    />
                 ))}
             </div>
         )
@@ -49,7 +50,11 @@ export const RepositoriosStep = ({
                 <AlertCircle className="mx-auto size-8 text-destructive" />
                 <h3 className="mt-3 font-medium">Falha ao consultar o GitHub</h3>
                 <p className="mt-1 text-sm text-muted-foreground">{erro}</p>
-                <Button className="mt-4" variant="outline" onClick={tentarNovamente}>
+                <Button
+                    className="mt-4"
+                    variant="outline"
+                    onClick={tentarNovamente}
+                >
                     Tentar novamente
                 </Button>
             </div>
@@ -68,7 +73,11 @@ export const RepositoriosStep = ({
                         <b>{falha.connectionName}:</b> {falha.message}
                     </p>
                 ))}
-                <Button className="mt-4" variant="outline" onClick={tentarNovamente}>
+                <Button
+                    className="mt-4"
+                    variant="outline"
+                    onClick={tentarNovamente}
+                >
                     Tentar novamente
                 </Button>
             </div>
@@ -130,14 +139,10 @@ export const RepositoriosStep = ({
                                 <span className="mt-1 flex flex-wrap items-center gap-1.5 text-[11px] text-muted-foreground">
                                     <span>{repositorio.defaultBranch}</span>
                                     <span>·</span>
-                                    <span>
-                                        {repositorio.language || "Linguagem não informada"}
-                                    </span>
+                                    <span>{repositorio.language || "Linguagem não informada"}</span>
                                     <span>·</span>
                                     <span>{formatarDataHora(repositorio.updatedAt)}</span>
-                                    <Badge variant="outline">
-                                        {repositorio.connectionName}
-                                    </Badge>
+                                    <Badge variant="outline">{repositorio.connectionName}</Badge>
                                 </span>
                             </span>
                         </label>
@@ -153,7 +158,10 @@ export const RepositoriosStep = ({
                                 </SelectTrigger>
                                 <SelectContent>
                                     {Object.values(Enum.TagRepositorio).map((tag) => (
-                                        <SelectItem key={tag} value={tag}>
+                                        <SelectItem
+                                            key={tag}
+                                            value={tag}
+                                        >
                                             {tag}
                                         </SelectItem>
                                     ))}
@@ -169,9 +177,16 @@ export const RepositoriosStep = ({
 
 const EstadoConexao = ({ descricao }: { descricao: string }) => (
     <div className="rounded-lg border border-dashed p-8 text-center">
-        <ProviderIcon provider={Enum.Provider.GitHub} className="mx-auto size-8" />
+        <ProviderIcon
+            provider={Enum.Provider.GitHub}
+            className="mx-auto size-8"
+        />
         <p className="mt-3 text-sm text-muted-foreground">{descricao}</p>
-        <Button render={<Link to="/integracoes" />} nativeButton={false} className="mt-4">
+        <Button
+            render={<Link to="/integracoes" />}
+            nativeButton={false}
+            className="mt-4"
+        >
             Ir para Integrações
         </Button>
     </div>

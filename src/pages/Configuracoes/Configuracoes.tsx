@@ -204,11 +204,7 @@ export const ConfiguracoesPage = () => {
     )
 }
 
-const Secao = ({
-    titulo,
-    descricao,
-    children,
-}: SecaoProps) => (
+const Secao = ({ titulo, descricao, children }: SecaoProps) => (
     <Card className="border-border py-5 shadow-none">
         <CardHeader className="px-5">
             <CardTitle>
@@ -219,11 +215,7 @@ const Secao = ({
         <CardContent className="space-y-3 px-5">{children}</CardContent>
     </Card>
 )
-const Campo = ({
-    titulo,
-    controleId,
-    children,
-}: CampoProps) => (
+const Campo = ({ titulo, controleId, children }: CampoProps) => (
     <div className="flex items-center justify-between gap-3 text-sm">
         <Label
             htmlFor={controleId}

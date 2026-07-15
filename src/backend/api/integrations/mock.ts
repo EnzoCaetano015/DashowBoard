@@ -434,12 +434,6 @@ const integracoes: ObterIntegracoes.Integracao[] = [
         status: Enum.StatusIntegracao.EmBreve,
         ultimaSincronizacao: "Não disponível",
     },
-    {
-        provider: Enum.Provider.Supabase,
-        conta: "Integração ainda não implementada",
-        status: Enum.StatusIntegracao.EmBreve,
-        ultimaSincronizacao: "Não disponível",
-    },
 ]
 
 const clonar = <T>(valor: T): T => structuredClone(valor)
@@ -450,7 +444,7 @@ export const obterProjetosMock = async (): Promise<ObterProjetos.Response> => {
 }
 
 export const obterProjetoPorIdMock = async (
-    request: ObterProjetoPorId.Request,
+    request: ObterProjetoPorId.Request
 ): Promise<ObterProjetoPorId.Response> => {
     await aguardar()
     return clonar(projetos.find((projeto) => projeto.id === request.id))
@@ -467,7 +461,7 @@ export const obterIntegracoesMock = async (): Promise<ObterIntegracoes.Response>
 }
 
 export const obterDashboardMock = async (
-    request: ObterDashboard.Request,
+    request: ObterDashboard.Request
 ): Promise<ObterDashboard.Response> => {
     await aguardar()
     const incidentes = projetos.flatMap((projeto) => projeto.incidentes).slice(0, request.periodo)

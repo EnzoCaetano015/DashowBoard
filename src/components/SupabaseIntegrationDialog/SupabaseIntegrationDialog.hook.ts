@@ -2,22 +2,22 @@ import { useState } from "react"
 import { toast } from "sonner"
 
 import {
-    useObterConexaoVercel,
-    useRemoverConexaoVercel,
-    useSalvarConexaoVercel,
-    useTestarConexaoVercel,
-} from "@/backend/api/controllers/vercel"
+    useObterConexaoSupabase,
+    useRemoverConexaoSupabase,
+    useSalvarConexaoSupabase,
+    useTestarConexaoSupabase,
+} from "@/backend/api/controllers/supabase"
 import { Enum } from "@/backend/api/enums/enum"
+import { normalizarErroSupabase } from "@/lib/utils/supabase"
 import { possuiRuntimeTauri } from "@/lib/utils/tauri"
-import { normalizarErroVercel } from "@/lib/utils/vercel"
 
-export const useVercelIntegrationDialog = () => {
+export const useSupabaseIntegrationDialog = () => {
     const [token, setToken] = useState("")
     const [formVisible, setFormVisible] = useState(false)
-    const connectionQuery = useObterConexaoVercel()
-    const saveConnection = useSalvarConexaoVercel()
-    const testConnection = useTestarConexaoVercel()
-    const removeConnection = useRemoverConexaoVercel()
+    const connectionQuery = useObterConexaoSupabase()
+    const saveConnection = useSalvarConexaoSupabase()
+    const testConnection = useTestarConexaoSupabase()
+    const removeConnection = useRemoverConexaoSupabase()
 
     const resetForm = () => {
         setToken("")
@@ -25,16 +25,17 @@ export const useVercelIntegrationDialog = () => {
     }
 
     const save = async () => {
-        if (!token.trim()) {
-            toast.error("Informe o token da Vercel.")
+        const tokenNormalizado = token.trim()
+        if (!tokenNormalizado) {
+            toast.error("Informe o Personal Access Token do Supabase.")
             return
         }
         try {
-            await saveConnection.mutateAsync({ token: token.trim() })
+            await saveConnection.mutateAsync({ token: tokenNormalizado })
             resetForm()
-            toast.success(connectionQuery.data ? "Token Vercel substituído." : "Vercel conectada.")
+            toast.success(connectionQuery.data ? "Token Supabase substituído." : "Supabase conectado.")
         } catch (error) {
-            toast.error(normalizarErroVercel(error).message)
+            toast.error(normalizarErroSupabase(error).message)
         }
     }
 
@@ -42,12 +43,12 @@ export const useVercelIntegrationDialog = () => {
         try {
             const connection = await testConnection.mutateAsync()
             if (connection.status === Enum.StatusIntegracao.Erro) {
-                toast.error(connection.erro ?? "A conexão Vercel apresentou um erro.")
+                toast.error(connection.erro ?? "A conexão Supabase apresentou um erro.")
                 return
             }
-            toast.success("Conexão Vercel validada.")
+            toast.success("Conexão Supabase validada.")
         } catch (error) {
-            toast.error(normalizarErroVercel(error).message)
+            toast.error(normalizarErroSupabase(error).message)
         }
     }
 
@@ -55,9 +56,9 @@ export const useVercelIntegrationDialog = () => {
         try {
             await removeConnection.mutateAsync()
             resetForm()
-            toast.success("Conexão e token Vercel removidos.")
+            toast.success("Conexão e token Supabase removidos.")
         } catch (error) {
-            toast.error(normalizarErroVercel(error).message)
+            toast.error(normalizarErroSupabase(error).message)
         }
     }
 

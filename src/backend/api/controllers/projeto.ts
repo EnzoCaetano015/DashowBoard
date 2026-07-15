@@ -1,6 +1,10 @@
 import { useQuery } from "@tanstack/react-query"
 
-import { obterDashboardMock, obterProjetoPorIdMock, obterProjetosMock } from "@/backend/api/integrations/mock"
+import {
+    obterDashboardMock,
+    obterProjetoPorIdMock,
+    obterProjetosMock,
+} from "@/backend/api/integrations/mock"
 import { DashboardQueryKeys, type ObterDashboard } from "@/backend/api/models/dashboard.types"
 import { ProjetoQueryKeys, type ObterProjetoPorId } from "@/backend/api/models/projeto.types"
 

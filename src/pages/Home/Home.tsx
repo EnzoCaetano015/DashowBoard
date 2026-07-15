@@ -220,12 +220,7 @@ export const HomePage = () => {
     )
 }
 
-const FiltroSelect = ({
-    value,
-    placeholder,
-    onValueChange,
-    opcoes,
-}: FiltroSelectProps) => (
+const FiltroSelect = ({ value, placeholder, onValueChange, opcoes }: FiltroSelectProps) => (
     <Select
         value={value}
         onValueChange={(valor) => valor && onValueChange(valor)}

@@ -12,3 +12,12 @@ export const exigirRuntimeTauri = (provider?: string) => {
         }
     }
 }
+
+export const abrirUrlExterna = async (url: string) => {
+    if (possuiRuntimeTauri()) {
+        const { openUrl } = await import("@tauri-apps/plugin-opener")
+        await openUrl(url)
+        return
+    }
+    window.open(url, "_blank", "noopener,noreferrer")
+}

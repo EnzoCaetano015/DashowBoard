@@ -7,10 +7,7 @@ import {
     salvarConexaoVercel,
     testarConexaoVercel,
 } from "@/backend/api/integrations/vercel"
-import {
-    VercelQueryKeys,
-    type SalvarConexaoVercel,
-} from "@/backend/api/models/vercel.types"
+import { VercelQueryKeys, type SalvarConexaoVercel } from "@/backend/api/models/vercel.types"
 import { TEMPO_CACHE_PROJETOS_VERCEL } from "@/lib/config/monitoring"
 import { queryClient } from "@/lib/config/query-client"
 import { possuiRuntimeTauri } from "@/lib/utils/tauri"

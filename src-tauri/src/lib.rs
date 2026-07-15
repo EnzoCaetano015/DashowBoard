@@ -1,10 +1,16 @@
 mod github;
+mod supabase;
 mod vercel;
 
 use github::client::GitHubClient;
 use github::commands::{
     obter_conexoes_github, obter_repositorios_github, remover_conexao_github,
     salvar_conexao_github, testar_conexao_github,
+};
+use supabase::client::SupabaseClient;
+use supabase::commands::{
+    obter_conexao_supabase, obter_projetos_supabase, remover_conexao_supabase,
+    salvar_conexao_supabase, testar_conexao_supabase,
 };
 use vercel::client::VercelClient;
 use vercel::commands::{
@@ -19,6 +25,7 @@ pub fn run() {
         .plugin(tauri_plugin_http::init())
         .plugin(tauri_plugin_opener::init())
         .manage(GitHubClient::new())
+        .manage(SupabaseClient::new())
         .manage(VercelClient::new())
         .invoke_handler(tauri::generate_handler![
             salvar_conexao_github,
@@ -31,6 +38,11 @@ pub fn run() {
             testar_conexao_vercel,
             remover_conexao_vercel,
             obter_projetos_vercel,
+            salvar_conexao_supabase,
+            obter_conexao_supabase,
+            testar_conexao_supabase,
+            remover_conexao_supabase,
+            obter_projetos_supabase,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

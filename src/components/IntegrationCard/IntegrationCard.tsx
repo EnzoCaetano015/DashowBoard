@@ -54,8 +54,8 @@ export const IntegrationCard = ({
                             emBreve
                                 ? "border-border bg-surface-2 text-muted-foreground"
                                 : conectada
-                                ? "border-success/40 bg-success/10 text-success"
-                                : "border-destructive/40 bg-destructive/10 text-destructive"
+                                  ? "border-success/40 bg-success/10 text-success"
+                                  : "border-destructive/40 bg-destructive/10 text-destructive"
                         )}
                     >
                         {emBreve ? (
@@ -79,23 +79,25 @@ export const IntegrationCard = ({
                     Última sincronização:{" "}
                     <span className="text-foreground">{integracao.ultimaSincronizacao}</span>
                 </div>
-                {!emBreve && <div className="mt-4 flex flex-wrap gap-2">
-                    <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={onTestar}
-                    >
-                        <RefreshCw />
-                        Testar conexão
-                    </Button>
-                    <Button
-                        size="sm"
-                        onClick={onConfigurar}
-                    >
-                        <KeyRound />
-                        {conectada ? "Atualizar token" : "Configurar token"}
-                    </Button>
-                </div>}
+                {!emBreve && (
+                    <div className="mt-4 flex flex-wrap gap-2">
+                        <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={onTestar}
+                        >
+                            <RefreshCw />
+                            Testar conexão
+                        </Button>
+                        <Button
+                            size="sm"
+                            onClick={onConfigurar}
+                        >
+                            <KeyRound />
+                            {conectada ? "Atualizar token" : "Configurar token"}
+                        </Button>
+                    </div>
+                )}
             </CardContent>
         </Card>
     )

@@ -69,5 +69,4 @@ export namespace Enum {
         Pessoal = "personal",
         Organizacao = "organization",
     }
-
 }

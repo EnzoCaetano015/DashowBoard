@@ -1,7 +1,5 @@
 import { Enum } from "@/backend/api/enums/enum"
-import type {
-    ServicoDisponivel,
-} from "@/components/NewProjectDialog/NewProjectDialog.types"
+import type { ServicoDisponivel } from "@/components/NewProjectDialog/NewProjectDialog.types"
 
 export const etapasNovoProjeto = [
     { id: 1, titulo: "Informações" },
@@ -28,12 +26,6 @@ export const servicosDisponiveis: ServicoDisponivel[] = [
         id: "servico-db",
         nome: "postgres-primary",
         provider: Enum.Provider.Railway,
-        tipo: Enum.TipoServico.BancoDados,
-    },
-    {
-        id: "servico-supabase",
-        nome: "analytics-db",
-        provider: Enum.Provider.Supabase,
         tipo: Enum.TipoServico.BancoDados,
     },
 ]

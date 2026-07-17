@@ -1,5 +1,12 @@
+import { Enum } from "@/backend/api/enums/enum"
 import type { ObterProjetos } from "@/backend/api/models/projeto.types"
 import type { FiltrosHome } from "@/pages/Home/Home.types"
+
+export const STATUS_PROJETO_FILTROS = [
+    Enum.StatusProjeto.Saudavel,
+    Enum.StatusProjeto.Degradado,
+    Enum.StatusProjeto.Offline,
+] as const
 
 export const FILTROS_HOME_INICIAIS: FiltrosHome = {
     busca: "",

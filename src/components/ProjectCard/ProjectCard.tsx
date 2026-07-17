@@ -1,6 +1,7 @@
 import { AlertCircle, ChevronRight, Clock, GitBranch, Server } from "lucide-react"
 import { Link } from "react-router-dom"
 
+import { Enum } from "@/backend/api/enums/enum"
 import type { ProjectCardProps } from "@/components/ProjectCard/ProjectCard.types"
 import { ProviderIcon } from "@/components/ProviderIcon/ProviderIcon"
 import { StatusBadge } from "@/components/StatusBadge/StatusBadge"
@@ -11,7 +12,9 @@ import { formatarDataHora } from "@/lib/utils/date"
 
 export const ProjectCard = ({ projeto }: ProjectCardProps) => {
     const estilo = estilosStatus[projeto.status]
-    const offline = projeto.servicos.filter((servico) => servico.status === "offline").length
+    const offline = projeto.servicos.filter(
+        (servico) => servico.status === Enum.StatusProjeto.Offline
+    ).length
 
     return (
         <Link

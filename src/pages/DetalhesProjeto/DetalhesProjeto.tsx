@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ProjetoNaoEncontrado } from "@/pages/DetalhesProjeto/components/ProjetoNaoEncontrado/ProjetoNaoEncontrado"
 import { useDetalhesProjeto } from "@/pages/DetalhesProjeto/DetalhesProjeto.hook"
 import { DeleteProjectDialog } from "@/pages/DetalhesProjeto/modais/DeleteProjectDialog/DeleteProjectDialog"
+import { EditProjectDialog } from "@/pages/DetalhesProjeto/modais/EditProjectDialog/EditProjectDialog"
 
 export const DetalhesProjetoPage = () => {
     const { modal, setModal, projeto, runtimeDisponivel, isLoading, isFetching, isError, atualizar } =
@@ -45,6 +46,7 @@ export const DetalhesProjetoPage = () => {
                 projeto={projeto}
                 atualizando={isFetching}
                 onAtualizar={() => void atualizar()}
+                onEditar={() => setModal("editarProjeto", { open: true })}
                 onExcluir={() => setModal("excluirProjeto", { open: true })}
             />
             <Tabs defaultValue="visao-geral">
@@ -79,6 +81,12 @@ export const DetalhesProjetoPage = () => {
                     <ProjectSettings projeto={projeto} />
                 </TabsContent>
             </Tabs>
+            <EditProjectDialog
+                key={modal.editarProjeto ? `editar-${projeto.id}` : `editar-fechado-${projeto.id}`}
+                open={modal.editarProjeto}
+                onClose={() => setModal("editarProjeto", { open: false })}
+                projeto={projeto}
+            />
             <DeleteProjectDialog
                 open={modal.excluirProjeto}
                 onClose={() => setModal("excluirProjeto", { open: false })}

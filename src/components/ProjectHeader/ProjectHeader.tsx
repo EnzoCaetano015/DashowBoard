@@ -9,7 +9,13 @@ import { cn } from "@/lib/utils"
 import { formatarDataHora } from "@/lib/utils/date"
 import { labelProvider } from "@/lib/utils/status"
 
-export const ProjectHeader = ({ projeto, atualizando, onAtualizar, onExcluir }: ProjectHeaderProps) => (
+export const ProjectHeader = ({
+    projeto,
+    atualizando,
+    onAtualizar,
+    onEditar,
+    onExcluir,
+}: ProjectHeaderProps) => (
     <div className="mb-6">
         <Link
             to="/projetos"
@@ -68,6 +74,7 @@ export const ProjectHeader = ({ projeto, atualizando, onAtualizar, onExcluir }: 
                 <Button
                     size="sm"
                     variant="outline"
+                    onClick={onEditar}
                 >
                     <Pencil />
                     Editar

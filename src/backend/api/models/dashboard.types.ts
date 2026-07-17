@@ -12,22 +12,16 @@ export namespace ObterDashboard {
 
     export type Metricas = {
         totalProjetos: number
-        saudaveis: number
+        online: number
         degradados: number
         offline: number
-        desconhecidos: number
         servicosMonitorados: number
-        incidentesAbertos: number
-        incidentes: number
         tendencias: {
             projetos: number[]
-            saudaveis: number[]
+            online: number[]
             degradados: number[]
             offline: number[]
-            desconhecidos: number[]
             servicos: number[]
-            incidentesAbertos: number[]
-            incidentes: number[]
         }
     }
 

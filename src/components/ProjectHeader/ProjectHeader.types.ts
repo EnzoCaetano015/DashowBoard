@@ -4,5 +4,6 @@ export type ProjectHeaderProps = {
     projeto: ObterProjetos.Projeto
     atualizando: boolean
     onAtualizar: () => void
+    onEditar: () => void
     onExcluir: () => void
 }

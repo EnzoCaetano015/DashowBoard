@@ -1,9 +1,7 @@
 import {
     AlertTriangle,
     Boxes,
-    Bug,
     CheckCircle2,
-    CircleHelp,
     Filter,
     Plus,
     Search,
@@ -17,19 +15,18 @@ import { ProjectCard } from "@/components/ProjectCard/ProjectCard"
 import { TemplateEstado } from "@/components/TemplateEstado"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { PERIODOS_MONITORAMENTO } from "@/lib/config/monitoring"
 import { cn } from "@/lib/utils"
 import { labelProvider, labelStatusProjeto } from "@/lib/utils/status"
 import { FiltroSelect } from "@/pages/Home/components/FiltroSelect/FiltroSelect"
 import { useHome } from "@/pages/Home/Home.hook"
 import type { FiltrosHome } from "@/pages/Home/Home.types"
+import { STATUS_PROJETO_FILTROS } from "@/pages/Home/Home.utils"
 import { NovoProjeto } from "@/pages/Home/modais/NovoProjeto/NovoProjeto"
 
 export const HomePage = () => {
     const {
         modal,
         setModal,
-        periodo,
         filtros,
         projetosFiltrados,
         metricas,
@@ -39,7 +36,6 @@ export const HomePage = () => {
         isFetching,
         isError,
         atualizar,
-        setPeriodo,
         alterarFiltro,
     } = useHome()
 
@@ -53,23 +49,6 @@ export const HomePage = () => {
                     </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
-                    <div className="inline-flex items-center rounded-md border border-border bg-surface-2 p-0.5 text-xs">
-                        <span className="px-2 text-muted-foreground">Incidentes:</span>
-                        {PERIODOS_MONITORAMENTO.map((periodoMonitoramento) => (
-                            <Button
-                                key={periodoMonitoramento}
-                                variant="ghost"
-                                size="xs"
-                                onClick={() => setPeriodo(periodoMonitoramento)}
-                                className={cn(
-                                    periodo === periodoMonitoramento &&
-                                        "bg-primary/20 text-primary hover:bg-primary/25"
-                                )}
-                            >
-                                {periodoMonitoramento} dias
-                            </Button>
-                        ))}
-                    </div>
                     <Button
                         onClick={() => setModal("novoProjeto", { open: true })}
                         disabled={!runtimeDisponivel}
@@ -88,8 +67,8 @@ export const HomePage = () => {
                 />
             ) : isLoading ? (
                 <TemplateEstado.Carregando
-                    skeleton={{ quantidade: 6, orientacao: "horizontal" }}
-                    className="**:data-[slot=skeleton]:h-36 **:data-[slot=template-estado-skeletons]:grid-cols-2 **:data-[slot=template-estado-skeletons]:md:grid-cols-3 **:data-[slot=template-estado-skeletons]:xl:grid-cols-6"
+                    skeleton={{ quantidade: 5, orientacao: "horizontal" }}
+                    className="**:data-[slot=skeleton]:h-36 **:data-[slot=template-estado-skeletons]:grid-cols-2 **:data-[slot=template-estado-skeletons]:md:grid-cols-3 **:data-[slot=template-estado-skeletons]:xl:grid-cols-5"
                 />
             ) : isError ? (
                 <TemplateEstado.Erro
@@ -108,7 +87,7 @@ export const HomePage = () => {
                     <>
                         <div
                             className={cn(
-                                "grid grid-cols-2 gap-3 md:grid-cols-4 2xl:grid-cols-8",
+                                "grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-5",
                                 isFetching && "opacity-80"
                             )}
                         >
@@ -119,11 +98,11 @@ export const HomePage = () => {
                                 tendencia={metricas.tendencias.projetos}
                             />
                             <MetricCard
-                                titulo="Saudáveis"
-                                valor={metricas.saudaveis}
+                                titulo="Online"
+                                valor={metricas.online}
                                 icone={<CheckCircle2 />}
                                 destaque="success"
-                                tendencia={metricas.tendencias.saudaveis}
+                                tendencia={metricas.tendencias.online}
                             />
                             <MetricCard
                                 titulo="Degradados"
@@ -140,33 +119,11 @@ export const HomePage = () => {
                                 tendencia={metricas.tendencias.offline}
                             />
                             <MetricCard
-                                titulo="Desconhecidos"
-                                valor={metricas.desconhecidos}
-                                icone={<CircleHelp />}
-                                tendencia={metricas.tendencias.desconhecidos}
-                            />
-                            <MetricCard
                                 titulo="Serviços monitorados"
                                 valor={metricas.servicosMonitorados}
                                 icone={<Server />}
                                 destaque="info"
                                 tendencia={metricas.tendencias.servicos}
-                            />
-                            <MetricCard
-                                titulo="Incidentes abertos"
-                                valor={metricas.incidentesAbertos}
-                                dica="ativos"
-                                icone={<Bug />}
-                                destaque="destructive"
-                                tendencia={metricas.tendencias.incidentesAbertos}
-                            />
-                            <MetricCard
-                                titulo={`Incidentes · ${periodo}d`}
-                                valor={metricas.incidentes}
-                                dica="detectados"
-                                icone={<Bug />}
-                                destaque="destructive"
-                                tendencia={metricas.tendencias.incidentes}
                             />
                         </div>
                         <div className="mb-4 mt-8 flex flex-wrap items-center gap-3">
@@ -191,7 +148,7 @@ export const HomePage = () => {
                                 }
                                 opcoes={[
                                     ["todos", "Todos status"],
-                                    ...Object.values(Enum.StatusProjeto).map(
+                                    ...STATUS_PROJETO_FILTROS.map(
                                         (valor) => [valor, labelStatusProjeto[valor]] as const
                                     ),
                                 ]}

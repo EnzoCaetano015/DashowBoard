@@ -260,41 +260,45 @@ fn map_service(
 
 fn normalize_status(status: Option<&str>) -> &'static str {
     match status {
-        Some("SUCCESS") => "healthy",
+        Some("SUCCESS" | "SLEEPING") => "healthy",
         Some("BUILDING" | "DEPLOYING" | "WAITING" | "QUEUED" | "INITIALIZING") => "updating",
-        Some("FAILED" | "CRASHED" | "REMOVED" | "SLEEPING") => "offline",
+        Some("FAILED" | "CRASHED" | "REMOVED") => "offline",
         _ => "unknown",
     }
 }
 
 fn aggregate_status(statuses: &[&str]) -> &'static str {
-    if statuses.is_empty() {
-        return "unknown";
-    }
-    let healthy = statuses
-        .iter()
-        .filter(|status| **status == "healthy")
-        .count();
     let offline = statuses
         .iter()
         .filter(|status| **status == "offline")
         .count();
-    if offline == statuses.len() {
+    if !statuses.is_empty() && offline == statuses.len() {
         return "offline";
-    }
-    if offline > 0 && healthy > 0 {
-        return "degraded";
     }
     if offline > 0 {
         return "degraded";
     }
-    if statuses.iter().any(|status| *status == "updating") {
-        return "updating";
+    "healthy"
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{aggregate_status, normalize_status};
+
+    #[test]
+    fn sleeping_is_available() {
+        assert_eq!(normalize_status(Some("SLEEPING")), "healthy");
     }
-    if healthy == statuses.len() {
-        return "healthy";
+
+    #[test]
+    fn sleeping_does_not_degrade_project() {
+        let statuses = [
+            normalize_status(Some("SUCCESS")),
+            normalize_status(Some("SLEEPING")),
+        ];
+
+        assert_eq!(aggregate_status(&statuses), "healthy");
     }
-    "unknown"
 }
 
 fn failure(

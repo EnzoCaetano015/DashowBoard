@@ -1,6 +1,5 @@
 import { Enum } from "@/backend/api/enums/enum"
 import type { ObterDashboard } from "@/backend/api/models/dashboard.types"
-import type { ObterIncidentes } from "@/backend/api/models/incidente.types"
 import type {
     AtualizarProjeto,
     CriarProjeto,
@@ -11,7 +10,6 @@ import type {
 import { obterBancoDados } from "@/backend/sql/database"
 import {
     abrirIncidente,
-    listarIncidentes,
     listarIncidentesPorProjeto,
     resolverIncidente,
 } from "@/backend/sql/repositories/incidente"
@@ -245,7 +243,7 @@ const montarProjeto = async (row: ProjetoRow): Promise<ObterProjetos.Projeto> =>
         id: row.id,
         nome: row.nome,
         descricao: row.descricao ?? "",
-        status: row.status as Enum.StatusProjeto,
+        status: agregarStatus(servicosMapeados.map(({ status }) => status)),
         ultimaVerificacao: ultimaVerificacao ?? null,
         providers: Array.from(new Set(servicosMapeados.map(({ provider }) => provider))),
         repositorios: repositorios.map(mapearRepositorio),
@@ -471,22 +469,11 @@ export const salvarStatusRecurso = async (
 }
 
 const agregarStatus = (statuses: Enum.StatusProjeto[]) => {
-    if (statuses.length === 0) return Enum.StatusProjeto.Desconhecido
-    if (statuses.some((status) => status === Enum.StatusProjeto.Desconhecido)) {
-        return Enum.StatusProjeto.Desconhecido
-    }
-    const offline = statuses.filter((status) => status === Enum.StatusProjeto.Offline).length
-    const saudaveis = statuses.filter((status) => status === Enum.StatusProjeto.Saudavel).length
-    if (offline === statuses.length) return Enum.StatusProjeto.Offline
-    if (offline > 0 && saudaveis > 0) return Enum.StatusProjeto.Degradado
-    if (offline > 0) return Enum.StatusProjeto.Degradado
-    if (statuses.some((status) => status === Enum.StatusProjeto.Degradado)) {
+    if (statuses.length > 0 && statuses.every((status) => status === Enum.StatusProjeto.Offline))
+        return Enum.StatusProjeto.Offline
+    if (statuses.some((status) => status === Enum.StatusProjeto.Offline))
         return Enum.StatusProjeto.Degradado
-    }
-    if (statuses.some((status) => status === Enum.StatusProjeto.Atualizando)) {
-        return Enum.StatusProjeto.Atualizando
-    }
-    return saudaveis === statuses.length ? Enum.StatusProjeto.Saudavel : Enum.StatusProjeto.Desconhecido
+    return Enum.StatusProjeto.Saudavel
 }
 
 export const salvarSnapshotServico = async (request: SalvarSnapshotServico.Request) => {
@@ -561,12 +548,12 @@ export const salvarSnapshotServico = async (request: SalvarSnapshotServico.Reque
         if (recuperou) await resolverIncidente(servico.id)
     }
 
-    const criticos = await database.select<Array<{ status: Enum.StatusProjeto }>>(
-        "SELECT status FROM projeto_servicos WHERE projeto_id = $1 AND critico = 1",
+    const statusServicos = await database.select<Array<{ status: Enum.StatusProjeto }>>(
+        "SELECT status FROM projeto_servicos WHERE projeto_id = $1",
         [servico.projetoId]
     )
     await database.execute("UPDATE projetos SET status = $1, atualizado_em = $2 WHERE id = $3", [
-        agregarStatus(criticos.map(({ status }) => status)),
+        agregarStatus(statusServicos.map(({ status }) => status)),
         agora,
         servico.projetoId,
     ])
@@ -574,14 +561,12 @@ export const salvarSnapshotServico = async (request: SalvarSnapshotServico.Reque
 
 const construirTendenciasDashboard = (
     projetos: ObterProjetos.Projeto[],
-    incidentes: ObterIncidentes.Incidente[],
     limite: number
 ): ObterDashboard.Metricas["tendencias"] => {
     const statusPorData = new Map<string, Map<string, Enum.StatusProjeto>>()
     const servicosPorData = new Map<string, Set<string>>()
 
     for (const projeto of projetos) {
-        const criticos = new Set(projeto.servicos.filter(({ critico }) => critico).map(({ id }) => id))
         const observacoesPorData = new Map<string, Map<string, Enum.StatusProjeto>>()
         for (const observacao of projeto.historicoStatus) {
             if (new Date(observacao.verificadoEm).getTime() < limite) continue
@@ -589,7 +574,6 @@ const construirTendenciasDashboard = (
             const servicosObservados = servicosPorData.get(data) ?? new Set<string>()
             servicosObservados.add(observacao.servicoId)
             servicosPorData.set(data, servicosObservados)
-            if (!criticos.has(observacao.servicoId)) continue
             const statusServicos = observacoesPorData.get(data) ?? new Map()
             statusServicos.set(observacao.servicoId, observacao.statusAtual)
             observacoesPorData.set(data, statusServicos)
@@ -605,13 +589,10 @@ const construirTendenciasDashboard = (
     if (datas.length < 2) {
         return {
             projetos: [],
-            saudaveis: [],
+            online: [],
             degradados: [],
             offline: [],
-            desconhecidos: [],
             servicos: [],
-            incidentesAbertos: [],
-            incidentes: [],
         }
     }
 
@@ -621,47 +602,26 @@ const construirTendenciasDashboard = (
         ).length
     return {
         projetos: datas.map((data) => statusPorData.get(data)?.size ?? 0),
-        saudaveis: datas.map((data) => contarStatus(data, Enum.StatusProjeto.Saudavel)),
+        online: datas.map((data) => contarStatus(data, Enum.StatusProjeto.Saudavel)),
         degradados: datas.map((data) => contarStatus(data, Enum.StatusProjeto.Degradado)),
         offline: datas.map((data) => contarStatus(data, Enum.StatusProjeto.Offline)),
-        desconhecidos: datas.map((data) => contarStatus(data, Enum.StatusProjeto.Desconhecido)),
         servicos: datas.map((data) => servicosPorData.get(data)?.size ?? 0),
-        incidentesAbertos: datas.map((data) => {
-            const fimData = new Date(`${data}T23:59:59.999Z`).getTime()
-            return incidentes.filter(
-                ({ iniciadoEm, resolvidoEm }) =>
-                    new Date(iniciadoEm).getTime() <= fimData &&
-                    (!resolvidoEm || new Date(resolvidoEm).getTime() > fimData)
-            ).length
-        }),
-        incidentes: datas.map(
-            (data) => incidentes.filter(({ iniciadoEm }) => iniciadoEm.startsWith(data)).length
-        ),
     }
 }
 
 export const obterDashboard = async (
     periodo: PeriodoMonitoramento
 ): Promise<ObterDashboard.Response> => {
-    const [projetos, incidentes] = await Promise.all([listarProjetos(), listarIncidentes()])
+    const projetos = await listarProjetos()
     const limite = Date.now() - periodo * 24 * 60 * 60 * 1000
-    const incidentesNoPeriodo = incidentes.filter(
-        ({ iniciadoEm }) => new Date(iniciadoEm).getTime() >= limite
-    )
     return {
         metricas: {
             totalProjetos: projetos.length,
-            saudaveis: projetos.filter(({ status }) => status === Enum.StatusProjeto.Saudavel).length,
+            online: projetos.filter(({ status }) => status === Enum.StatusProjeto.Saudavel).length,
             degradados: projetos.filter(({ status }) => status === Enum.StatusProjeto.Degradado).length,
             offline: projetos.filter(({ status }) => status === Enum.StatusProjeto.Offline).length,
-            desconhecidos: projetos.filter(({ status }) => status === Enum.StatusProjeto.Desconhecido)
-                .length,
             servicosMonitorados: projetos.reduce((total, projeto) => total + projeto.servicos.length, 0),
-            incidentesAbertos: incidentes.filter(
-                ({ status }) => status !== Enum.StatusIncidente.Resolvido
-            ).length,
-            incidentes: incidentesNoPeriodo.length,
-            tendencias: construirTendenciasDashboard(projetos, incidentes, limite),
+            tendencias: construirTendenciasDashboard(projetos, limite),
         },
         projetos,
     }

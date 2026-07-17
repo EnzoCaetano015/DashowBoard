@@ -12,7 +12,7 @@ import { useControlModal } from "@/lib/hooks/useControlModal"
 import { possuiRuntimeTauri } from "@/lib/utils/tauri"
 
 export const useDetalhesProjeto = () => {
-    const { modal, setModal } = useControlModal(["excluirProjeto"] as const)
+    const { modal, setModal } = useControlModal(["editarProjeto", "excluirProjeto"] as const)
     const { id } = useParams<{ id: string }>()
 
     const {

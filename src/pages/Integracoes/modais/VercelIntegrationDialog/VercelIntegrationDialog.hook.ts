@@ -16,10 +16,7 @@ export const useVercelIntegrationDialog = () => {
     const { modal, setModal } = useControlModal(["removerConexao"] as const)
     const [token, setToken] = useState("")
     const [formVisible, setFormVisible] = useState(false)
-    const {
-        data: connection,
-        isLoading: connectionIsLoading,
-    } = useObterConexaoVercel()
+    const { data: connection, isLoading: connectionIsLoading } = useObterConexaoVercel()
     const { mutateAsync: saveConnection, isPending: saveConnectionIsPending } = useSalvarConexaoVercel()
     const { mutateAsync: testConnection, isPending: testConnectionIsPending } = useTestarConexaoVercel()
     const { mutateAsync: removeConnection, isPending: removeConnectionIsPending } =
@@ -51,8 +48,7 @@ export const useVercelIntegrationDialog = () => {
             if (testedConnection.status === Enum.StatusIntegracao.Erro) {
                 return Promise.reject({
                     code: "VERCEL_CONEXAO_INVALIDA",
-                    message:
-                        testedConnection.erro ?? "A conexão Vercel apresentou um erro.",
+                    message: testedConnection.erro ?? "A conexão Vercel apresentou um erro.",
                 })
             }
 

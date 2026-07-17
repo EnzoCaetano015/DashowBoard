@@ -16,10 +16,7 @@ export const useSupabaseIntegrationDialog = () => {
     const { modal, setModal } = useControlModal(["removerConexao"] as const)
     const [token, setToken] = useState("")
     const [formVisible, setFormVisible] = useState(false)
-    const {
-        data: connection,
-        isLoading: connectionIsLoading,
-    } = useObterConexaoSupabase()
+    const { data: connection, isLoading: connectionIsLoading } = useObterConexaoSupabase()
     const { mutateAsync: saveConnection, isPending: saveConnectionIsPending } =
         useSalvarConexaoSupabase()
     const { mutateAsync: testConnection, isPending: testConnectionIsPending } =
@@ -54,8 +51,7 @@ export const useSupabaseIntegrationDialog = () => {
             if (testedConnection.status === Enum.StatusIntegracao.Erro) {
                 return Promise.reject({
                     code: "SUPABASE_CONEXAO_INVALIDA",
-                    message:
-                        testedConnection.erro ?? "A conexão Supabase apresentou um erro.",
+                    message: testedConnection.erro ?? "A conexão Supabase apresentou um erro.",
                 })
             }
 

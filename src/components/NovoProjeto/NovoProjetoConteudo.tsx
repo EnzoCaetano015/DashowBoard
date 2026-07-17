@@ -15,22 +15,25 @@ import { cn } from "@/lib/utils"
 export const NovoProjetoConteudo = ({ open, onClose }: NovoProjetoConteudoProps) => {
     const {
         etapa,
+        formulario,
         repositorios,
-        repositoriosSelecionados,
         repositoriosRelacionamento,
         repositoriosIsLoading,
         repositoriosIsFetching,
         repositoriosFalhas,
         quantidadeConexoes,
         runtimeDisponivel,
-        servicos,
+        criarProjetoIsPending,
         vercel,
         supabase,
+        railway,
         voltar,
         continuar,
         concluir,
+        alterarFormulario,
         alternarRepositorio,
         alterarTagRepositorio,
+        alterarRelacionamento,
         atualizarRepositorios,
     } = useNovoProjetoConteudo(open, onClose)
 
@@ -79,11 +82,20 @@ export const NovoProjetoConteudo = ({ open, onClose }: NovoProjetoConteudoProps)
                 </div>
             </Modal.Header>
             <Modal.Body className="scrollbar-thin max-h-[52dvh] overflow-y-auto p-5">
-                {etapa === 1 && <InformacoesStep />}
+                {etapa === 1 && (
+                    <InformacoesStep
+                        nome={formulario.nome}
+                        descricao={formulario.descricao}
+                        urlAplicacao={formulario.urlAplicacao}
+                        alterarNome={(valor) => alterarFormulario("nome", valor)}
+                        alterarDescricao={(valor) => alterarFormulario("descricao", valor)}
+                        alterarUrl={(valor) => alterarFormulario("urlAplicacao", valor)}
+                    />
+                )}
                 {etapa === 2 && (
                     <RepositoriosStep
                         repositorios={repositorios}
-                        selecionados={repositoriosSelecionados}
+                        selecionados={formulario.repositorios}
                         runtimeDisponivel={runtimeDisponivel}
                         quantidadeConexoes={quantidadeConexoes}
                         isLoading={repositoriosIsLoading}
@@ -96,18 +108,39 @@ export const NovoProjetoConteudo = ({ open, onClose }: NovoProjetoConteudoProps)
                 )}
                 {etapa === 3 && (
                     <ServicosStep
-                        selecionados={servicos}
+                        selecionados={formulario.servicos}
                         vercel={vercel}
                         supabase={supabase}
+                        railway={railway}
                     />
                 )}
-                {etapa === 4 && <RelacionamentosStep repositorios={repositoriosRelacionamento} />}
-                {etapa === 5 && <MonitoramentoStep />}
+                {etapa === 4 && (
+                    <RelacionamentosStep
+                        repositorios={repositoriosRelacionamento}
+                        servicos={formulario.servicos}
+                        relacionamentos={formulario.relacionamentos}
+                        alterarRelacionamento={alterarRelacionamento}
+                    />
+                )}
+                {etapa === 5 && (
+                    <MonitoramentoStep
+                        intervaloVerificacao={formulario.intervaloVerificacao}
+                        timeout={formulario.timeout}
+                        notificacoes={formulario.notificacoes}
+                        coletarDeployments={formulario.coletarDeployments}
+                        alterarIntervalo={(valor) => alterarFormulario("intervaloVerificacao", valor)}
+                        alterarTimeout={(valor) => alterarFormulario("timeout", valor)}
+                        alterarNotificacoes={(valor) => alterarFormulario("notificacoes", valor)}
+                        alterarColetaDeployments={(valor) =>
+                            alterarFormulario("coletarDeployments", valor)
+                        }
+                    />
+                )}
             </Modal.Body>
             <Modal.Actions className="m-0 flex-row items-center justify-between rounded-none border-t border-border bg-surface-1 p-4">
                 <Button
                     variant="ghost"
-                    disabled={etapa === 1}
+                    disabled={etapa === 1 || criarProjetoIsPending}
                     onClick={voltar}
                 >
                     <ChevronLeft />
@@ -117,17 +150,21 @@ export const NovoProjetoConteudo = ({ open, onClose }: NovoProjetoConteudoProps)
                     Passo {etapa} de {etapasNovoProjeto.length}
                 </span>
                 {etapa < 5 ? (
-                    <Button onClick={continuar}>
+                    <Button
+                        onClick={continuar}
+                        disabled={criarProjetoIsPending}
+                    >
                         Continuar
                         <ChevronRight />
                     </Button>
                 ) : (
                     <Button
                         onClick={concluir}
+                        disabled={criarProjetoIsPending}
                         className="bg-success text-success-foreground hover:bg-success/90"
                     >
                         <Check />
-                        Criar projeto
+                        {criarProjetoIsPending ? "Criando..." : "Criar projeto"}
                     </Button>
                 )}
             </Modal.Actions>

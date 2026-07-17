@@ -7,10 +7,7 @@ import {
     type RevelarBancoDados,
     type SalvarPreferencias,
 } from "@/backend/api/models/preferencias.types"
-import {
-    exportarBackupBancoDados,
-    revelarBancoDados,
-} from "@/backend/sql/database"
+import { exportarBackupBancoDados, revelarBancoDados } from "@/backend/sql/database"
 import { obterPreferencias, salvarPreferencias } from "@/backend/sql/repositories/preferencias"
 import {
     notificacoesDoSistemaPermitidas,

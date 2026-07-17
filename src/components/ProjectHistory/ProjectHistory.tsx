@@ -1,13 +1,16 @@
+import { History } from "lucide-react"
 import { useState } from "react"
 
 import type { ObterProjetos } from "@/backend/api/models/projeto.types"
 import { BarChart } from "@/components/BarChart/BarChart"
+import { obterEventosHistorico } from "@/components/ProjectHistory/ProjectHistory.utils"
+import { TemplateEstado } from "@/components/TemplateEstado"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { PERIODOS_MONITORAMENTO } from "@/lib/config/monitoring"
 import type { PeriodoMonitoramento } from "@/lib/types/monitoring"
 import { cn } from "@/lib/utils"
-import { obterEventosHistorico } from "@/components/ProjectHistory/ProjectHistory.utils"
+import { formatarDataHora } from "@/lib/utils/date"
 
 export const ProjectHistory = ({ projeto }: { projeto: ObterProjetos.Projeto }) => {
     const [periodo, setPeriodo] = useState<PeriodoMonitoramento>(15)
@@ -39,11 +42,17 @@ export const ProjectHistory = ({ projeto }: { projeto: ObterProjetos.Projeto }) 
                     <span className="text-xs text-muted-foreground">ms por dia</span>
                 </CardHeader>
                 <CardContent className="px-5">
-                    <BarChart
-                        dados={projeto.tempoResposta.slice(-periodo)}
-                        cor="var(--color-info)"
-                        altura={120}
-                    />
+                    {projeto.tempoResposta.length > 0 ? (
+                        <BarChart
+                            dados={projeto.tempoResposta.slice(-periodo)}
+                            cor="var(--color-info)"
+                            altura={120}
+                        />
+                    ) : (
+                        <div className="flex h-30 items-center justify-center rounded-md border border-dashed text-sm text-muted-foreground">
+                            Ainda não há tempos de resposta coletados.
+                        </div>
+                    )}
                 </CardContent>
             </Card>
             <Card className="gap-4 border-border py-5 shadow-none">
@@ -51,50 +60,59 @@ export const ProjectHistory = ({ projeto }: { projeto: ObterProjetos.Projeto }) 
                     <CardTitle className="text-sm">Eventos</CardTitle>
                 </CardHeader>
                 <CardContent className="px-5">
-                    <ol className="relative space-y-4 pl-4">
-                        <span className="absolute bottom-1 left-1 top-1 w-px bg-border" />
-                        {eventos.map((evento) => (
-                            <li
-                                key={evento.id}
-                                className="relative pl-4"
-                            >
-                                <span
-                                    className={cn(
-                                        "absolute -left-0.75 top-1.5 size-2.5 rounded-full ring-4 ring-card",
-                                        evento.tom === "success" && "bg-success",
-                                        evento.tom === "warning" && "bg-warning",
-                                        evento.tom === "destructive" && "bg-destructive",
-                                        evento.tom === "info" && "bg-info"
-                                    )}
-                                />
-                                <div className="flex flex-wrap items-baseline justify-between gap-2">
-                                    <h4 className="text-sm font-medium">{evento.titulo}</h4>
-                                    <time className="font-mono text-[11px] text-muted-foreground">
-                                        {evento.data}
-                                    </time>
-                                </div>
-                                {evento.detalhe && (
-                                    <p className="mt-0.5 text-xs text-muted-foreground">
-                                        {evento.detalhe}
-                                    </p>
-                                )}
-                                <span
-                                    className={cn(
-                                        "mt-1 inline-block rounded border px-1.5 py-0.5 text-[10px] uppercase tracking-wide",
-                                        evento.tom === "success" &&
-                                            "border-success/40 bg-success/10 text-success",
-                                        evento.tom === "warning" &&
-                                            "border-warning/40 bg-warning/10 text-warning",
-                                        evento.tom === "destructive" &&
-                                            "border-destructive/40 bg-destructive/10 text-destructive",
-                                        evento.tom === "info" && "border-info/40 bg-info/10 text-info"
-                                    )}
+                    {eventos.length === 0 ? (
+                        <TemplateEstado.Vazio
+                            titulo="Nenhuma alteração de status registrada"
+                            subtitulo="O histórico será preenchido a partir das observações reais do monitoramento."
+                            Icon={History}
+                        />
+                    ) : (
+                        <ol className="relative space-y-4 pl-4">
+                            <span className="absolute bottom-1 left-1 top-1 w-px bg-border" />
+                            {eventos.map((evento) => (
+                                <li
+                                    key={evento.id}
+                                    className="relative pl-4"
                                 >
-                                    {evento.tipo}
-                                </span>
-                            </li>
-                        ))}
-                    </ol>
+                                    <span
+                                        className={cn(
+                                            "absolute -left-0.75 top-1.5 size-2.5 rounded-full ring-4 ring-card",
+                                            evento.tom === "success" && "bg-success",
+                                            evento.tom === "warning" && "bg-warning",
+                                            evento.tom === "destructive" && "bg-destructive",
+                                            evento.tom === "info" && "bg-info"
+                                        )}
+                                    />
+                                    <div className="flex flex-wrap items-baseline justify-between gap-2">
+                                        <h4 className="text-sm font-medium">{evento.titulo}</h4>
+                                        <time className="font-mono text-[11px] text-muted-foreground">
+                                            {formatarDataHora(evento.data)}
+                                        </time>
+                                    </div>
+                                    {evento.detalhe && (
+                                        <p className="mt-0.5 text-xs text-muted-foreground">
+                                            {evento.detalhe}
+                                        </p>
+                                    )}
+                                    <span
+                                        className={cn(
+                                            "mt-1 inline-block rounded border px-1.5 py-0.5 text-[10px] uppercase tracking-wide",
+                                            evento.tom === "success" &&
+                                                "border-success/40 bg-success/10 text-success",
+                                            evento.tom === "warning" &&
+                                                "border-warning/40 bg-warning/10 text-warning",
+                                            evento.tom === "destructive" &&
+                                                "border-destructive/40 bg-destructive/10 text-destructive",
+                                            evento.tom === "info" &&
+                                                "border-info/40 bg-info/10 text-info"
+                                        )}
+                                    >
+                                        {evento.tipo}
+                                    </span>
+                                </li>
+                            ))}
+                        </ol>
+                    )}
                 </CardContent>
             </Card>
         </div>

@@ -7,7 +7,7 @@ import { useProjetos } from "@/pages/Projetos/Projetos.hook"
 import { NovoProjeto } from "@/pages/Projetos/modais/NovoProjeto/NovoProjeto"
 
 export const ProjetosPage = () => {
-    const { modal, setModal, projetos, isLoading } = useProjetos()
+    const { modal, setModal, projetos, runtimeDisponivel, isLoading, isError, atualizar } = useProjetos()
 
     return (
         <div>
@@ -18,15 +18,30 @@ export const ProjetosPage = () => {
                         Todos os agrupamentos locais de repositórios e serviços.
                     </p>
                 </div>
-                <Button onClick={() => setModal("novoProjeto", { open: true })}>
+                <Button
+                    onClick={() => setModal("novoProjeto", { open: true })}
+                    disabled={!runtimeDisponivel}
+                >
                     <Plus />
                     Novo projeto
                 </Button>
             </div>
-            {isLoading ? (
+            {!runtimeDisponivel ? (
+                <TemplateEstado.Vazio
+                    titulo="Projetos locais disponíveis no aplicativo desktop"
+                    subtitulo="O SQLite e as integrações nativas não são acessados durante o desenvolvimento no navegador."
+                    Icon={FolderGit2}
+                />
+            ) : isLoading ? (
                 <TemplateEstado.Carregando
                     skeleton={{ quantidade: 6, orientacao: "horizontal" }}
                     className="**:data-[slot=skeleton]:h-56"
+                />
+            ) : isError ? (
+                <TemplateEstado.Erro
+                    titulo="Falha ao carregar projetos"
+                    subtitulo="Não foi possível consultar os agrupamentos no banco local."
+                    acao={<Button onClick={() => void atualizar()}>Tentar novamente</Button>}
                 />
             ) : projetos.length === 0 ? (
                 <TemplateEstado.Vazio

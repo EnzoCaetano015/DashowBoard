@@ -1,4 +1,5 @@
 mod github;
+mod railway;
 mod supabase;
 mod vercel;
 
@@ -6,6 +7,11 @@ use github::client::GitHubClient;
 use github::commands::{
     obter_conexoes_github, obter_repositorios_github, remover_conexao_github,
     salvar_conexao_github, testar_conexao_github,
+};
+use railway::client::RailwayClient;
+use railway::commands::{
+    obter_conexao_railway, obter_projetos_railway, remover_conexao_railway, salvar_conexao_railway,
+    testar_conexao_railway,
 };
 use supabase::client::SupabaseClient;
 use supabase::commands::{
@@ -35,6 +41,7 @@ pub fn run() {
             Ok(())
         })
         .manage(GitHubClient::new())
+        .manage(RailwayClient::new())
         .manage(SupabaseClient::new())
         .manage(VercelClient::new())
         .invoke_handler(tauri::generate_handler![
@@ -43,6 +50,11 @@ pub fn run() {
             testar_conexao_github,
             remover_conexao_github,
             obter_repositorios_github,
+            salvar_conexao_railway,
+            obter_conexao_railway,
+            testar_conexao_railway,
+            remover_conexao_railway,
+            obter_projetos_railway,
             salvar_conexao_vercel,
             obter_conexao_vercel,
             testar_conexao_vercel,

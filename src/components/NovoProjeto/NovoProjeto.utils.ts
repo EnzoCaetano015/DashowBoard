@@ -1,5 +1,8 @@
 import { Enum } from "@/backend/api/enums/enum"
-import type { ServicoDisponivel } from "@/components/NovoProjeto/NovoProjeto.types"
+import type {
+    FormularioNovoProjeto,
+    ServicoSelecionado,
+} from "@/components/NovoProjeto/NovoProjeto.types"
 
 export const etapasNovoProjeto = [
     { id: 1, titulo: "Informações" },
@@ -9,23 +12,24 @@ export const etapasNovoProjeto = [
     { id: 5, titulo: "Monitoramento" },
 ] as const
 
-export const servicosDisponiveis: ServicoDisponivel[] = [
-    {
-        id: "servico-api",
-        nome: "easyrifas-api",
-        provider: Enum.Provider.Railway,
-        tipo: Enum.TipoServico.Api,
-    },
-    {
-        id: "servico-worker",
-        nome: "payment-worker",
-        provider: Enum.Provider.Railway,
-        tipo: Enum.TipoServico.Worker,
-    },
-    {
-        id: "servico-db",
-        nome: "postgres-primary",
-        provider: Enum.Provider.Railway,
-        tipo: Enum.TipoServico.BancoDados,
-    },
-]
+export const criarFormularioNovoProjeto = (): FormularioNovoProjeto => ({
+    nome: "",
+    descricao: "",
+    urlAplicacao: "",
+    repositorios: [],
+    servicos: [],
+    relacionamentos: {},
+    intervaloVerificacao: Enum.IntervaloAtualizacao.CincoMinutos,
+    timeout: 5,
+    notificacoes: false,
+    coletarDeployments: true,
+})
+
+export const identificarServico = (servico: ServicoSelecionado) =>
+    [
+        servico.provider,
+        servico.scopeId ?? "personal",
+        servico.externalProjectId,
+        servico.externalEnvironmentId ?? "project",
+        servico.externalServiceId ?? "project",
+    ].join(":")

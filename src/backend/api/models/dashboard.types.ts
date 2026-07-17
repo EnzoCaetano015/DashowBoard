@@ -15,14 +15,18 @@ export namespace ObterDashboard {
         saudaveis: number
         degradados: number
         offline: number
+        desconhecidos: number
         servicosMonitorados: number
+        incidentesAbertos: number
         incidentes: number
         tendencias: {
             projetos: number[]
             saudaveis: number[]
             degradados: number[]
             offline: number[]
+            desconhecidos: number[]
             servicos: number[]
+            incidentesAbertos: number[]
             incidentes: number[]
         }
     }

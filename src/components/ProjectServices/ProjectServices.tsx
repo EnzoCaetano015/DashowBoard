@@ -1,6 +1,4 @@
 import { ExternalLink, RefreshCw } from "lucide-react"
-import { toast } from "sonner"
-
 import { Enum } from "@/backend/api/enums/enum"
 import type { ObterProjetos } from "@/backend/api/models/projeto.types"
 import { ProviderIcon } from "@/components/ProviderIcon/ProviderIcon"
@@ -13,7 +11,12 @@ import { agregarStatusServicos, labelProvider } from "@/lib/utils/status"
 
 const ordem = [Enum.Provider.Vercel, Enum.Provider.Railway, Enum.Provider.Supabase, Enum.Provider.GitHub]
 
-export const ProjectServices = ({ servicos }: { servicos: ObterProjetos.Servico[] }) => {
+type ProjectServicesProps = {
+    servicos: ObterProjetos.Servico[]
+    onAtualizar: () => void
+}
+
+export const ProjectServices = ({ servicos, onAtualizar }: ProjectServicesProps) => {
     const agrupados = agrupar(servicos, (servico) => servico.provider)
 
     return (
@@ -40,10 +43,16 @@ export const ProjectServices = ({ servicos }: { servicos: ObterProjetos.Servico[
                                 )}
                             </div>
                             {provider === Enum.Provider.Railway ? (
-                                <RailwayGroups servicos={lista} />
+                                <RailwayGroups
+                                    servicos={lista}
+                                    onAtualizar={onAtualizar}
+                                />
                             ) : (
                                 <Card className="overflow-hidden border-border py-0 shadow-none">
-                                    <ServiceTable servicos={lista} />
+                                    <ServiceTable
+                                        servicos={lista}
+                                        onAtualizar={onAtualizar}
+                                    />
                                 </Card>
                             )}
                         </section>
@@ -53,7 +62,7 @@ export const ProjectServices = ({ servicos }: { servicos: ObterProjetos.Servico[
     )
 }
 
-const RailwayGroups = ({ servicos }: { servicos: ObterProjetos.Servico[] }) => {
+const RailwayGroups = ({ servicos, onAtualizar }: ProjectServicesProps) => {
     const projetos = agrupar(servicos, (servico) => servico.projetoRailway ?? "Projeto padrão")
     return (
         <div className="space-y-3">
@@ -68,14 +77,17 @@ const RailwayGroups = ({ servicos }: { servicos: ObterProjetos.Servico[] }) => {
                         </span>
                         <StatusDot status={agregarStatusServicos(lista)} />
                     </div>
-                    <ServiceTable servicos={lista} />
+                    <ServiceTable
+                        servicos={lista}
+                        onAtualizar={onAtualizar}
+                    />
                 </Card>
             ))}
         </div>
     )
 }
 
-const ServiceTable = ({ servicos }: { servicos: ObterProjetos.Servico[] }) => (
+const ServiceTable = ({ servicos, onAtualizar }: ProjectServicesProps) => (
     <div className="overflow-x-auto">
         <Table className="min-w-4xl">
             <TableHeader>
@@ -108,7 +120,7 @@ const ServiceTable = ({ servicos }: { servicos: ObterProjetos.Servico[] }) => (
                             </div>
                         </TableCell>
                         <TableCell className="text-xs text-muted-foreground">
-                            {servico.ultimoDeployment}
+                            {servico.ultimoDeployment ?? "Não coletado"}
                         </TableCell>
                         <TableCell
                             className={cn(
@@ -116,12 +128,12 @@ const ServiceTable = ({ servicos }: { servicos: ObterProjetos.Servico[] }) => (
                                 servico.status === Enum.StatusProjeto.Offline && "text-destructive"
                             )}
                         >
-                            {servico.status === Enum.StatusProjeto.Offline
-                                ? "—"
+                            {servico.tempoRespostaMs === null
+                                ? "Não coletado"
                                 : `${servico.tempoRespostaMs} ms`}
                         </TableCell>
                         <TableCell className="text-xs text-muted-foreground">
-                            {servico.ultimaVerificacao}
+                            {servico.ultimaVerificacao ?? "Aguardando primeira verificação"}
                         </TableCell>
                         <TableCell>
                             <div className="flex justify-end gap-1">
@@ -129,25 +141,27 @@ const ServiceTable = ({ servicos }: { servicos: ObterProjetos.Servico[] }) => (
                                     size="icon-sm"
                                     variant="ghost"
                                     title="Atualizar serviço"
-                                    onClick={() => toast.success(`${servico.nome} atualizado.`)}
+                                    onClick={onAtualizar}
                                 >
                                     <RefreshCw />
                                 </Button>
-                                <Button
-                                    render={
-                                        <a
-                                            href={servico.urlExterna}
-                                            target="_blank"
-                                            rel="noreferrer"
-                                        />
-                                    }
-                                    nativeButton={false}
-                                    size="icon-sm"
-                                    variant="ghost"
-                                    title="Abrir provider"
-                                >
-                                    <ExternalLink />
-                                </Button>
+                                {servico.urlExterna && (
+                                    <Button
+                                        render={
+                                            <a
+                                                href={servico.urlExterna}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                            />
+                                        }
+                                        nativeButton={false}
+                                        size="icon-sm"
+                                        variant="ghost"
+                                        title="Abrir provider"
+                                    >
+                                        <ExternalLink />
+                                    </Button>
+                                )}
                             </div>
                         </TableCell>
                     </TableRow>

@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { PERIODOS_MONITORAMENTO } from "@/lib/config/monitoring"
 import { cn } from "@/lib/utils"
-import { formatarDuracao } from "@/lib/utils/date"
+import { formatarDataHora, formatarDuracao } from "@/lib/utils/date"
 import { Resumo } from "@/pages/Incidentes/components/Resumo/Resumo"
 import { useIncidentes } from "@/pages/Incidentes/Incidentes.hook"
 
@@ -22,7 +22,10 @@ export const IncidentesPage = () => {
         emAndamento,
         resolvidos,
         projetosMonitorados,
+        runtimeDisponivel,
         isLoading,
+        isError,
+        atualizar,
         setPeriodo,
         setBusca,
     } = useIncidentes()
@@ -63,10 +66,22 @@ export const IncidentesPage = () => {
                     </div>
                 </div>
             </div>
-            {isLoading ? (
+            {!runtimeDisponivel ? (
+                <TemplateEstado.Vazio
+                    titulo="Incidentes disponíveis no aplicativo desktop"
+                    subtitulo="O histórico real é persistido no SQLite pelo runtime nativo."
+                    Icon={AlertCircle}
+                />
+            ) : isLoading ? (
                 <TemplateEstado.Carregando
                     skeleton={{ quantidade: 1, orientacao: "vertical" }}
                     className="**:data-[slot=skeleton]:h-96"
+                />
+            ) : isError ? (
+                <TemplateEstado.Erro
+                    titulo="Falha ao carregar incidentes"
+                    subtitulo="Não foi possível consultar o histórico local."
+                    acao={<Button onClick={() => void atualizar()}>Tentar novamente</Button>}
                 />
             ) : (
                 <>
@@ -89,8 +104,8 @@ export const IncidentesPage = () => {
                     </div>
                     {incidentes.length === 0 ? (
                         <TemplateEstado.Vazio
-                            titulo="Nenhum incidente encontrado"
-                            subtitulo="Ajuste a busca ou aguarde novos eventos dos projetos monitorados."
+                            titulo="Nenhum incidente detectado"
+                            subtitulo="Não há incidentes reais nesta janela ou para a busca informada."
                             Icon={AlertCircle}
                             className="mt-6"
                         />
@@ -145,7 +160,7 @@ export const IncidentesPage = () => {
                                                 <TableCell>
                                                     <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
                                                         <Clock className="size-3" />
-                                                        {incidente.iniciadoEm}
+                                                        {formatarDataHora(incidente.iniciadoEm)}
                                                     </span>
                                                 </TableCell>
                                                 <TableCell className="text-right font-mono text-xs tabular-nums">

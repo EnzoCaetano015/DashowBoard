@@ -7,6 +7,7 @@ import { StatusBadge } from "@/components/StatusBadge/StatusBadge"
 import { estilosStatus } from "@/components/StatusBadge/StatusBadge.utils"
 import { Card, CardContent } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
+import { formatarDataHora } from "@/lib/utils/date"
 
 export const ProjectCard = ({ projeto }: ProjectCardProps) => {
     const estilo = estilosStatus[projeto.status]
@@ -51,7 +52,9 @@ export const ProjectCard = ({ projeto }: ProjectCardProps) => {
                         </span>
                         <span className="flex items-center gap-2">
                             <Clock className="size-3.5" />
-                            {projeto.ultimaVerificacao}
+                            {projeto.ultimaVerificacao
+                                ? formatarDataHora(projeto.ultimaVerificacao)
+                                : "Ainda não verificado"}
                         </span>
                         <span
                             className={cn("flex items-center gap-2", offline > 0 && "text-destructive")}
@@ -77,7 +80,7 @@ export const ProjectCard = ({ projeto }: ProjectCardProps) => {
                         <span className="flex min-w-0 items-center gap-1 text-xs text-muted-foreground">
                             {projeto.incidentes[0] && (
                                 <span className="truncate">
-                                    Últ. incidente: {projeto.incidentes[0].iniciadoEm}
+                                    Últ. incidente: {formatarDataHora(projeto.incidentes[0].iniciadoEm)}
                                 </span>
                             )}
                             <ChevronRight className="size-3.5 shrink-0 transition-transform group-hover:translate-x-0.5" />

@@ -21,3 +21,11 @@ export type VazioProps = {
     acao?: ReactNode
     className?: string
 }
+
+export type ErroProps = {
+    titulo: string
+    subtitulo: string
+    Icon?: LucideIcon
+    acao?: ReactNode
+    className?: string
+}

@@ -5,6 +5,7 @@ import type { PeriodoMonitoramento } from "@/lib/types/monitoring"
 import type { FiltrosHome } from "@/pages/Home/Home.types"
 import { FILTROS_HOME_INICIAIS, filtrarProjetos } from "@/pages/Home/Home.utils"
 import { useControlModal } from "@/lib/hooks/useControlModal"
+import { possuiRuntimeTauri } from "@/lib/utils/tauri"
 
 export const useHome = () => {
     const { modal, setModal } = useControlModal(["novoProjeto"] as const)
@@ -15,6 +16,8 @@ export const useHome = () => {
         data: dashboard,
         isLoading: dashboardIsLoading,
         isFetching: dashboardIsFetching,
+        isError: dashboardIsError,
+        refetch: atualizarDashboard,
     } = useObterDashboard({ periodo })
 
     const projetos = dashboard?.projetos ?? []
@@ -32,8 +35,11 @@ export const useHome = () => {
         projetosFiltrados,
         metricas: dashboard?.metricas,
         totalProjetos: projetos.length,
+        runtimeDisponivel: possuiRuntimeTauri(),
         isLoading: dashboardIsLoading,
         isFetching: dashboardIsFetching,
+        isError: dashboardIsError,
+        atualizar: atualizarDashboard,
         setPeriodo,
         alterarFiltro,
     }

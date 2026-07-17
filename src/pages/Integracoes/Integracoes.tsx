@@ -2,6 +2,7 @@ import { IntegrationCard } from "@/components/IntegrationCard/IntegrationCard"
 import { TemplateEstado } from "@/components/TemplateEstado"
 import { useIntegracoes } from "@/pages/Integracoes/Integracoes.hook"
 import { GitHubIntegrationDialog } from "@/pages/Integracoes/modais/GitHubIntegrationDialog/GitHubIntegrationDialog"
+import { RailwayIntegrationDialog } from "@/pages/Integracoes/modais/RailwayIntegrationDialog/RailwayIntegrationDialog"
 import { SupabaseIntegrationDialog } from "@/pages/Integracoes/modais/SupabaseIntegrationDialog/SupabaseIntegrationDialog"
 import { VercelIntegrationDialog } from "@/pages/Integracoes/modais/VercelIntegrationDialog/VercelIntegrationDialog"
 
@@ -44,6 +45,10 @@ export const IntegracoesPage = () => {
             <SupabaseIntegrationDialog
                 open={modal.integracaoSupabase}
                 onClose={() => setModal("integracaoSupabase", { open: false })}
+            />
+            <RailwayIntegrationDialog
+                open={modal.integracaoRailway}
+                onClose={() => setModal("integracaoRailway", { open: false })}
             />
         </div>
     )

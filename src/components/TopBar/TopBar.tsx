@@ -1,12 +1,9 @@
-import { useIsFetching } from "@tanstack/react-query"
 import { Bell, Menu, RefreshCw, Search } from "lucide-react"
-import { useState } from "react"
-import { toast } from "sonner"
 
-import { useObterIntegracoes } from "@/backend/api/controllers/integracao"
 import { Enum } from "@/backend/api/enums/enum"
 import { AppSidebar } from "@/components/AppSidebar/AppSidebar"
 import { ProviderIcon } from "@/components/ProviderIcon/ProviderIcon"
+import { useTopBar } from "@/components/TopBar/TopBar.hook"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
@@ -19,28 +16,11 @@ import {
 } from "@/components/ui/sheet"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { cn } from "@/lib/utils"
-import { queryClient } from "@/lib/config/query-client"
-import { formatarAgora } from "@/lib/utils/date"
 import { labelProvider } from "@/lib/utils/status"
 
 export const TopBar = () => {
-    const [busca, setBusca] = useState("")
-    const [ultimaAtualizacao, setUltimaAtualizacao] = useState(() => formatarAgora())
-    const consultasAtivas = useIsFetching()
-    const { data: integracoes = [] } = useObterIntegracoes()
-
-    const atualizarTudo = () => {
-        const atualizacao = queryClient
-            .invalidateQueries({}, { throwOnError: true })
-            .then(() => setUltimaAtualizacao(formatarAgora()))
-
-        toast.promise(atualizacao, {
-            id: "atualizar-todos-os-dados",
-            loading: "Atualizando dados...",
-            success: "Dados mockados atualizados.",
-            error: "Não foi possível atualizar todos os dados.",
-        })
-    }
+    const { busca, setBusca, ultimaAtualizacao, consultasAtivas, integracoes, atualizarTudo } =
+        useTopBar()
 
     return (
         <header className="flex min-h-14 shrink-0 items-center gap-2 border-b border-border bg-surface-1/80 px-3 backdrop-blur md:px-5">
@@ -99,9 +79,7 @@ export const TopBar = () => {
                             {labelProvider[integracao.provider]} ·{" "}
                             {integracao.status === Enum.StatusIntegracao.Conectado
                                 ? "conectado"
-                                : integracao.status === Enum.StatusIntegracao.EmBreve
-                                  ? "em breve"
-                                  : (integracao.erro ?? "desconectado")}
+                                : (integracao.erro ?? "desconectado")}
                         </TooltipContent>
                     </Tooltip>
                 ))}

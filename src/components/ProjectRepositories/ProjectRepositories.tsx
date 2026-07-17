@@ -21,9 +21,11 @@ export const ProjectRepositories = ({ repositorios }: { repositorios: ObterProje
                             <h3 className="truncate font-semibold">{repositorio.nome}</h3>
                             <span className="inline-flex items-center gap-1 rounded bg-surface-2 px-1.5 py-0.5 font-mono text-[11px] text-muted-foreground">
                                 <GitBranch className="size-3" />
-                                {repositorio.branch}
+                                {repositorio.branch ?? "Não coletado"}
                             </span>
-                            <WorkflowStatus status={repositorio.statusWorkflow} />
+                            {repositorio.statusWorkflow && (
+                                <WorkflowStatus status={repositorio.statusWorkflow} />
+                            )}
                         </div>
                         <p className="mt-1 text-sm text-muted-foreground">{repositorio.descricao}</p>
                         <div className="mt-2 flex flex-wrap gap-1.5">
@@ -42,15 +44,24 @@ export const ProjectRepositories = ({ repositorios }: { repositorios: ObterProje
                                     <GitCommit className="size-3" />
                                     último commit
                                 </div>
-                                <div className="mt-1 truncate font-mono text-xs">
-                                    {repositorio.ultimoCommit.sha}
-                                </div>
-                                <div className="truncate text-xs text-muted-foreground">
-                                    {repositorio.ultimoCommit.mensagem}
-                                </div>
-                                <div className="mt-0.5 text-[11px] text-muted-foreground">
-                                    {repositorio.ultimoCommit.autor} · {repositorio.ultimoCommit.data}
-                                </div>
+                                {repositorio.ultimoCommit ? (
+                                    <>
+                                        <div className="mt-1 truncate font-mono text-xs">
+                                            {repositorio.ultimoCommit.sha}
+                                        </div>
+                                        <div className="truncate text-xs text-muted-foreground">
+                                            {repositorio.ultimoCommit.mensagem}
+                                        </div>
+                                        <div className="mt-0.5 text-[11px] text-muted-foreground">
+                                            {repositorio.ultimoCommit.autor} ·{" "}
+                                            {repositorio.ultimoCommit.data}
+                                        </div>
+                                    </>
+                                ) : (
+                                    <div className="mt-1 text-xs text-muted-foreground">
+                                        Não coletado
+                                    </div>
+                                )}
                             </div>
                             <Contador
                                 Icone={CircleAlert}
@@ -64,22 +75,24 @@ export const ProjectRepositories = ({ repositorios }: { repositorios: ObterProje
                             />
                         </div>
                     </div>
-                    <Button
-                        render={
-                            <a
-                                href={repositorio.url}
-                                target="_blank"
-                                rel="noreferrer"
-                            />
-                        }
-                        nativeButton={false}
-                        size="sm"
-                        variant="outline"
-                        className="shrink-0"
-                    >
-                        <ArrowUpRight />
-                        Abrir no GitHub
-                    </Button>
+                    {repositorio.url && (
+                        <Button
+                            render={
+                                <a
+                                    href={repositorio.url}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                />
+                            }
+                            nativeButton={false}
+                            size="sm"
+                            variant="outline"
+                            className="shrink-0"
+                        >
+                            <ArrowUpRight />
+                            Abrir no GitHub
+                        </Button>
+                    )}
                 </CardContent>
             </Card>
         ))}
@@ -93,13 +106,13 @@ const Contador = ({
 }: {
     Icone: typeof CircleAlert
     titulo: string
-    valor: number
+    valor: number | null
 }) => (
     <div className="rounded-md bg-surface-2 p-2.5">
         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
             <Icone className="size-3" />
             {titulo}
         </div>
-        <div className="mt-1 text-lg font-semibold tabular-nums">{valor}</div>
+        <div className="mt-1 text-lg font-semibold tabular-nums">{valor ?? "Não coletado"}</div>
     </div>
 )

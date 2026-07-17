@@ -364,7 +364,6 @@ export namespace Enum {
         Atualizando = "atualizando",
         Desconhecido = "desconhecido",
     }
-
 }
 ```
 
@@ -936,10 +935,7 @@ const {
 Certo para mutations:
 
 ```tsx
-const {
-    mutateAsync: salvarConexao,
-    isPending: salvarConexaoIsPending,
-} = useSalvarConexaoGitHub()
+const { mutateAsync: salvarConexao, isPending: salvarConexaoIsPending } = useSalvarConexaoGitHub()
 ```
 
 Regras de nomenclatura:
@@ -1161,11 +1157,7 @@ Erro:
     titulo="Falha ao carregar projetos"
     subtitulo="Não foi possível consultar os projetos locais."
     Icon={AlertTriangle}
-    acao={
-        <Button onClick={() => void tentarNovamente()}>
-            Tentar novamente
-        </Button>
-    }
+    acao={<Button onClick={() => void tentarNovamente()}>Tentar novamente</Button>}
 />
 ```
 

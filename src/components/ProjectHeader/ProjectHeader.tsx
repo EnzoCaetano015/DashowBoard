@@ -6,6 +6,7 @@ import { ProviderIcon } from "@/components/ProviderIcon/ProviderIcon"
 import { StatusBadge } from "@/components/StatusBadge/StatusBadge"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import { formatarDataHora } from "@/lib/utils/date"
 import { labelProvider } from "@/lib/utils/status"
 
 export const ProjectHeader = ({ projeto, atualizando, onAtualizar, onExcluir }: ProjectHeaderProps) => (
@@ -30,7 +31,10 @@ export const ProjectHeader = ({ projeto, atualizando, onAtualizar, onExcluir }: 
                 <div className="mt-3 flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
                     <span className="inline-flex items-center gap-1.5">
                         <Clock className="size-3.5" />
-                        Última verificação {projeto.ultimaVerificacao}
+                        Última verificação{" "}
+                        {projeto.ultimaVerificacao
+                            ? formatarDataHora(projeto.ultimaVerificacao)
+                            : "ainda não realizada"}
                     </span>
                     <span className="inline-flex items-center gap-1.5">
                         <Server className="size-3.5" />

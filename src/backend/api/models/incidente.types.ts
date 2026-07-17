@@ -12,11 +12,14 @@ export namespace ObterIncidentes {
         projetoId: string
         projetoNome: string
         titulo: string
+        descricao: string | null
+        servicoId: string | null
         servico: string
         status: Enum.StatusIncidente
         severidade: Enum.SeveridadeIncidente
         iniciadoEm: string
         duracaoMinutos: number
+        resolvidoEm: string | null
     }
 
     export type Response = Incidente[]

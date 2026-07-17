@@ -5,19 +5,36 @@ import { ProjectRepositories } from "@/components/ProjectRepositories/ProjectRep
 import { ProjectServices } from "@/components/ProjectServices/ProjectServices"
 import { ProjectSettings } from "@/components/ProjectSettings/ProjectSettings"
 import { TemplateEstado } from "@/components/TemplateEstado"
+import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ProjetoNaoEncontrado } from "@/pages/DetalhesProjeto/components/ProjetoNaoEncontrado/ProjetoNaoEncontrado"
 import { useDetalhesProjeto } from "@/pages/DetalhesProjeto/DetalhesProjeto.hook"
 import { DeleteProjectDialog } from "@/pages/DetalhesProjeto/modais/DeleteProjectDialog/DeleteProjectDialog"
 
 export const DetalhesProjetoPage = () => {
-    const { modal, setModal, projeto, isLoading, isFetching, atualizar } = useDetalhesProjeto()
+    const { modal, setModal, projeto, runtimeDisponivel, isLoading, isFetching, isError, atualizar } =
+        useDetalhesProjeto()
 
+    if (!runtimeDisponivel)
+        return (
+            <TemplateEstado.Vazio
+                titulo="Detalhes disponíveis no aplicativo desktop"
+                subtitulo="Projetos locais e snapshots reais dependem do SQLite e do runtime nativo."
+            />
+        )
     if (isLoading)
         return (
             <TemplateEstado.Carregando
                 skeleton={{ quantidade: 4, orientacao: "vertical" }}
                 className="**:data-[slot=skeleton]:h-32"
+            />
+        )
+    if (isError)
+        return (
+            <TemplateEstado.Erro
+                titulo="Falha ao carregar o projeto"
+                subtitulo="Não foi possível consultar o agrupamento no banco local."
+                acao={<Button onClick={() => void atualizar()}>Tentar novamente</Button>}
             />
         )
     if (!projeto) return <ProjetoNaoEncontrado />
@@ -47,7 +64,10 @@ export const DetalhesProjetoPage = () => {
                     <ProjectOverview projeto={projeto} />
                 </TabsContent>
                 <TabsContent value="servicos">
-                    <ProjectServices servicos={projeto.servicos} />
+                    <ProjectServices
+                        servicos={projeto.servicos}
+                        onAtualizar={() => void atualizar()}
+                    />
                 </TabsContent>
                 <TabsContent value="repositorios">
                     <ProjectRepositories repositorios={projeto.repositorios} />
@@ -62,6 +82,7 @@ export const DetalhesProjetoPage = () => {
             <DeleteProjectDialog
                 open={modal.excluirProjeto}
                 onClose={() => setModal("excluirProjeto", { open: false })}
+                projetoId={projeto.id}
                 nomeProjeto={projeto.nome}
             />
         </div>

@@ -1,4 +1,11 @@
+import { Enum } from "@/backend/api/enums/enum"
 import type { ErroVercel } from "@/backend/api/models/vercel.types"
+
+export const normalizarStatusProjetoVercel = (status: Enum.StatusDeployment | null | undefined) => {
+    if (status === Enum.StatusDeployment.Falha) return Enum.StatusProjeto.Offline
+    if (status === Enum.StatusDeployment.EmAndamento) return Enum.StatusProjeto.Atualizando
+    return Enum.StatusProjeto.Desconhecido
+}
 
 export const normalizarErroVercel = (error: unknown): ErroVercel => {
     if (typeof error === "object" && error !== null) {

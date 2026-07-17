@@ -22,10 +22,7 @@ export const useGitHubIntegrationDialog = () => {
     const [tipo, setTipo] = useState(Enum.TipoConexaoGitHub.Pessoal)
     const [resourceOwner, setResourceOwner] = useState("")
     const [token, setToken] = useState("")
-    const {
-        data: connections = [],
-        isLoading: connectionsIsLoading,
-    } = useObterConexoesGitHub()
+    const { data: connections = [], isLoading: connectionsIsLoading } = useObterConexoesGitHub()
     const { mutateAsync: saveConnection, isPending: saveConnectionIsPending } = useSalvarConexaoGitHub()
     const { mutateAsync: testConnection, isPending: testConnectionIsPending } = useTestarConexaoGitHub()
     const { mutateAsync: removeConnection, isPending: removeConnectionIsPending } =
@@ -76,9 +73,7 @@ export const useGitHubIntegrationDialog = () => {
                     : "Adicionando conexão GitHub...",
                 success: () => {
                     resetForm()
-                    return updatingConnection
-                        ? "Conexão atualizada."
-                        : "Conexão GitHub adicionada."
+                    return updatingConnection ? "Conexão atualizada." : "Conexão GitHub adicionada."
                 },
                 error: (error) => normalizarErroGitHub(error).message,
             }

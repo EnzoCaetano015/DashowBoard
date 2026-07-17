@@ -1,14 +1,27 @@
+import type { MonitoramentoStepProps } from "@/components/NovoProjeto/NovoProjeto.types"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
-export const MonitoramentoStep = () => (
+export const MonitoramentoStep = ({
+    intervaloVerificacao,
+    timeout,
+    notificacoes,
+    coletarDeployments,
+    alterarIntervalo,
+    alterarTimeout,
+    alterarNotificacoes,
+    alterarColetaDeployments,
+}: MonitoramentoStepProps) => (
     <div className="space-y-4">
         <p className="text-sm text-muted-foreground">Como o DashwoBoard deve verificar este projeto?</p>
         <div className="grid gap-3 sm:grid-cols-2">
             <div className="space-y-2">
                 <Label>Intervalo de verificação</Label>
-                <Select defaultValue="30">
+                <Select
+                    value={String(intervaloVerificacao)}
+                    onValueChange={(valor) => valor && alterarIntervalo(Number(valor))}
+                >
                     <SelectTrigger className="w-full bg-surface-2">
                         <SelectValue />
                     </SelectTrigger>
@@ -21,7 +34,10 @@ export const MonitoramentoStep = () => (
             </div>
             <div className="space-y-2">
                 <Label>Timeout de resposta</Label>
-                <Select defaultValue="5">
+                <Select
+                    value={String(timeout)}
+                    onValueChange={(valor) => valor && alterarTimeout(Number(valor))}
+                >
                     <SelectTrigger className="w-full bg-surface-2">
                         <SelectValue />
                     </SelectTrigger>
@@ -35,17 +51,22 @@ export const MonitoramentoStep = () => (
         </div>
         <div className="space-y-3 rounded-md border border-border bg-surface-2 p-3">
             <label className="flex items-center gap-2 text-sm">
-                <Checkbox defaultChecked />
-                Detectar incidentes automaticamente
+                <Checkbox
+                    checked={coletarDeployments}
+                    onCheckedChange={(valor) => alterarColetaDeployments(valor === true)}
+                />
+                Registrar deployments disponíveis
             </label>
             <label className="flex items-center gap-2 text-sm">
-                <Checkbox defaultChecked />
-                Registrar deployments
-            </label>
-            <label className="flex items-center gap-2 text-sm">
-                <Checkbox />
+                <Checkbox
+                    checked={notificacoes}
+                    onCheckedChange={(valor) => alterarNotificacoes(valor === true)}
+                />
                 Notificar no sistema quando um serviço cair
             </label>
+            <p className="text-xs text-muted-foreground">
+                Mudanças reais de status serão registradas automaticamente no histórico local.
+            </p>
         </div>
     </div>
 )

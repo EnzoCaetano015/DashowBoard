@@ -12,7 +12,6 @@ const labelStatus: Record<Enum.StatusIntegracao, string> = {
     [Enum.StatusIntegracao.Conectado]: "Conectado",
     [Enum.StatusIntegracao.Desconectado]: "Desconectado",
     [Enum.StatusIntegracao.Erro]: "Erro",
-    [Enum.StatusIntegracao.EmBreve]: "Em breve",
 }
 
 export const IntegrationCard = ({
@@ -25,7 +24,6 @@ export const IntegrationCard = ({
     onConfigurar: () => void
 }) => {
     const conectada = integracao.status === Enum.StatusIntegracao.Conectado
-    const emBreve = integracao.status === Enum.StatusIntegracao.EmBreve
 
     return (
         <Card
@@ -51,16 +49,12 @@ export const IntegrationCard = ({
                     <span
                         className={cn(
                             "inline-flex shrink-0 items-center gap-1.5 rounded-full border px-2 py-0.5 text-xs",
-                            emBreve
-                                ? "border-border bg-surface-2 text-muted-foreground"
-                                : conectada
-                                  ? "border-success/40 bg-success/10 text-success"
-                                  : "border-destructive/40 bg-destructive/10 text-destructive"
+                            conectada
+                                ? "border-success/40 bg-success/10 text-success"
+                                : "border-destructive/40 bg-destructive/10 text-destructive"
                         )}
                     >
-                        {emBreve ? (
-                            <Clock className="size-3" />
-                        ) : conectada ? (
+                        {conectada ? (
                             <CheckCircle2 className="size-3" />
                         ) : (
                             <AlertCircle className="size-3" />
@@ -79,25 +73,23 @@ export const IntegrationCard = ({
                     Última sincronização:{" "}
                     <span className="text-foreground">{integracao.ultimaSincronizacao}</span>
                 </div>
-                {!emBreve && (
-                    <div className="mt-4 flex flex-wrap gap-2">
-                        <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={onTestar}
-                        >
-                            <RefreshCw />
-                            Testar conexão
-                        </Button>
-                        <Button
-                            size="sm"
-                            onClick={onConfigurar}
-                        >
-                            <KeyRound />
-                            {conectada ? "Atualizar token" : "Configurar token"}
-                        </Button>
-                    </div>
-                )}
+                <div className="mt-4 flex flex-wrap gap-2">
+                    <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={onTestar}
+                    >
+                        <RefreshCw />
+                        Testar conexão
+                    </Button>
+                    <Button
+                        size="sm"
+                        onClick={onConfigurar}
+                    >
+                        <KeyRound />
+                        {conectada ? "Atualizar token" : "Configurar token"}
+                    </Button>
+                </div>
             </CardContent>
         </Card>
     )

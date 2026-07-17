@@ -79,11 +79,7 @@ export const usePreferenciasGlobais = () => {
 
         sincronizarIncidentes()
         return queryClient.getQueryCache().subscribe(sincronizarIncidentes)
-    }, [
-        preferencias.badgeIcone,
-        preferencias.notificacoesSistema,
-        preferencias.somIncidente,
-    ])
+    }, [preferencias.badgeIcone, preferencias.notificacoesSistema, preferencias.somIncidente])
 
     return {
         temaEfetivo,

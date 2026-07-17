@@ -5,9 +5,13 @@ export const ProjectStatusDetails = (projeto: ObterProjetos.Projeto) => ({
     online: projeto.servicos.filter((servico) => servico.status === Enum.StatusProjeto.Saudavel).length,
     offline: projeto.servicos.filter((servico) => servico.status === Enum.StatusProjeto.Offline).length,
     disponibilidadeMedia:
-        projeto.disponibilidade.reduce((total, valor) => total + valor, 0) /
-        Math.max(projeto.disponibilidade.length, 1),
+        projeto.disponibilidade.length > 0
+            ? projeto.disponibilidade.reduce((total, valor) => total + valor, 0) /
+              projeto.disponibilidade.length
+            : null,
     respostaMedia:
-        projeto.tempoResposta.reduce((total, valor) => total + valor, 0) /
-        Math.max(projeto.tempoResposta.length, 1),
+        projeto.tempoResposta.length > 0
+            ? projeto.tempoResposta.reduce((total, valor) => total + valor, 0) /
+              projeto.tempoResposta.length
+            : null,
 })

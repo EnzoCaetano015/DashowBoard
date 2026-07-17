@@ -8,6 +8,7 @@ import { Sparkline } from "@/components/Sparkline/Sparkline"
 import { StatusBadge } from "@/components/StatusBadge/StatusBadge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
+import { formatarDataHora } from "@/lib/utils/date"
 
 export const ProjectOverview = ({ projeto }: { projeto: ObterProjetos.Projeto }) => {
     const resumo = ProjectStatusDetails(projeto)
@@ -20,26 +21,42 @@ export const ProjectOverview = ({ projeto }: { projeto: ObterProjetos.Projeto })
                 <Grafico
                     titulo="Disponibilidade observada"
                     subtitulo="Últimos 30 dias"
-                    valor={`${resumo.disponibilidadeMedia.toFixed(2)}%`}
+                    valor={
+                        resumo.disponibilidadeMedia === null
+                            ? "Sem dados"
+                            : `${resumo.disponibilidadeMedia.toFixed(2)}%`
+                    }
                     destaque="text-success"
                 >
-                    <Sparkline
-                        dados={projeto.disponibilidade}
-                        cor="var(--color-success)"
-                        altura={110}
-                    />
+                    {projeto.disponibilidade.length > 0 ? (
+                        <Sparkline
+                            dados={projeto.disponibilidade}
+                            cor="var(--color-success)"
+                            altura={110}
+                        />
+                    ) : (
+                        <EstadoSemDados />
+                    )}
                 </Grafico>
                 <Grafico
                     titulo="Tempo de resposta"
                     subtitulo="ms — janela de 30 dias"
-                    valor={`${Math.round(resumo.respostaMedia)} ms`}
+                    valor={
+                        resumo.respostaMedia === null
+                            ? "Sem dados"
+                            : `${Math.round(resumo.respostaMedia)} ms`
+                    }
                     destaque="text-info"
                 >
-                    <Sparkline
-                        dados={projeto.tempoResposta}
-                        cor="var(--color-info)"
-                        altura={110}
-                    />
+                    {projeto.tempoResposta.length > 0 ? (
+                        <Sparkline
+                            dados={projeto.tempoResposta}
+                            cor="var(--color-info)"
+                            altura={110}
+                        />
+                    ) : (
+                        <EstadoSemDados />
+                    )}
                 </Grafico>
             </div>
             <div className="space-y-4">
@@ -52,7 +69,9 @@ export const ProjectOverview = ({ projeto }: { projeto: ObterProjetos.Projeto })
                                 tamanho="md"
                             />
                             <span className="text-xs text-muted-foreground">
-                                {projeto.ultimaVerificacao}
+                                {projeto.ultimaVerificacao
+                                    ? formatarDataHora(projeto.ultimaVerificacao)
+                                    : "Ainda não monitorado"}
                             </span>
                         </div>
                         <dl className="mt-4 grid grid-cols-2 gap-3 text-sm">
@@ -91,10 +110,11 @@ export const ProjectOverview = ({ projeto }: { projeto: ObterProjetos.Projeto })
                                     </div>
                                     <div className="mt-0.5 flex items-center gap-2 font-mono text-xs text-muted-foreground">
                                         <GitCommit className="size-3" />
-                                        {deployment.commit} · {deployment.autor}
+                                        {deployment.commit ?? "Commit não coletado"} ·{" "}
+                                        {deployment.autor ?? "Autor não coletado"}
                                     </div>
                                     <div className="mt-0.5 text-xs text-muted-foreground">
-                                        {deployment.data}
+                                        {formatarDataHora(deployment.data)}
                                     </div>
                                 </div>
                             </div>
@@ -115,7 +135,7 @@ export const ProjectOverview = ({ projeto }: { projeto: ObterProjetos.Projeto })
                                     {incidente.titulo}
                                 </div>
                                 <div className="text-xs text-muted-foreground">
-                                    {incidente.servico} · {incidente.iniciadoEm}
+                                    {incidente.servico} · {formatarDataHora(incidente.iniciadoEm)}
                                 </div>
                                 <div className="pt-1">
                                     <IncidentStatus
@@ -162,4 +182,10 @@ const Grafico = ({
         </CardHeader>
         <CardContent className="px-5">{children}</CardContent>
     </Card>
+)
+
+const EstadoSemDados = () => (
+    <div className="flex h-28 items-center justify-center rounded-md border border-dashed text-sm text-muted-foreground">
+        Ainda não há snapshots suficientes.
+    </div>
 )

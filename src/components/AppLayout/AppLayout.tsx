@@ -3,10 +3,12 @@ import { Toaster } from "sonner"
 
 import { AppSidebar } from "@/components/AppSidebar/AppSidebar"
 import { TopBar } from "@/components/TopBar/TopBar"
+import { useMonitoramentoProjetos } from "@/lib/hooks/useMonitoramentoProjetos"
 import { usePreferenciasGlobais } from "@/lib/hooks/usePreferenciasGlobais"
 
 export const AppLayout = () => {
     const { temaEfetivo } = usePreferenciasGlobais()
+    useMonitoramentoProjetos()
 
     return (
         <div className="flex h-dvh w-full overflow-hidden bg-background text-foreground">

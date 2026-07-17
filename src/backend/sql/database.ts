@@ -13,6 +13,7 @@ const carregarBancoDados = async () => {
 
     const { default: Database } = await import("@tauri-apps/plugin-sql")
     const database = await Database.load(URL_BANCO_DADOS)
+    await database.execute("PRAGMA foreign_keys = ON")
     await executarMigracoes(database)
     return database
 }

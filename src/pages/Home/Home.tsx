@@ -3,6 +3,7 @@ import {
     Boxes,
     Bug,
     CheckCircle2,
+    CircleHelp,
     Filter,
     Plus,
     Search,
@@ -33,8 +34,11 @@ export const HomePage = () => {
         projetosFiltrados,
         metricas,
         totalProjetos,
+        runtimeDisponivel,
         isLoading,
         isFetching,
+        isError,
+        atualizar,
         setPeriodo,
         alterarFiltro,
     } = useHome()
@@ -66,17 +70,32 @@ export const HomePage = () => {
                             </Button>
                         ))}
                     </div>
-                    <Button onClick={() => setModal("novoProjeto", { open: true })}>
+                    <Button
+                        onClick={() => setModal("novoProjeto", { open: true })}
+                        disabled={!runtimeDisponivel}
+                    >
                         <Plus />
                         Novo projeto
                     </Button>
                 </div>
             </div>
 
-            {isLoading ? (
+            {!runtimeDisponivel ? (
+                <TemplateEstado.Vazio
+                    titulo="Dados locais disponíveis no aplicativo desktop"
+                    subtitulo="Integrações e SQLite exigem o runtime nativo. O layout permanece disponível no navegador."
+                    Icon={Boxes}
+                />
+            ) : isLoading ? (
                 <TemplateEstado.Carregando
                     skeleton={{ quantidade: 6, orientacao: "horizontal" }}
                     className="**:data-[slot=skeleton]:h-36 **:data-[slot=template-estado-skeletons]:grid-cols-2 **:data-[slot=template-estado-skeletons]:md:grid-cols-3 **:data-[slot=template-estado-skeletons]:xl:grid-cols-6"
+                />
+            ) : isError ? (
+                <TemplateEstado.Erro
+                    titulo="Falha ao carregar o dashboard"
+                    subtitulo="Não foi possível consultar os projetos e incidentes locais."
+                    acao={<Button onClick={() => void atualizar()}>Tentar novamente</Button>}
                 />
             ) : !metricas ? (
                 <TemplateEstado.Vazio
@@ -89,7 +108,7 @@ export const HomePage = () => {
                     <>
                         <div
                             className={cn(
-                                "grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6",
+                                "grid grid-cols-2 gap-3 md:grid-cols-4 2xl:grid-cols-8",
                                 isFetching && "opacity-80"
                             )}
                         >
@@ -121,11 +140,25 @@ export const HomePage = () => {
                                 tendencia={metricas.tendencias.offline}
                             />
                             <MetricCard
+                                titulo="Desconhecidos"
+                                valor={metricas.desconhecidos}
+                                icone={<CircleHelp />}
+                                tendencia={metricas.tendencias.desconhecidos}
+                            />
+                            <MetricCard
                                 titulo="Serviços monitorados"
                                 valor={metricas.servicosMonitorados}
                                 icone={<Server />}
                                 destaque="info"
                                 tendencia={metricas.tendencias.servicos}
+                            />
+                            <MetricCard
+                                titulo="Incidentes abertos"
+                                valor={metricas.incidentesAbertos}
+                                dica="ativos"
+                                icone={<Bug />}
+                                destaque="destructive"
+                                tendencia={metricas.tendencias.incidentesAbertos}
                             />
                             <MetricCard
                                 titulo={`Incidentes · ${periodo}d`}

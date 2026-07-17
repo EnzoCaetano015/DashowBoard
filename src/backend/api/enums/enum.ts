@@ -62,7 +62,6 @@ export namespace Enum {
         Conectado = "connected",
         Desconectado = "disconnected",
         Erro = "error",
-        EmBreve = "coming-soon",
     }
 
     export enum TipoConexaoGitHub {

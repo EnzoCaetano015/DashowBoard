@@ -20,11 +20,8 @@ import {
 } from "@/pages/Configuracoes/Configuracoes.utils"
 
 export const useConfiguracoes = () => {
-
-    const {
-        data: preferencias = PREFERENCIAS_PADRAO,
-        isLoading: preferenciasIsLoading,
-    } = useObterPreferencias()
+    const { data: preferencias = PREFERENCIAS_PADRAO, isLoading: preferenciasIsLoading } =
+        useObterPreferencias()
 
     const { data: informacoes = INFORMACOES_INICIAIS, isLoading: informacoesIsLoading } =
         useObterInformacoesDesktop()
@@ -44,7 +41,7 @@ export const useConfiguracoes = () => {
         if (preferencias[campo] === valor) return
 
         const atualizadas = { ...preferencias, [campo]: valor }
-        
+
         const salvar = async () => {
             if (campo === "iniciarComSistema") {
                 await configurarInicializacaoComSistema(Boolean(valor))

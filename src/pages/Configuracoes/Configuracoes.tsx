@@ -36,7 +36,7 @@ export const ConfiguracoesPage = () => {
             <div className="mb-6">
                 <h1 className="text-2xl font-semibold tracking-tight">Configurações</h1>
                 <p className="mt-1 text-sm text-muted-foreground">
-                    Preferências globais do DashwoBoard neste computador.
+                    Preferências globais do DashowBoard neste computador.
                 </p>
             </div>
 

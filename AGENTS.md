@@ -12,7 +12,7 @@ O estado atual do código é o padrão absoluto do projeto. Exemplos antigos, do
 
 ## 2. Contexto do projeto
 
-O DashwoBoard é um aplicativo desktop pessoal para centralizar a visibilidade de projetos distribuídos entre:
+O DashowBoard é um aplicativo desktop pessoal para centralizar a visibilidade de projetos distribuídos entre:
 
 - GitHub;
 - Vercel;
@@ -72,7 +72,7 @@ O domínio deve manter estas entidades separadas:
 
 ### Projeto
 
-Agrupador local criado pelo usuário no DashwoBoard.
+Agrupador local criado pelo usuário no DashowBoard.
 
 Um projeto pode conter:
 
@@ -117,7 +117,7 @@ Um serviço pode existir sem repositório relacionado. Bancos do Supabase e serv
 
 ### Integração
 
-Representa o vínculo local entre uma entidade do DashwoBoard e um recurso externo.
+Representa o vínculo local entre uma entidade do DashowBoard e um recurso externo.
 
 Exemplos:
 

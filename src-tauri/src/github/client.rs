@@ -21,7 +21,7 @@ impl GitHubClient {
         Self {
             http: Client::builder()
                 .timeout(Duration::from_secs(20))
-                .user_agent("DashwoBoard/0.1")
+                .user_agent("DashowBoard/0.1")
                 .build()
                 .map_err(|error| error.to_string()),
         }
@@ -70,7 +70,7 @@ impl GitHubClient {
         let response = self
             .http()?
             .get(format!("{API_URL}{path}"))
-            .header(USER_AGENT, "DashwoBoard/0.1")
+            .header(USER_AGENT, "DashowBoard/0.1")
             .header(ACCEPT, "application/vnd.github+json")
             .header("X-GitHub-Api-Version", API_VERSION)
             .bearer_auth(token)

@@ -27,33 +27,43 @@ import { normalizarStatusProjetoVercel } from "@/lib/utils/vercel"
 
 export const useNovoProjetoConteudo = (open: boolean, onClose: () => void) => {
     const navigate = useNavigate()
+
     const [etapa, setEtapa] = useState<EtapaNovoProjeto>(1)
     const [formulario, setFormulario] = useState(criarFormularioNovoProjeto)
+
     const runtimeDisponivel = possuiRuntimeTauri()
+
     const { mutateAsync: criarProjeto, isPending: criarProjetoIsPending } = useCriarProjeto()
 
     const { data: conexoesGitHub = [], isLoading: conexoesGitHubIsLoading } = useObterConexoesGitHub()
+    
     const {
         data: repositoriosData,
         isLoading: repositoriosIsLoading,
         isFetching: repositoriosIsFetching,
         refetch: atualizarRepositorios,
     } = useObterRepositoriosGitHub({}, open && conexoesGitHub.length > 0)
+
     const { data: conexaoVercel, isLoading: conexaoVercelIsLoading } = useObterConexaoVercel()
+
     const {
         data: projetosVercelData,
         isLoading: projetosVercelIsLoading,
         isFetching: projetosVercelIsFetching,
         refetch: atualizarProjetosVercel,
     } = useObterProjetosVercel(open && Boolean(conexaoVercel))
+
     const { data: conexaoSupabase, isLoading: conexaoSupabaseIsLoading } = useObterConexaoSupabase()
+
     const {
         data: projetosSupabaseData,
         isLoading: projetosSupabaseIsLoading,
         isFetching: projetosSupabaseIsFetching,
         refetch: atualizarProjetosSupabase,
     } = useObterProjetosSupabase(open && Boolean(conexaoSupabase))
+
     const { data: conexaoRailway, isLoading: conexaoRailwayIsLoading } = useObterConexaoRailway()
+
     const {
         data: projetosRailwayData,
         isLoading: projetosRailwayIsLoading,

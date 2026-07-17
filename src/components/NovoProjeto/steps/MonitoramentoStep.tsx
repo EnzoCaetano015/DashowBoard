@@ -14,7 +14,7 @@ export const MonitoramentoStep = ({
     alterarColetaDeployments,
 }: MonitoramentoStepProps) => (
     <div className="space-y-4">
-        <p className="text-sm text-muted-foreground">Como o DashwoBoard deve verificar este projeto?</p>
+        <p className="text-sm text-muted-foreground">Como o DashowBoard deve verificar este projeto?</p>
         <div className="grid gap-3 sm:grid-cols-2">
             <div className="space-y-2">
                 <Label>Intervalo de verificação</Label>

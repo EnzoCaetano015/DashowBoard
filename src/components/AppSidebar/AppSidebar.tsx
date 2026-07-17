@@ -46,7 +46,7 @@ export const AppSidebar = ({ modo = "desktop" }: AppSidebarProps) => {
                 </span>
                 {(!compacta || ehMobile) && (
                     <div className="min-w-0 leading-tight">
-                        <strong className="block truncate text-sm tracking-tight">DashwoBoard</strong>
+                        <strong className="block truncate text-sm tracking-tight">DashowBoard</strong>
                         <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
                             Desktop · v0.1
                         </span>

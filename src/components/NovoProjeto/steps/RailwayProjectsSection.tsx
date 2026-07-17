@@ -30,7 +30,7 @@ export const RailwayProjectsSection = ({
             <div>
                 <h3 className="text-sm font-medium">Serviços Railway</h3>
                 <p className="text-xs text-muted-foreground">
-                    Escolha o tipo para incluir um serviço. O DashwoBoard não o deduz automaticamente.
+                    Escolha o tipo para incluir um serviço. O DashowBoard não o deduz automaticamente.
                 </p>
             </div>
             {runtimeDisponivel && configurada && !isLoading && (

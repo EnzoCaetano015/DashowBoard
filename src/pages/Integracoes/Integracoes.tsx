@@ -14,7 +14,7 @@ export const IntegracoesPage = () => {
             <div className="mb-6">
                 <h1 className="text-2xl font-semibold tracking-tight">Integrações</h1>
                 <p className="mt-1 text-sm text-muted-foreground">
-                    Conecte contas e tokens para o DashwoBoard ler o estado dos seus recursos.
+                    Conecte contas e tokens para o DashowBoard ler o estado dos seus recursos.
                 </p>
             </div>
             {integracoes.length > 0 ? (

@@ -64,7 +64,7 @@ export const useConfiguracoes = () => {
 
                 toast.promise(
                     enviarNotificacaoSistema(
-                        "DashwoBoard",
+                        "DashowBoard",
                         "Notificações do sistema ativadas.",
                         atualizadas.somIncidente
                     ),

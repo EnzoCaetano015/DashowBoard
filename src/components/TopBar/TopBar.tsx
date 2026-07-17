@@ -43,7 +43,7 @@ export const TopBar = () => {
                 >
                     <SheetHeader className="sr-only">
                         <SheetTitle>Navegação</SheetTitle>
-                        <SheetDescription>Links principais do DashwoBoard</SheetDescription>
+                        <SheetDescription>Links principais do DashowBoard</SheetDescription>
                     </SheetHeader>
                     <AppSidebar modo="mobile" />
                 </SheetContent>

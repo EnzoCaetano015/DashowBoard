@@ -51,19 +51,19 @@ pub fn run() {
         .setup(|app| {
             std::fs::create_dir_all(app.path().app_config_dir()?)?;
 
-            let abrir = MenuItem::with_id(app, "abrir", "Abrir DashwoBoard", true, None::<&str>)?;
+            let abrir = MenuItem::with_id(app, "abrir", "Abrir DashowBoard", true, None::<&str>)?;
             let sair = MenuItem::with_id(app, "sair", "Sair", true, None::<&str>)?;
             let menu = Menu::with_items(app, &[&abrir, &sair])?;
             let icon = app.default_window_icon().cloned().ok_or_else(|| {
                 std::io::Error::new(
                     std::io::ErrorKind::NotFound,
-                    "Ícone padrão do DashwoBoard não encontrado.",
+                    "Ícone padrão do DashowBoard não encontrado.",
                 )
             })?;
 
             TrayIconBuilder::new()
                 .icon(icon)
-                .tooltip("DashwoBoard")
+                .tooltip("DashowBoard")
                 .menu(&menu)
                 .show_menu_on_left_click(false)
                 .on_menu_event(|app, event| match event.id().as_ref() {

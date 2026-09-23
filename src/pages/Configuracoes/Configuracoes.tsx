@@ -23,12 +23,18 @@ export const ConfiguracoesPage = () => {
     const {
         preferencias,
         informacoes,
+        nomeDesenvolvedor,
+        setNomeDesenvolvedor,
+        salvarNomeDesenvolvedor,
         alterar,
         abrirPasta,
         exportarBackup,
         armazenamentoIsPending,
         preferenciasIsPending,
         preferenciasIsLoading,
+        preferenciasIsError,
+        preferenciasError,
+        atualizar,
     } = useConfiguracoes()
 
     return (
@@ -48,6 +54,12 @@ export const ConfiguracoesPage = () => {
                     skeleton={{ quantidade: 6, orientacao: "horizontal" }}
                     className="**:data-[slot=skeleton]:h-52"
                 />
+            ) : preferenciasIsError ? (
+                <TemplateEstado.Erro
+                    titulo="Falha ao carregar configurações"
+                    subtitulo={preferenciasError}
+                    acao={<Button onClick={() => void atualizar()}>Tentar novamente</Button>}
+                />
             ) : (
                 <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
                     <Secao
@@ -61,6 +73,7 @@ export const ConfiguracoesPage = () => {
                             <Checkbox
                                 id="iniciar-sistema"
                                 checked={preferencias.iniciarComSistema}
+                                disabled={preferenciasIsPending}
                                 onCheckedChange={(valor) =>
                                     void alterar("iniciarComSistema", Boolean(valor))
                                 }
@@ -73,6 +86,7 @@ export const ConfiguracoesPage = () => {
                             <Checkbox
                                 id="segundo-plano"
                                 checked={preferencias.verificacaoSegundoPlano}
+                                disabled={preferenciasIsPending}
                                 onCheckedChange={(valor) =>
                                     void alterar("verificacaoSegundoPlano", Boolean(valor))
                                 }
@@ -84,6 +98,7 @@ export const ConfiguracoesPage = () => {
                         >
                             <Select
                                 value={String(preferencias.intervaloPadraoSegundos)}
+                                disabled={preferenciasIsPending}
                                 onValueChange={(valor) => {
                                     const intervalo = converterIntervaloAtualizacao(valor ?? "")
                                     if (intervalo) {
@@ -147,6 +162,7 @@ export const ConfiguracoesPage = () => {
                             <Checkbox
                                 id="notificacoes-sistema"
                                 checked={preferencias.notificacoesSistema}
+                                disabled={preferenciasIsPending}
                                 onCheckedChange={(valor) =>
                                     void alterar("notificacoesSistema", Boolean(valor))
                                 }
@@ -159,6 +175,7 @@ export const ConfiguracoesPage = () => {
                             <Checkbox
                                 id="som-incidente"
                                 checked={preferencias.somIncidente}
+                                disabled={preferenciasIsPending}
                                 onCheckedChange={(valor) => void alterar("somIncidente", Boolean(valor))}
                             />
                         </Campo>
@@ -169,6 +186,7 @@ export const ConfiguracoesPage = () => {
                             <Checkbox
                                 id="badge-icone"
                                 checked={preferencias.badgeIcone}
+                                disabled={preferenciasIsPending}
                                 onCheckedChange={(valor) => void alterar("badgeIcone", Boolean(valor))}
                             />
                         </Campo>
@@ -183,6 +201,7 @@ export const ConfiguracoesPage = () => {
                         >
                             <Select
                                 value={preferencias.tema}
+                                disabled={preferenciasIsPending}
                                 onValueChange={(valor) => {
                                     const tema = converterTema(valor ?? "")
                                     if (tema) void alterar("tema", tema)
@@ -209,6 +228,7 @@ export const ConfiguracoesPage = () => {
                         >
                             <Select
                                 value={preferencias.densidade}
+                                disabled={preferenciasIsPending}
                                 onValueChange={(valor) => {
                                     const densidade = converterDensidade(valor ?? "")
                                     if (densidade) void alterar("densidade", densidade)
@@ -238,10 +258,10 @@ export const ConfiguracoesPage = () => {
                             <Label htmlFor="nome-desenvolvedor">Nome do desenvolvedor</Label>
                             <Input
                                 id="nome-desenvolvedor"
-                                value={preferencias.nomeDesenvolvedor}
-                                onChange={(evento) =>
-                                    void alterar("nomeDesenvolvedor", evento.target.value)
-                                }
+                                value={nomeDesenvolvedor}
+                                disabled={preferenciasIsPending}
+                                onChange={(evento) => setNomeDesenvolvedor(evento.target.value)}
+                                onBlur={salvarNomeDesenvolvedor}
                             />
                         </div>
                     </Secao>

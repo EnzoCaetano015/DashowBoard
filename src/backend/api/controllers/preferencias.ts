@@ -59,6 +59,17 @@ export const useSalvarPreferencias = () => {
             if (!possuiRuntimeTauri()) return Promise.resolve(request)
             return salvarPreferencias(request)
         },
+        onMutate: async (preferencias) => {
+            await queryClient.cancelQueries({ queryKey: CHAVE_PREFERENCIAS })
+            const anteriores = queryClient.getQueryData<SalvarPreferencias.Response>(CHAVE_PREFERENCIAS)
+            queryClient.setQueryData(CHAVE_PREFERENCIAS, preferencias)
+            return { anteriores }
+        },
+        onError: (_erro, _preferencias, contexto) => {
+            if (contexto?.anteriores) {
+                queryClient.setQueryData(CHAVE_PREFERENCIAS, contexto.anteriores)
+            }
+        },
         onSuccess: (preferencias) => {
             queryClient.setQueryData(CHAVE_PREFERENCIAS, preferencias)
         },

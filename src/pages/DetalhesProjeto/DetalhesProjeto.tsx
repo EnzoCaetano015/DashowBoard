@@ -13,8 +13,18 @@ import { DeleteProjectDialog } from "@/pages/DetalhesProjeto/modais/DeleteProjec
 import { EditProjectDialog } from "@/pages/DetalhesProjeto/modais/EditProjectDialog/EditProjectDialog"
 
 export const DetalhesProjetoPage = () => {
-    const { modal, setModal, projeto, runtimeDisponivel, isLoading, isFetching, isError, atualizar } =
-        useDetalhesProjeto()
+    const {
+        modal,
+        setModal,
+        projeto,
+        aba,
+        runtimeDisponivel,
+        isLoading,
+        isFetching,
+        isError,
+        atualizar,
+        alterarAba,
+    } = useDetalhesProjeto()
 
     if (!runtimeDisponivel)
         return (
@@ -49,7 +59,10 @@ export const DetalhesProjetoPage = () => {
                 onEditar={() => setModal("editarProjeto", { open: true })}
                 onExcluir={() => setModal("excluirProjeto", { open: true })}
             />
-            <Tabs defaultValue="visao-geral">
+            <Tabs
+                value={aba}
+                onValueChange={alterarAba}
+            >
                 <div className="scrollbar-thin mb-4 overflow-x-auto border-b border-border">
                     <TabsList
                         variant="line"

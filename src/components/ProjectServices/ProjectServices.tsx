@@ -1,8 +1,9 @@
-import { ExternalLink, RefreshCw } from "lucide-react"
+import { ExternalLink, RefreshCw, Server } from "lucide-react"
 import { Enum } from "@/backend/api/enums/enum"
 import type { ObterProjetos } from "@/backend/api/models/projeto.types"
 import { ProviderIcon } from "@/components/ProviderIcon/ProviderIcon"
 import { StatusDot } from "@/components/StatusBadge/StatusBadge"
+import { TemplateEstado } from "@/components/TemplateEstado"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -17,6 +18,16 @@ type ProjectServicesProps = {
 }
 
 export const ProjectServices = ({ servicos, onAtualizar }: ProjectServicesProps) => {
+    if (servicos.length === 0) {
+        return (
+            <TemplateEstado.Vazio
+                titulo="Nenhum serviço associado"
+                subtitulo="Edite o projeto para associar serviços dos providers configurados."
+                Icon={Server}
+            />
+        )
+    }
+
     const agrupados = agrupar(servicos, (servico) => servico.provider)
 
     return (

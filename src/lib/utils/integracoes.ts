@@ -9,6 +9,7 @@ import { formatarDataHora } from "@/lib/utils/date"
 type EstadoConsulta = {
     runtimeDisponivel: boolean
     isLoading: boolean
+    erro?: string
 }
 
 const integracaoDesktop = (provider: Enum.Provider): ObterIntegracoes.Integracao => ({
@@ -23,6 +24,15 @@ export const montarIntegracaoGitHub = (
     consulta: EstadoConsulta
 ): ObterIntegracoes.Integracao => {
     if (!consulta.runtimeDisponivel) return integracaoDesktop(Enum.Provider.GitHub)
+    if (consulta.erro) {
+        return {
+            provider: Enum.Provider.GitHub,
+            conta: "Falha ao consultar conexões",
+            status: Enum.StatusIntegracao.Erro,
+            erro: consulta.erro,
+            ultimaSincronizacao: "Não disponível",
+        }
+    }
     if (consulta.isLoading) {
         return {
             provider: Enum.Provider.GitHub,
@@ -65,6 +75,15 @@ export const montarIntegracaoVercel = (
     consulta: EstadoConsulta
 ): ObterIntegracoes.Integracao => {
     if (!consulta.runtimeDisponivel) return integracaoDesktop(Enum.Provider.Vercel)
+    if (consulta.erro) {
+        return {
+            provider: Enum.Provider.Vercel,
+            conta: "Falha ao consultar conexão",
+            status: Enum.StatusIntegracao.Erro,
+            erro: consulta.erro,
+            ultimaSincronizacao: "Não disponível",
+        }
+    }
     if (!conexao) {
         return {
             provider: Enum.Provider.Vercel,
@@ -88,6 +107,15 @@ export const montarIntegracaoSupabase = (
     consulta: EstadoConsulta
 ): ObterIntegracoes.Integracao => {
     if (!consulta.runtimeDisponivel) return integracaoDesktop(Enum.Provider.Supabase)
+    if (consulta.erro) {
+        return {
+            provider: Enum.Provider.Supabase,
+            conta: "Falha ao consultar conexão",
+            status: Enum.StatusIntegracao.Erro,
+            erro: consulta.erro,
+            ultimaSincronizacao: "Não disponível",
+        }
+    }
     if (!conexao) {
         return {
             provider: Enum.Provider.Supabase,
@@ -115,6 +143,15 @@ export const montarIntegracaoRailway = (
     consulta: EstadoConsulta
 ): ObterIntegracoes.Integracao => {
     if (!consulta.runtimeDisponivel) return integracaoDesktop(Enum.Provider.Railway)
+    if (consulta.erro) {
+        return {
+            provider: Enum.Provider.Railway,
+            conta: "Falha ao consultar conexão",
+            status: Enum.StatusIntegracao.Erro,
+            erro: consulta.erro,
+            ultimaSincronizacao: "Não disponível",
+        }
+    }
     if (!conexao) {
         return {
             provider: Enum.Provider.Railway,

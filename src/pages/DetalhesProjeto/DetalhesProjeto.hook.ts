@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom"
+import { useParams, useSearchParams } from "react-router-dom"
 import { toast } from "sonner"
 
 import { useObterProjetoPorId } from "@/backend/api/controllers/projeto"
@@ -10,10 +10,19 @@ import { VercelQueryKeys } from "@/backend/api/models/vercel.types"
 import { queryClient } from "@/lib/config/query-client"
 import { useControlModal } from "@/lib/hooks/useControlModal"
 import { possuiRuntimeTauri } from "@/lib/utils/tauri"
+import {
+    ABAS_DETALHES_PROJETO,
+    type AbaDetalhesProjeto,
+} from "@/pages/DetalhesProjeto/DetalhesProjeto.types"
 
 export const useDetalhesProjeto = () => {
     const { modal, setModal } = useControlModal(["editarProjeto", "excluirProjeto"] as const)
     const { id } = useParams<{ id: string }>()
+    const [searchParams, setSearchParams] = useSearchParams()
+    const abaParam = searchParams.get("aba")
+    const aba: AbaDetalhesProjeto = ABAS_DETALHES_PROJETO.includes(abaParam as AbaDetalhesProjeto)
+        ? (abaParam as AbaDetalhesProjeto)
+        : "visao-geral"
 
     const {
         data: projeto,
@@ -48,10 +57,20 @@ export const useDetalhesProjeto = () => {
         })
     }
 
+    const alterarAba = (valor: string) => {
+        if (!ABAS_DETALHES_PROJETO.includes(valor as AbaDetalhesProjeto)) return
+        const parametros = new URLSearchParams(searchParams)
+        if (valor === "visao-geral") parametros.delete("aba")
+        else parametros.set("aba", valor)
+        setSearchParams(parametros, { replace: true })
+    }
+
     return {
         modal,
         setModal,
         projeto,
+        aba,
+        alterarAba,
         runtimeDisponivel: possuiRuntimeTauri(),
         isLoading: projetoIsLoading,
         isFetching: projetoIsFetching,

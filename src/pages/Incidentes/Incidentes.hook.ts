@@ -19,16 +19,25 @@ export const useIncidentes = () => {
     const filtrados = useMemo(() => {
         const termo = busca.trim().toLocaleLowerCase("pt-BR")
         const limite = Date.now() - periodo * 24 * 60 * 60 * 1000
-        return incidentes.filter((incidente) => {
-            const noPeriodo = new Date(incidente.iniciadoEm).getTime() >= limite
-            if (!noPeriodo) return false
-            return (
-                !termo ||
-                `${incidente.titulo} ${incidente.projetoNome} ${incidente.servico}`
-                    .toLocaleLowerCase("pt-BR")
-                    .includes(termo)
-            )
-        })
+        return incidentes
+            .filter((incidente) => {
+                const noPeriodo = new Date(incidente.iniciadoEm).getTime() >= limite
+                if (!noPeriodo) return false
+                return (
+                    !termo ||
+                    `${incidente.titulo} ${incidente.projetoNome} ${incidente.servico}`
+                        .toLocaleLowerCase("pt-BR")
+                        .includes(termo)
+                )
+            })
+            .sort((primeiro, segundo) => {
+                const primeiroAtivo = primeiro.status !== Enum.StatusIncidente.Resolvido
+                const segundoAtivo = segundo.status !== Enum.StatusIncidente.Resolvido
+                if (primeiroAtivo !== segundoAtivo) return primeiroAtivo ? -1 : 1
+                return (
+                    new Date(segundo.iniciadoEm).getTime() - new Date(primeiro.iniciadoEm).getTime()
+                )
+            })
     }, [busca, incidentes, periodo])
 
     return {

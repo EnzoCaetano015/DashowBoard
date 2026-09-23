@@ -124,8 +124,17 @@ export const IncidentesPage = () => {
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                        {incidentes.map((incidente) => (
-                                            <TableRow key={incidente.id}>
+                                        {incidentes.map((incidente) => {
+                                            const ativo =
+                                                incidente.status !== Enum.StatusIncidente.Resolvido
+                                            return (
+                                                <TableRow
+                                                    key={incidente.id}
+                                                    className={cn(
+                                                        ativo &&
+                                                            "border-l-2 border-l-destructive bg-destructive/5"
+                                                    )}
+                                                >
                                                 <TableCell>
                                                     <div className="flex items-center gap-2">
                                                         {incidente.status ===
@@ -137,6 +146,11 @@ export const IncidentesPage = () => {
                                                         <span className="font-medium">
                                                             {incidente.titulo}
                                                         </span>
+                                                        {ativo && (
+                                                            <span className="sr-only">
+                                                                Incidente ativo
+                                                            </span>
+                                                        )}
                                                     </div>
                                                 </TableCell>
                                                 <TableCell>
@@ -166,8 +180,9 @@ export const IncidentesPage = () => {
                                                 <TableCell className="text-right font-mono text-xs tabular-nums">
                                                     {formatarDuracao(incidente.duracaoMinutos)}
                                                 </TableCell>
-                                            </TableRow>
-                                        ))}
+                                                </TableRow>
+                                            )
+                                        })}
                                     </TableBody>
                                 </Table>
                             </div>

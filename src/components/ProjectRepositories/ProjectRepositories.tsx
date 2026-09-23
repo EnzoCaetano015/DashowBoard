@@ -3,17 +3,29 @@ import { ArrowUpRight, CircleAlert, GitBranch, GitCommit, GitPullRequest } from 
 import type { ObterProjetos } from "@/backend/api/models/projeto.types"
 import { ProviderIcon } from "@/components/ProviderIcon/ProviderIcon"
 import { WorkflowStatus } from "@/components/ProjectStatusDetails/ProjectStatusDetails"
+import { TemplateEstado } from "@/components/TemplateEstado"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Enum } from "@/backend/api/enums/enum"
 
-export const ProjectRepositories = ({ repositorios }: { repositorios: ObterProjetos.Repositorio[] }) => (
-    <div className="space-y-3">
-        {repositorios.map((repositorio) => (
-            <Card
-                key={repositorio.id}
-                className="border-border py-4 shadow-none"
-            >
+export const ProjectRepositories = ({ repositorios }: { repositorios: ObterProjetos.Repositorio[] }) => {
+    if (repositorios.length === 0) {
+        return (
+            <TemplateEstado.Vazio
+                titulo="Nenhum repositório associado"
+                subtitulo="Edite o projeto para associar repositórios das conexões GitHub."
+                Icon={GitBranch}
+            />
+        )
+    }
+
+    return (
+        <div className="space-y-3">
+            {repositorios.map((repositorio) => (
+                <Card
+                    key={repositorio.id}
+                    className="border-border py-4 shadow-none"
+                >
                 <CardContent className="flex flex-col gap-4 px-4 lg:flex-row lg:items-start lg:justify-between">
                     <div className="min-w-0 flex-1">
                         <div className="flex flex-wrap items-center gap-2">
@@ -94,10 +106,11 @@ export const ProjectRepositories = ({ repositorios }: { repositorios: ObterProje
                         </Button>
                     )}
                 </CardContent>
-            </Card>
-        ))}
-    </div>
-)
+                </Card>
+            ))}
+        </div>
+    )
+}
 
 const Contador = ({
     Icone,

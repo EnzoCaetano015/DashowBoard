@@ -1,4 +1,5 @@
 import { toast } from "sonner"
+import { useEffect, useState } from "react"
 
 import {
     useExportarBackupBancoDados,
@@ -20,11 +21,21 @@ import {
 } from "@/pages/Configuracoes/Configuracoes.utils"
 
 export const useConfiguracoes = () => {
-    const { data: preferencias = PREFERENCIAS_PADRAO, isLoading: preferenciasIsLoading } =
-        useObterPreferencias()
+    const {
+        data: preferencias = PREFERENCIAS_PADRAO,
+        isLoading: preferenciasIsLoading,
+        isError: preferenciasIsError,
+        error: preferenciasError,
+        refetch: atualizarPreferencias,
+    } = useObterPreferencias()
 
-    const { data: informacoes = INFORMACOES_INICIAIS, isLoading: informacoesIsLoading } =
-        useObterInformacoesDesktop()
+    const {
+        data: informacoes = INFORMACOES_INICIAIS,
+        isLoading: informacoesIsLoading,
+        isError: informacoesIsError,
+        error: informacoesError,
+        refetch: atualizarInformacoes,
+    } = useObterInformacoesDesktop()
 
     const { mutateAsync: salvarPreferencias, isPending: preferenciasIsPending } = useSalvarPreferencias()
 
@@ -33,11 +44,17 @@ export const useConfiguracoes = () => {
 
     const { mutateAsync: exportarBackupBancoDados, isPending: exportarBackupIsPending } =
         useExportarBackupBancoDados()
+    const [nomeDesenvolvedor, setNomeDesenvolvedor] = useState(preferencias.nomeDesenvolvedor)
+
+    useEffect(() => {
+        if (!preferenciasIsPending) setNomeDesenvolvedor(preferencias.nomeDesenvolvedor)
+    }, [preferencias.nomeDesenvolvedor, preferenciasIsPending])
 
     const alterar = <Campo extends keyof PreferenciasAplicacao>(
         campo: Campo,
         valor: PreferenciasAplicacao[Campo]
     ) => {
+        if (preferenciasIsPending) return
         if (preferencias[campo] === valor) return
 
         const atualizadas = { ...preferencias, [campo]: valor }
@@ -105,14 +122,25 @@ export const useConfiguracoes = () => {
         })
     }
 
+    const salvarNomeDesenvolvedor = () => {
+        if (nomeDesenvolvedor === preferencias.nomeDesenvolvedor) return
+        alterar("nomeDesenvolvedor", nomeDesenvolvedor)
+    }
+
     return {
         preferencias,
         informacoes,
+        nomeDesenvolvedor,
+        setNomeDesenvolvedor,
+        salvarNomeDesenvolvedor,
         alterar,
         abrirPasta,
         exportarBackup,
         armazenamentoIsPending: revelarBancoDadosIsPending || exportarBackupIsPending,
         preferenciasIsPending,
         preferenciasIsLoading: preferenciasIsLoading || informacoesIsLoading,
+        preferenciasIsError: preferenciasIsError || informacoesIsError,
+        preferenciasError: obterMensagemErroConfiguracoes(preferenciasError ?? informacoesError),
+        atualizar: () => Promise.all([atualizarPreferencias(), atualizarInformacoes()]),
     }
 }

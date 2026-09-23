@@ -1,7 +1,7 @@
 import { AlertCircle, CheckCircle2, Clock, KeyRound, RefreshCw } from "lucide-react"
 
 import { Enum } from "@/backend/api/enums/enum"
-import type { ObterIntegracoes } from "@/backend/api/models/integracao.types"
+import type { IntegrationCardProps } from "@/components/IntegrationCard/IntegrationCard.types"
 import { ProviderIcon } from "@/components/ProviderIcon/ProviderIcon"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -16,13 +16,11 @@ const labelStatus: Record<Enum.StatusIntegracao, string> = {
 
 export const IntegrationCard = ({
     integracao,
+    podeTestar,
+    isTesting,
     onTestar,
     onConfigurar,
-}: {
-    integracao: ObterIntegracoes.Integracao
-    onTestar: () => void
-    onConfigurar: () => void
-}) => {
+}: IntegrationCardProps) => {
     const conectada = integracao.status === Enum.StatusIntegracao.Conectado
 
     return (
@@ -74,20 +72,24 @@ export const IntegrationCard = ({
                     <span className="text-foreground">{integracao.ultimaSincronizacao}</span>
                 </div>
                 <div className="mt-4 flex flex-wrap gap-2">
+                    {podeTestar && (
+                        <Button
+                            size="sm"
+                            variant="outline"
+                            disabled={isTesting}
+                            onClick={onTestar}
+                        >
+                            <RefreshCw className={cn(isTesting && "animate-spin")} />
+                            {isTesting ? "Testando..." : "Testar conexão"}
+                        </Button>
+                    )}
                     <Button
                         size="sm"
-                        variant="outline"
-                        onClick={onTestar}
-                    >
-                        <RefreshCw />
-                        Testar conexão
-                    </Button>
-                    <Button
-                        size="sm"
+                        disabled={isTesting}
                         onClick={onConfigurar}
                     >
                         <KeyRound />
-                        {conectada ? "Atualizar token" : "Configurar token"}
+                        {podeTestar ? "Atualizar token" : "Configurar token"}
                     </Button>
                 </div>
             </CardContent>

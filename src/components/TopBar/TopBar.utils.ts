@@ -4,6 +4,7 @@ import type {
     ResultadoBuscaGlobal,
 } from "@/components/TopBar/TopBar.types"
 import { labelProvider } from "@/lib/utils/status"
+import { normalizarTextoBusca } from "@/lib/utils/text"
 
 export const LABEL_CATEGORIA_BUSCA: Record<CategoriaResultadoBuscaGlobal, string> = {
     projeto: "Projetos",
@@ -17,20 +18,14 @@ const ORDEM_CATEGORIA: Record<CategoriaResultadoBuscaGlobal, number> = {
     repositorio: 2,
 }
 
-const normalizar = (valor: string) =>
-    valor
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .toLocaleLowerCase("pt-BR")
-
 const corresponde = (termo: string, ...valores: Array<string | null | undefined>) =>
-    valores.some((valor) => valor && normalizar(valor).includes(termo))
+    valores.some((valor) => valor && normalizarTextoBusca(valor).includes(termo))
 
 export const buscarResultadosGlobais = (
     projetos: ObterProjetos.Projeto[],
     busca: string
 ): ResultadoBuscaGlobal[] => {
-    const termo = normalizar(busca.trim())
+    const termo = normalizarTextoBusca(busca.trim())
     if (!termo) return []
 
     const resultados: ResultadoBuscaGlobal[] = []

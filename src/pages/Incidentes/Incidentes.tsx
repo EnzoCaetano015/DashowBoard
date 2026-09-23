@@ -1,9 +1,12 @@
-import { AlertCircle, CheckCircle2, Clock, ExternalLink, Search } from "lucide-react"
+import { AlertCircle, CheckCircle2, Clock, ExternalLink, RotateCcw, Search } from "lucide-react"
 import { Link } from "react-router-dom"
 
 import { Enum } from "@/backend/api/enums/enum"
+import { FiltroSelect } from "@/components/FiltroSelect/FiltroSelect"
 import { IncidentStatus } from "@/components/ProjectStatusDetails/ProjectStatusDetails"
+import { ProviderIcon } from "@/components/ProviderIcon/ProviderIcon"
 import { TemplateEstado } from "@/components/TemplateEstado"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -11,14 +14,21 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { PERIODOS_MONITORAMENTO } from "@/lib/config/monitoring"
 import { cn } from "@/lib/utils"
 import { formatarDataHora, formatarDuracao } from "@/lib/utils/date"
+import { labelProvider } from "@/lib/utils/status"
 import { Resumo } from "@/pages/Incidentes/components/Resumo/Resumo"
 import { useIncidentes } from "@/pages/Incidentes/Incidentes.hook"
+import type { FiltrosIncidentes } from "@/pages/Incidentes/Incidentes.types"
+import {
+    LABEL_SEVERIDADE_INCIDENTE,
+    LABEL_STATUS_INCIDENTE,
+} from "@/pages/Incidentes/Incidentes.utils"
 
 export const IncidentesPage = () => {
     const {
-        periodo,
-        busca,
+        filtros,
         incidentes,
+        projetos,
+        quantidadeFiltrosAtivos,
         emAndamento,
         resolvidos,
         projetosMonitorados,
@@ -26,45 +36,111 @@ export const IncidentesPage = () => {
         isLoading,
         isError,
         atualizar,
-        setPeriodo,
-        setBusca,
+        alterarFiltro,
+        limparFiltros,
     } = useIncidentes()
 
     return (
         <div>
-            <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+            <div className="mb-4">
                 <div>
                     <h1 className="text-2xl font-semibold tracking-tight">Incidentes</h1>
                     <p className="mt-1 text-sm text-muted-foreground">
                         Todos os eventos detectados nos projetos monitorados.
                     </p>
                 </div>
-                <div className="flex flex-wrap items-center gap-2">
-                    <div className="relative">
-                        <Search className="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
-                        <Input
-                            value={busca}
-                            onChange={(evento) => setBusca(evento.target.value)}
-                            placeholder="Buscar incidente…"
-                            className="h-9 bg-surface-2 pl-8"
-                        />
-                    </div>
-                    <div className="inline-flex rounded-md border border-border bg-surface-2 p-0.5">
-                        {PERIODOS_MONITORAMENTO.map((periodoMonitoramento) => (
-                            <Button
-                                key={periodoMonitoramento}
-                                size="xs"
-                                variant="ghost"
-                                onClick={() => setPeriodo(periodoMonitoramento)}
-                                className={cn(
-                                    periodo === periodoMonitoramento && "bg-primary/20 text-primary"
-                                )}
-                            >
-                                {periodoMonitoramento} dias
-                            </Button>
-                        ))}
-                    </div>
+            </div>
+            <div className="mb-6 flex flex-wrap items-center gap-2">
+                <div className="relative min-w-52 flex-1 sm:max-w-72">
+                    <Search className="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
+                    <Input
+                        value={filtros.busca}
+                        onChange={(evento) => alterarFiltro("busca", evento.target.value)}
+                        placeholder="Filtrar incidentes nesta página…"
+                        aria-label="Filtrar incidentes nesta página"
+                        className="h-9 bg-surface-2 pl-8"
+                    />
                 </div>
+                <div className="inline-flex rounded-md border border-border bg-surface-2 p-0.5">
+                    {PERIODOS_MONITORAMENTO.map((periodoMonitoramento) => (
+                        <Button
+                            key={periodoMonitoramento}
+                            size="xs"
+                            variant="ghost"
+                            onClick={() => alterarFiltro("periodo", periodoMonitoramento)}
+                            aria-pressed={filtros.periodo === periodoMonitoramento}
+                            className={cn(
+                                filtros.periodo === periodoMonitoramento &&
+                                    "bg-primary/20 text-primary"
+                            )}
+                        >
+                            {periodoMonitoramento} dias
+                        </Button>
+                    ))}
+                </div>
+                <FiltroSelect
+                    value={filtros.status}
+                    placeholder="Status"
+                    ariaLabel="Filtrar incidentes por status"
+                    onValueChange={(valor) =>
+                        alterarFiltro("status", valor as FiltrosIncidentes["status"])
+                    }
+                    opcoes={[
+                        ["todos", "Todos status"],
+                        ...Object.values(Enum.StatusIncidente).map(
+                            (valor) => [valor, LABEL_STATUS_INCIDENTE[valor]] as const
+                        ),
+                    ]}
+                />
+                <FiltroSelect
+                    value={filtros.severidade}
+                    placeholder="Severidade"
+                    ariaLabel="Filtrar incidentes por severidade"
+                    onValueChange={(valor) =>
+                        alterarFiltro("severidade", valor as FiltrosIncidentes["severidade"])
+                    }
+                    opcoes={[
+                        ["todos", "Todas severidades"],
+                        ...Object.values(Enum.SeveridadeIncidente).map(
+                            (valor) => [valor, LABEL_SEVERIDADE_INCIDENTE[valor]] as const
+                        ),
+                    ]}
+                />
+                <FiltroSelect
+                    value={filtros.provider}
+                    placeholder="Provider"
+                    ariaLabel="Filtrar incidentes por provider"
+                    onValueChange={(valor) =>
+                        alterarFiltro("provider", valor as FiltrosIncidentes["provider"])
+                    }
+                    opcoes={[
+                        ["todos", "Todos providers"],
+                        ...Object.values(Enum.Provider).map(
+                            (valor) => [valor, labelProvider[valor]] as const
+                        ),
+                    ]}
+                />
+                <FiltroSelect
+                    value={filtros.projetoId}
+                    placeholder="Projeto"
+                    ariaLabel="Filtrar incidentes por projeto"
+                    onValueChange={(valor) => alterarFiltro("projetoId", valor)}
+                    opcoes={[
+                        ["todos", "Todos projetos"],
+                        ...projetos.map(({ id, nome }) => [id, nome] as const),
+                    ]}
+                    className="min-w-44"
+                />
+                {quantidadeFiltrosAtivos > 0 && (
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={limparFiltros}
+                    >
+                        <RotateCcw />
+                        Limpar filtros ({quantidadeFiltrosAtivos})
+                    </Button>
+                )}
             </div>
             {!runtimeDisponivel ? (
                 <TemplateEstado.Vazio
@@ -163,7 +239,22 @@ export const IncidentesPage = () => {
                                                     </Link>
                                                 </TableCell>
                                                 <TableCell className="text-muted-foreground">
-                                                    {incidente.servico}
+                                                    <div className="flex flex-wrap items-center gap-2">
+                                                        <span>{incidente.servico}</span>
+                                                        {incidente.provider && (
+                                                            <Badge
+                                                                variant="outline"
+                                                                className="gap-1"
+                                                            >
+                                                                <ProviderIcon
+                                                                    provider={incidente.provider}
+                                                                    className="size-3"
+                                                                    decorativo
+                                                                />
+                                                                {labelProvider[incidente.provider]}
+                                                            </Badge>
+                                                        )}
+                                                    </div>
                                                 </TableCell>
                                                 <TableCell>
                                                     <IncidentStatus
@@ -189,8 +280,8 @@ export const IncidentesPage = () => {
                         </Card>
                     )}
                     <p className="mt-4 text-xs text-muted-foreground">
-                        {projetosMonitorados} projetos com incidentes registrados · janela de {periodo}{" "}
-                        dias.
+                        {projetosMonitorados} projetos com incidentes registrados · janela de{" "}
+                        {filtros.periodo} dias.
                     </p>
                 </>
             )}

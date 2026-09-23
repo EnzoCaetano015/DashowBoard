@@ -8,6 +8,7 @@ type IncidenteRow = {
     projetoNome: string
     servicoId: string | null
     servico: string | null
+    provider: string | null
     titulo: string
     descricao: string | null
     status: string
@@ -36,6 +37,7 @@ const mapearIncidente = (row: IncidenteRow): ObterIncidentes.Incidente => {
         titulo: row.titulo,
         descricao: row.descricao,
         servico: row.servico ?? "Serviço removido",
+        provider: row.provider as Enum.Provider | null,
         status: row.status as Enum.StatusIncidente,
         severidade: row.severidade as Enum.SeveridadeIncidente,
         iniciadoEm: row.abertoEm,
@@ -54,6 +56,7 @@ const selecionarIncidentes = async (projetoId?: string) => {
                 p.nome AS projetoNome,
                 i.servico_id AS servicoId,
                 s.nome AS servico,
+                s.provider,
                 i.titulo,
                 i.descricao,
                 i.status,
@@ -90,6 +93,7 @@ export const obterIncidenteAberto = async (servicoId: string) => {
                 p.nome AS projetoNome,
                 i.servico_id AS servicoId,
                 s.nome AS servico,
+                s.provider,
                 i.titulo,
                 i.descricao,
                 i.status,

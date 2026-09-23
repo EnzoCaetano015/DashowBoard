@@ -176,6 +176,17 @@ const MIGRACOES: Migracao[] = [
             `,
         ],
     },
+    {
+        versao: 3,
+        nome: "adicionar_preferencia_sidebar_compacta",
+        comandos: [
+            `
+                ALTER TABLE preferencias_aplicacao
+                ADD COLUMN sidebar_compacta INTEGER NOT NULL DEFAULT 0
+                CHECK (sidebar_compacta IN (0, 1))
+            `,
+        ],
+    },
 ]
 
 export const executarMigracoes = async (database: Database) => {

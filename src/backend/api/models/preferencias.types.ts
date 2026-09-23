@@ -15,6 +15,7 @@ export type PreferenciasAplicacao = {
     tema: Enum.TemaAplicacao
     densidade: Enum.DensidadeAplicacao
     nomeDesenvolvedor: string
+    sidebarCompacta: boolean
 }
 
 export namespace ObterPreferencias {

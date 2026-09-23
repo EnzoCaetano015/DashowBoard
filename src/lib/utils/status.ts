@@ -2,7 +2,7 @@ import { Enum } from "@/backend/api/enums/enum"
 import type { ObterProjetos } from "@/backend/api/models/projeto.types"
 
 export const labelStatusProjeto: Record<Enum.StatusProjeto, string> = {
-    [Enum.StatusProjeto.Saudavel]: "Online",
+    [Enum.StatusProjeto.Saudavel]: "Saudável",
     [Enum.StatusProjeto.Degradado]: "Degradado",
     [Enum.StatusProjeto.Offline]: "Offline",
     [Enum.StatusProjeto.Atualizando]: "Atualizando",

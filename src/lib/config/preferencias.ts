@@ -12,6 +12,7 @@ export const PREFERENCIAS_PADRAO: PreferenciasAplicacao = {
     tema: Enum.TemaAplicacao.Escuro,
     densidade: Enum.DensidadeAplicacao.Confortavel,
     nomeDesenvolvedor: "",
+    sidebarCompacta: false,
 }
 
 export const resolverTemaAplicacao = (

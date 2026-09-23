@@ -8,9 +8,9 @@ import {
     Settings,
     Terminal,
 } from "lucide-react"
-import { useState } from "react"
 import { NavLink } from "react-router-dom"
 
+import { useAppSidebar } from "@/components/AppSidebar/AppSidebar.hook"
 import type { AppSidebarProps } from "@/components/AppSidebar/AppSidebar.types"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -24,8 +24,10 @@ const navegacao = [
 ] as const
 
 export const AppSidebar = ({ modo = "desktop" }: AppSidebarProps) => {
-    const [compacta, setCompacta] = useState(false)
+    const { compacta: preferenciaCompacta, alternarSidebar, alternarSidebarDesabilitado } =
+        useAppSidebar()
     const ehMobile = modo === "mobile"
+    const compacta = !ehMobile && preferenciaCompacta
 
     return (
         <aside
@@ -91,7 +93,8 @@ export const AppSidebar = ({ modo = "desktop" }: AppSidebarProps) => {
                         variant="ghost"
                         size="sm"
                         className="w-full justify-center text-muted-foreground"
-                        onClick={() => setCompacta((valor) => !valor)}
+                        onClick={alternarSidebar}
+                        disabled={alternarSidebarDesabilitado}
                         aria-label={compacta ? "Expandir barra lateral" : "Recolher barra lateral"}
                     >
                         {compacta ? (

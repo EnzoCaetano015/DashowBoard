@@ -4,12 +4,14 @@ import {
     CheckCircle2,
     Filter,
     Plus,
+    RotateCcw,
     Search,
     Server,
     ServerCrash,
 } from "lucide-react"
 
 import { Enum } from "@/backend/api/enums/enum"
+import { FiltroSelect } from "@/components/FiltroSelect/FiltroSelect"
 import { MetricCard } from "@/components/MetricCard/MetricCard"
 import { ProjectCard } from "@/components/ProjectCard/ProjectCard"
 import { TemplateEstado } from "@/components/TemplateEstado"
@@ -17,7 +19,6 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
 import { labelProvider, labelStatusProjeto } from "@/lib/utils/status"
-import { FiltroSelect } from "@/pages/Home/components/FiltroSelect/FiltroSelect"
 import { useHome } from "@/pages/Home/Home.hook"
 import type { FiltrosHome } from "@/pages/Home/Home.types"
 import { STATUS_PROJETO_FILTROS } from "@/pages/Home/Home.utils"
@@ -29,6 +30,7 @@ export const HomePage = () => {
         setModal,
         filtros,
         projetosFiltrados,
+        quantidadeFiltrosAtivos,
         metricas,
         totalProjetos,
         runtimeDisponivel,
@@ -37,6 +39,7 @@ export const HomePage = () => {
         isError,
         atualizar,
         alterarFiltro,
+        limparFiltros,
     } = useHome()
 
     return (
@@ -98,7 +101,7 @@ export const HomePage = () => {
                                 tendencia={metricas.tendencias.projetos}
                             />
                             <MetricCard
-                                titulo="Online"
+                                titulo="Saudáveis"
                                 valor={metricas.online}
                                 icone={<CheckCircle2 />}
                                 destaque="success"
@@ -136,13 +139,15 @@ export const HomePage = () => {
                                 <Input
                                     value={filtros.busca}
                                     onChange={(evento) => alterarFiltro("busca", evento.target.value)}
-                                    placeholder="Nome do projeto…"
+                                    placeholder="Filtrar projetos nesta página…"
+                                    aria-label="Filtrar projetos nesta página"
                                     className="h-9 bg-surface-2 pl-8"
                                 />
                             </div>
                             <FiltroSelect
                                 value={filtros.status}
                                 placeholder="Status"
+                                ariaLabel="Filtrar por status do projeto"
                                 onValueChange={(valor) =>
                                     alterarFiltro("status", valor as FiltrosHome["status"])
                                 }
@@ -156,6 +161,7 @@ export const HomePage = () => {
                             <FiltroSelect
                                 value={filtros.provider}
                                 placeholder="Provider"
+                                ariaLabel="Filtrar por provider"
                                 onValueChange={(valor) =>
                                     alterarFiltro("provider", valor as FiltrosHome["provider"])
                                 }
@@ -169,6 +175,7 @@ export const HomePage = () => {
                             <FiltroSelect
                                 value={filtros.tipoServico}
                                 placeholder="Tipo"
+                                ariaLabel="Filtrar por tipo de serviço"
                                 onValueChange={(valor) =>
                                     alterarFiltro("tipoServico", valor as FiltrosHome["tipoServico"])
                                 }
@@ -182,6 +189,7 @@ export const HomePage = () => {
                             <FiltroSelect
                                 value={filtros.tagRepositorio}
                                 placeholder="Tag"
+                                ariaLabel="Filtrar por tag de repositório"
                                 onValueChange={(valor) =>
                                     alterarFiltro(
                                         "tagRepositorio",
@@ -195,6 +203,31 @@ export const HomePage = () => {
                                     ),
                                 ]}
                             />
+                            <FiltroSelect
+                                value={filtros.ordenacao}
+                                placeholder="Ordenar"
+                                ariaLabel="Ordenar projetos"
+                                onValueChange={(valor) =>
+                                    alterarFiltro("ordenacao", valor as FiltrosHome["ordenacao"])
+                                }
+                                opcoes={[
+                                    ["criticidade", "Mais críticos"],
+                                    ["nome", "Nome A–Z"],
+                                    ["verificacao", "Verificação recente"],
+                                    ["incidentes", "Mais incidentes ativos"],
+                                ]}
+                                className="min-w-44"
+                            />
+                            {quantidadeFiltrosAtivos > 0 && (
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={limparFiltros}
+                                >
+                                    <RotateCcw />
+                                    Limpar filtros ({quantidadeFiltrosAtivos})
+                                </Button>
+                            )}
                             <span className="ml-auto text-xs text-muted-foreground tabular-nums">
                                 {projetosFiltrados.length} de {totalProjetos} projetos
                             </span>

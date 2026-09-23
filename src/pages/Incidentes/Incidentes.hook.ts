@@ -2,12 +2,17 @@ import { useMemo, useState } from "react"
 
 import { useObterIncidentes } from "@/backend/api/controllers/incidente"
 import { Enum } from "@/backend/api/enums/enum"
-import type { PeriodoMonitoramento } from "@/lib/types/monitoring"
 import { possuiRuntimeTauri } from "@/lib/utils/tauri"
+import type { FiltrosIncidentes } from "@/pages/Incidentes/Incidentes.types"
+import {
+    contarFiltrosIncidentesAtivos,
+    FILTROS_INCIDENTES_INICIAIS,
+    filtrarIncidentes,
+    obterProjetosFiltroIncidentes,
+} from "@/pages/Incidentes/Incidentes.utils"
 
 export const useIncidentes = () => {
-    const [periodo, setPeriodo] = useState<PeriodoMonitoramento>(15)
-    const [busca, setBusca] = useState("")
+    const [filtros, setFiltros] = useState<FiltrosIncidentes>(FILTROS_INCIDENTES_INICIAIS)
 
     const {
         data: incidentes = [],
@@ -16,34 +21,19 @@ export const useIncidentes = () => {
         refetch: atualizarIncidentes,
     } = useObterIncidentes()
 
-    const filtrados = useMemo(() => {
-        const termo = busca.trim().toLocaleLowerCase("pt-BR")
-        const limite = Date.now() - periodo * 24 * 60 * 60 * 1000
-        return incidentes
-            .filter((incidente) => {
-                const noPeriodo = new Date(incidente.iniciadoEm).getTime() >= limite
-                if (!noPeriodo) return false
-                return (
-                    !termo ||
-                    `${incidente.titulo} ${incidente.projetoNome} ${incidente.servico}`
-                        .toLocaleLowerCase("pt-BR")
-                        .includes(termo)
-                )
-            })
-            .sort((primeiro, segundo) => {
-                const primeiroAtivo = primeiro.status !== Enum.StatusIncidente.Resolvido
-                const segundoAtivo = segundo.status !== Enum.StatusIncidente.Resolvido
-                if (primeiroAtivo !== segundoAtivo) return primeiroAtivo ? -1 : 1
-                return (
-                    new Date(segundo.iniciadoEm).getTime() - new Date(primeiro.iniciadoEm).getTime()
-                )
-            })
-    }, [busca, incidentes, periodo])
+    const filtrados = useMemo(() => filtrarIncidentes(incidentes, filtros), [filtros, incidentes])
+    const projetos = useMemo(() => obterProjetosFiltroIncidentes(incidentes), [incidentes])
+
+    const alterarFiltro = <Campo extends keyof FiltrosIncidentes>(
+        campo: Campo,
+        valor: FiltrosIncidentes[Campo]
+    ) => setFiltros((atuais) => ({ ...atuais, [campo]: valor }))
 
     return {
-        periodo,
-        busca,
+        filtros,
         incidentes: filtrados,
+        projetos,
+        quantidadeFiltrosAtivos: contarFiltrosIncidentesAtivos(filtros),
         emAndamento: filtrados.filter((incidente) => incidente.status !== Enum.StatusIncidente.Resolvido)
             .length,
         resolvidos: filtrados.filter((incidente) => incidente.status === Enum.StatusIncidente.Resolvido)
@@ -53,7 +43,7 @@ export const useIncidentes = () => {
         isLoading: incidentesIsLoading,
         isError: incidentesIsError,
         atualizar: atualizarIncidentes,
-        setPeriodo,
-        setBusca,
+        alterarFiltro,
+        limparFiltros: () => setFiltros(FILTROS_INCIDENTES_INICIAIS),
     }
 }

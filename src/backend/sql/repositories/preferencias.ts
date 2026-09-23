@@ -13,6 +13,7 @@ type PreferenciasRow = {
     tema: string
     densidade: string
     nomeDesenvolvedor: string
+    sidebarCompacta: number
 }
 
 const ehTemaAplicacao = (tema: string): tema is Enum.TemaAplicacao => {
@@ -39,7 +40,8 @@ export const obterPreferencias = async (): Promise<ObterPreferencias.Response> =
             badge_icone AS badgeIcone,
             tema,
             densidade,
-            nome_desenvolvedor AS nomeDesenvolvedor
+            nome_desenvolvedor AS nomeDesenvolvedor,
+            sidebar_compacta AS sidebarCompacta
         FROM preferencias_aplicacao
         WHERE id = 1
     `)
@@ -60,6 +62,7 @@ export const obterPreferencias = async (): Promise<ObterPreferencias.Response> =
             ? preferencias.densidade
             : PREFERENCIAS_PADRAO.densidade,
         nomeDesenvolvedor: preferencias.nomeDesenvolvedor,
+        sidebarCompacta: preferencias.sidebarCompacta === 1,
     }
 }
 
@@ -81,7 +84,8 @@ export const salvarPreferencias = async (
                 tema = $7,
                 densidade = $8,
                 nome_desenvolvedor = $9,
-                atualizado_em = $10
+                sidebar_compacta = $10,
+                atualizado_em = $11
             WHERE id = 1
         `,
         [
@@ -94,6 +98,7 @@ export const salvarPreferencias = async (
             request.tema,
             request.densidade,
             request.nomeDesenvolvedor,
+            Number(request.sidebarCompacta),
             new Date().toISOString(),
         ]
     )

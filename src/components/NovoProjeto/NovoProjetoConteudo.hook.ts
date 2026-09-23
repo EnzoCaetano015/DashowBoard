@@ -14,13 +14,17 @@ import type { ProjetoRailway, ServicoRailway } from "@/backend/api/models/railwa
 import type { ProjetoSupabase } from "@/backend/api/models/supabase.types"
 import type { ProjetoVercel } from "@/backend/api/models/vercel.types"
 import type {
+    CampoInformacoesNovoProjeto,
     EtapaNovoProjeto,
     FormularioNovoProjeto,
     ServicoSelecionado,
 } from "@/components/NovoProjeto/NovoProjeto.types"
 import {
     criarFormularioNovoProjeto,
+    formularioNovoProjetoFoiAlterado,
     identificarServico,
+    inferirTagRepositorio,
+    obterErrosInformacoesNovoProjeto,
 } from "@/components/NovoProjeto/NovoProjeto.utils"
 import { obterMensagemErro } from "@/lib/utils/error"
 import { possuiRuntimeTauri } from "@/lib/utils/tauri"
@@ -30,7 +34,13 @@ export const useNovoProjetoConteudo = (open: boolean, onClose: () => void) => {
     const navigate = useNavigate()
 
     const [etapa, setEtapa] = useState<EtapaNovoProjeto>(1)
+    const [maiorEtapaVisitada, setMaiorEtapaVisitada] = useState<EtapaNovoProjeto>(1)
     const [formulario, setFormulario] = useState(criarFormularioNovoProjeto)
+    const [camposValidados, setCamposValidados] = useState<Record<CampoInformacoesNovoProjeto, boolean>>({
+        nome: false,
+        urlAplicacao: false,
+    })
+    const [confirmacaoDescarteAberta, setConfirmacaoDescarteAberta] = useState(false)
 
     const runtimeDisponivel = possuiRuntimeTauri()
 
@@ -168,7 +178,7 @@ export const useNovoProjetoConteudo = (open: boolean, onClose: () => void) => {
                         {
                             repositoryId: repositorio.id,
                             connectionId: repositorio.connectionId,
-                            tag: Enum.TagRepositorio.Documentacao,
+                            tag: inferirTagRepositorio(repositorio),
                         },
                     ],
                 }
@@ -204,20 +214,69 @@ export const useNovoProjetoConteudo = (open: boolean, onClose: () => void) => {
         })
     }
 
+    const errosInformacoes = obterErrosInformacoesNovoProjeto(formulario)
+    const errosInformacoesVisiveis = {
+        nome: camposValidados.nome ? errosInformacoes.nome : undefined,
+        urlAplicacao: camposValidados.urlAplicacao ? errosInformacoes.urlAplicacao : undefined,
+    }
+
+    const validarCampo = (campo: CampoInformacoesNovoProjeto) => {
+        setCamposValidados((atuais) => ({ ...atuais, [campo]: true }))
+    }
+
+    const focarPrimeiroCampoInvalido = () => {
+        const id = errosInformacoes.nome ? "novo-projeto-nome" : "novo-projeto-url"
+        document.getElementById(id)?.focus()
+    }
+
+    const validarInformacoes = () => {
+        setCamposValidados({ nome: true, urlAplicacao: true })
+        if (Object.keys(errosInformacoes).length === 0) return true
+        focarPrimeiroCampoInvalido()
+        return false
+    }
+
+    const irParaEtapa = (destino: EtapaNovoProjeto) => {
+        if (destino > maiorEtapaVisitada) return
+        if (destino > 1 && !validarInformacoes()) return
+        setEtapa(destino)
+    }
+
+    const editarEtapa = (destino: Exclude<EtapaNovoProjeto, 6>) => setEtapa(destino)
     const voltar = () => setEtapa((valor) => Math.max(1, valor - 1) as EtapaNovoProjeto)
     const continuar = () => {
-        if (etapa === 1 && !formulario.nome.trim()) {
-            toast.error("Informe o nome do projeto.")
+        if (etapa === 1 && !validarInformacoes()) return
+        const proximaEtapa = Math.min(6, etapa + 1) as EtapaNovoProjeto
+        setEtapa(proximaEtapa)
+        setMaiorEtapaVisitada((atual) => Math.max(atual, proximaEtapa) as EtapaNovoProjeto)
+    }
+
+    const resetarFormulario = () => {
+        setEtapa(1)
+        setMaiorEtapaVisitada(1)
+        setFormulario(criarFormularioNovoProjeto())
+        setCamposValidados({ nome: false, urlAplicacao: false })
+        setConfirmacaoDescarteAberta(false)
+    }
+
+    const solicitarFechamento = () => {
+        if (criarProjetoIsPending) return
+        if (formularioNovoProjetoFoiAlterado(formulario)) {
+            setConfirmacaoDescarteAberta(true)
             return
         }
-        setEtapa((valor) => Math.min(5, valor + 1) as EtapaNovoProjeto)
+        resetarFormulario()
+        onClose()
+    }
+
+    const manterEditando = () => setConfirmacaoDescarteAberta(false)
+    const descartarAlteracoes = () => {
+        resetarFormulario()
+        onClose()
     }
 
     useEffect(() => {
-        if (!open) {
-            setEtapa(1)
-            setFormulario(criarFormularioNovoProjeto())
-        }
+        if (!open) resetarFormulario()
     }, [open])
 
     const montarRequest = (): CriarProjeto.Request => {
@@ -253,19 +312,11 @@ export const useNovoProjetoConteudo = (open: boolean, onClose: () => void) => {
     }
 
     const concluir = async () => {
-        if (!formulario.nome.trim()) {
-            toast.error("Informe o nome do projeto.")
+        if (!validarInformacoes()) {
+            toast.error(errosInformacoes.nome ?? errosInformacoes.urlAplicacao)
             setEtapa(1)
+            requestAnimationFrame(focarPrimeiroCampoInvalido)
             return
-        }
-        if (formulario.urlAplicacao.trim()) {
-            try {
-                new URL(formulario.urlAplicacao)
-            } catch {
-                toast.error("Informe uma URL válida para a aplicação.")
-                setEtapa(1)
-                return
-            }
         }
 
         const criacao = criarProjeto(montarRequest())
@@ -276,8 +327,7 @@ export const useNovoProjetoConteudo = (open: boolean, onClose: () => void) => {
         })
         try {
             const projeto = await criacao
-            setFormulario(criarFormularioNovoProjeto())
-            setEtapa(1)
+            resetarFormulario()
             onClose()
             void navigate(`/projetos/${projeto.id}`)
         } catch {
@@ -288,7 +338,10 @@ export const useNovoProjetoConteudo = (open: boolean, onClose: () => void) => {
     const repositorios = repositoriosData?.repositories ?? []
     return {
         etapa,
+        maiorEtapaVisitada,
         formulario,
+        errosInformacoes: errosInformacoesVisiveis,
+        confirmacaoDescarteAberta,
         repositorios,
         repositoriosRelacionamento: repositorios.filter((repositorio) =>
             formulario.repositorios.some(({ repositoryId }) => repositoryId === repositorio.id)
@@ -337,6 +390,12 @@ export const useNovoProjetoConteudo = (open: boolean, onClose: () => void) => {
         voltar,
         continuar,
         concluir,
+        irParaEtapa,
+        editarEtapa,
+        validarCampo,
+        solicitarFechamento,
+        manterEditando,
+        descartarAlteracoes,
         alterarFormulario,
         alternarRepositorio,
         alterarTagRepositorio,

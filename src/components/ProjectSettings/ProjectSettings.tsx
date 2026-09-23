@@ -1,13 +1,28 @@
-import type { ObterProjetos } from "@/backend/api/models/projeto.types"
+import { Pencil } from "lucide-react"
+
+import type { ProjectSettingsProps } from "@/components/ProjectSettings/ProjectSettings.types"
+import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 
-export const ProjectSettings = ({ projeto }: { projeto: ObterProjetos.Projeto }) => (
+export const ProjectSettings = ({ projeto, onEditar }: ProjectSettingsProps) => (
     <Card className="border-border py-6 shadow-none">
         <CardContent className="px-6">
-            <h3 className="text-sm font-semibold">Configurações do projeto</h3>
-            <p className="mt-1 text-sm text-muted-foreground">
-                Ajuste intervalo de verificação, notificações e escopo de coleta.
-            </p>
+            <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                    <h3 className="text-sm font-semibold">Configurações do projeto</h3>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                        Confira as configurações persistidas para este agrupamento local.
+                    </p>
+                </div>
+                <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={onEditar}
+                >
+                    <Pencil />
+                    Editar configurações
+                </Button>
+            </div>
             <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2">
                 <Item
                     titulo="Intervalo"

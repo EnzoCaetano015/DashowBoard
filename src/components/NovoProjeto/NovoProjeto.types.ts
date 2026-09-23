@@ -11,7 +11,11 @@ import type { ModalControlProps } from "@/lib/types/modal"
 
 export type NovoProjetoConteudoProps = ModalControlProps
 
-export type EtapaNovoProjeto = 1 | 2 | 3 | 4 | 5
+export type EtapaNovoProjeto = 1 | 2 | 3 | 4 | 5 | 6
+
+export type CampoInformacoesNovoProjeto = "nome" | "urlAplicacao"
+
+export type ErrosInformacoesNovoProjeto = Partial<Record<CampoInformacoesNovoProjeto, string>>
 
 export type RepositorioSelecionado = {
     repositoryId: number
@@ -104,9 +108,11 @@ export type RepositoriosStepProps = {
 }
 
 export type InformacoesStepProps = Pick<FormularioNovoProjeto, "nome" | "descricao" | "urlAplicacao"> & {
+    erros: ErrosInformacoesNovoProjeto
     alterarNome: (valor: string) => void
     alterarDescricao: (valor: string) => void
     alterarUrl: (valor: string) => void
+    validarCampo: (campo: CampoInformacoesNovoProjeto) => void
 }
 
 export type RelacionamentosStepProps = {
@@ -124,4 +130,10 @@ export type MonitoramentoStepProps = Pick<
     alterarTimeout: (valor: number) => void
     alterarNotificacoes: (valor: boolean) => void
     alterarColetaDeployments: (valor: boolean) => void
+}
+
+export type RevisaoStepProps = {
+    formulario: FormularioNovoProjeto
+    repositorios: RepositorioGitHub[]
+    editarEtapa: (etapa: Exclude<EtapaNovoProjeto, 6>) => void
 }

@@ -1,5 +1,6 @@
 import { Enum } from "@/backend/api/enums/enum"
 import type { ObterProjetos } from "@/backend/api/models/projeto.types"
+import type { PeriodoMonitoramento } from "@/lib/types/monitoring"
 
 export type EventoHistorico = {
     id: string
@@ -61,3 +62,18 @@ export const obterEventosHistorico = (projeto: ObterProjetos.Projeto): EventoHis
                       : ("warning" as const),
         })),
     ].sort((primeiro, segundo) => segundo.data.localeCompare(primeiro.data))
+
+export const filtrarEventosHistoricoPorPeriodo = (
+    eventos: EventoHistorico[],
+    periodo: PeriodoMonitoramento,
+    agora = new Date()
+) => {
+    const inicioPeriodo = new Date(agora)
+    inicioPeriodo.setDate(inicioPeriodo.getDate() - periodo)
+    const inicioPeriodoMs = inicioPeriodo.getTime()
+
+    return eventos.filter((evento) => {
+        const dataEventoMs = Date.parse(evento.data)
+        return !Number.isNaN(dataEventoMs) && dataEventoMs >= inicioPeriodoMs
+    })
+}

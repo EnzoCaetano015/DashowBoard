@@ -91,7 +91,10 @@ export const DetalhesProjetoPage = () => {
                     <ProjectHistory projeto={projeto} />
                 </TabsContent>
                 <TabsContent value="configuracoes">
-                    <ProjectSettings projeto={projeto} />
+                    <ProjectSettings
+                        projeto={projeto}
+                        onEditar={() => setModal("editarProjeto", { open: true })}
+                    />
                 </TabsContent>
             </Tabs>
             <EditProjectDialog

@@ -4,6 +4,13 @@ import type { PeriodoMonitoramento } from "@/lib/types/monitoring"
 
 export const PERIODOS_MONITORAMENTO: PeriodoMonitoramento[] = [5, 15, 30]
 export const PERIODO_DASHBOARD: PeriodoMonitoramento = 15
+export const DIAS_HISTORICO_MONITORAMENTO = 30
+
+export const obterLimiteHistoricoMonitoramento = (referencia = new Date()) => {
+    return new Date(
+        referencia.getTime() - DIAS_HISTORICO_MONITORAMENTO * 24 * 60 * 60 * 1000
+    ).toISOString()
+}
 
 export const TEMPO_CACHE_REPOSITORIOS_GITHUB = 1000 * 60 * 5
 export const TEMPO_CACHE_PROJETOS_VERCEL = 1000 * 60 * 5

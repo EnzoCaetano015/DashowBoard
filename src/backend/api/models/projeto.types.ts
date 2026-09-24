@@ -187,8 +187,8 @@ export namespace SalvarSnapshotsServicos {
     export type Response = void
 }
 
-export namespace SalvarVerificacaoProjeto {
-    export type Request = {
+export namespace SalvarVerificacoesProjeto {
+    export type Atualizacao = {
         projetoId: string
         url: string
         status: Enum.StatusProjeto
@@ -197,5 +197,7 @@ export namespace SalvarVerificacaoProjeto {
         mensagem: string | null
         verificadoEm: string
     }
+
+    export type Request = { atualizacoes: Atualizacao[] }
     export type Response = void
 }

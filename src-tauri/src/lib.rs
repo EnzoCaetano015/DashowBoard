@@ -1,20 +1,22 @@
 mod github;
 mod health_check;
 mod railway;
+mod sqlite_transaction;
 mod supabase;
 mod vercel;
 
 use github::client::GitHubClient;
-use health_check::verificar_health_check_projeto;
 use github::commands::{
     obter_conexoes_github, obter_repositorios_github, remover_conexao_github,
     salvar_conexao_github, testar_conexao_github,
 };
+use health_check::verificar_health_check_projeto;
 use railway::client::RailwayClient;
 use railway::commands::{
     obter_conexao_railway, obter_projetos_railway, remover_conexao_railway, salvar_conexao_railway,
     testar_conexao_railway,
 };
+use sqlite_transaction::executar_transacao_sqlite;
 use supabase::client::SupabaseClient;
 use supabase::commands::{
     obter_conexao_supabase, obter_projetos_supabase, remover_conexao_supabase,
@@ -121,6 +123,7 @@ pub fn run() {
             remover_conexao_supabase,
             obter_projetos_supabase,
             verificar_health_check_projeto,
+            executar_transacao_sqlite,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

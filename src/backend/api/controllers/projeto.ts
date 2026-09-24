@@ -9,7 +9,7 @@ import {
     type ExcluirProjeto,
     type ObterProjetoPorId,
     type SalvarSnapshotsServicos,
-    type SalvarVerificacaoProjeto,
+    type SalvarVerificacoesProjeto,
 } from "@/backend/api/models/projeto.types"
 import {
     atualizarProjeto,
@@ -19,7 +19,7 @@ import {
     obterDashboard,
     obterProjetoPorId,
     salvarSnapshotsServicos,
-    salvarVerificacaoProjeto,
+    salvarVerificacoesProjeto,
 } from "@/backend/sql/repositories/projeto"
 import { queryClient } from "@/lib/config/query-client"
 import { possuiRuntimeTauri } from "@/lib/utils/tauri"
@@ -93,9 +93,10 @@ export const useSalvarSnapshotsServicos = () => {
     })
 }
 
-export const useSalvarVerificacaoProjeto = () => {
+export const useSalvarVerificacoesProjeto = () => {
     return useMutation({
-        mutationFn: (request: SalvarVerificacaoProjeto.Request) => salvarVerificacaoProjeto(request),
+        mutationFn: (request: SalvarVerificacoesProjeto.Request) =>
+            salvarVerificacoesProjeto(request),
         onSuccess: invalidarMonitoramento,
     })
 }

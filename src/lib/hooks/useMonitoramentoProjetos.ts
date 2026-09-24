@@ -5,13 +5,16 @@ import { useObterHealthChecksProjetos } from "@/backend/api/controllers/health-c
 import {
     useObterProjetos,
     useSalvarSnapshotsServicos,
-    useSalvarVerificacaoProjeto,
+    useSalvarVerificacoesProjeto,
 } from "@/backend/api/controllers/projeto"
 import { useObterConexaoRailway, useObterProjetosRailway } from "@/backend/api/controllers/railway"
 import { useObterConexaoSupabase, useObterProjetosSupabase } from "@/backend/api/controllers/supabase"
 import { useObterConexaoVercel, useObterProjetosVercel } from "@/backend/api/controllers/vercel"
 import { Enum } from "@/backend/api/enums/enum"
-import type { SalvarSnapshotsServicos } from "@/backend/api/models/projeto.types"
+import type {
+    SalvarSnapshotsServicos,
+    SalvarVerificacoesProjeto,
+} from "@/backend/api/models/projeto.types"
 import { resolverAtualizacaoMonitoramento } from "@/lib/utils/monitoramento"
 import { normalizarStatusProjetoVercel } from "@/lib/utils/vercel"
 
@@ -51,7 +54,7 @@ export const useMonitoramentoProjetos = () => {
     } = useObterProjetosRailway(Boolean(conexaoRailway))
     const { healthChecks } = useObterHealthChecksProjetos(projetos)
     const { mutateAsync: salvarSnapshots } = useSalvarSnapshotsServicos()
-    const { mutateAsync: salvarVerificacao } = useSalvarVerificacaoProjeto()
+    const { mutateAsync: salvarVerificacoes } = useSalvarVerificacoesProjeto()
 
     useEffect(() => {
         const atualizacoes: SalvarSnapshotsServicos.Atualizacao[] = []
@@ -186,6 +189,8 @@ export const useMonitoramentoProjetos = () => {
     ])
 
     useEffect(() => {
+        const atualizacoes: SalvarVerificacoesProjeto.Atualizacao[] = []
+        const novasAssinaturas = new Map<string, string>()
         for (const { projetoId, consulta } of healthChecks) {
             if (!consulta.data || consulta.isFetching) continue
             const projeto = projetos.find(({ id }) => id === projetoId)
@@ -193,7 +198,8 @@ export const useMonitoramentoProjetos = () => {
             const assinatura = JSON.stringify(consulta.data)
             if (assinaturasHealthCheck.current.get(projetoId) === assinatura) continue
             assinaturasHealthCheck.current.set(projetoId, assinatura)
-            void salvarVerificacao({
+            novasAssinaturas.set(projetoId, assinatura)
+            atualizacoes.push({
                 projetoId,
                 url: projeto.urlAplicacao,
                 status: consulta.data.status,
@@ -201,12 +207,19 @@ export const useMonitoramentoProjetos = () => {
                 responseTimeMs: consulta.data.tempoRespostaMs,
                 mensagem: consulta.data.mensagem,
                 verificadoEm: consulta.data.verificadoEm,
-            }).catch(() => {
-                assinaturasHealthCheck.current.delete(projetoId)
-                toast.error(`Não foi possível persistir o health check de ${projeto.nome}.`, {
-                    id: `erro-health-check-${projetoId}`,
-                })
             })
         }
-    }, [healthChecks, projetos, salvarVerificacao])
+
+        if (atualizacoes.length === 0) return
+        void salvarVerificacoes({ atualizacoes }).catch(() => {
+            for (const [projetoId, assinatura] of novasAssinaturas) {
+                if (assinaturasHealthCheck.current.get(projetoId) === assinatura) {
+                    assinaturasHealthCheck.current.delete(projetoId)
+                }
+            }
+            toast.error("Não foi possível persistir os health checks dos projetos.", {
+                id: "erro-persistencia-health-checks",
+            })
+        })
+    }, [healthChecks, projetos, salvarVerificacoes])
 }

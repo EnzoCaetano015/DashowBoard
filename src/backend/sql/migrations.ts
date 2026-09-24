@@ -1,5 +1,13 @@
 import type Database from "@tauri-apps/plugin-sql"
 
+import {
+    executarTransacaoSqlite,
+    type OperacaoSqlite,
+} from "@/backend/sql/transaction"
+
+type ExecutorMigracoes = Pick<Database, "execute" | "select">
+type ExecutarTransacao = (operacoes: OperacaoSqlite[]) => Promise<void>
+
 type Migracao = {
     versao: number
     nome: string
@@ -227,7 +235,51 @@ const MIGRACOES: Migracao[] = [
     },
 ]
 
-export const executarMigracoes = async (database: Database) => {
+type ColunaTabela = {
+    name: string
+}
+
+type ObjetoSchema = {
+    name: string
+}
+
+const selecionarComandosPendentes = async (
+    database: ExecutorMigracoes,
+    migracao: Migracao
+) => {
+    if (migracao.versao !== 4) return migracao.comandos
+
+    const [colunasServicos, colunasIncidentes, objetos] = await Promise.all([
+        database.select<ColunaTabela[]>("PRAGMA table_info(projeto_servicos)"),
+        database.select<ColunaTabela[]>("PRAGMA table_info(incidentes)"),
+        database.select<ObjetoSchema[]>(
+            `
+                SELECT name
+                FROM sqlite_master
+                WHERE name IN (
+                    'verificacoes_projeto',
+                    'ix_verificacoes_projeto_data',
+                    'ux_incidente_health_check_aberto'
+                )
+            `
+        ),
+    ])
+    const nomesObjetos = new Set(objetos.map(({ name }) => name))
+    const comandosAplicados = [
+        colunasServicos.some(({ name }) => name === "mensagem_status"),
+        colunasIncidentes.some(({ name }) => name === "origem"),
+        nomesObjetos.has("verificacoes_projeto"),
+        nomesObjetos.has("ix_verificacoes_projeto_data"),
+        nomesObjetos.has("ux_incidente_health_check_aberto"),
+    ]
+
+    return migracao.comandos.filter((_, indice) => !comandosAplicados[indice])
+}
+
+export const executarMigracoes = async (
+    database: ExecutorMigracoes,
+    executarTransacao: ExecutarTransacao = executarTransacaoSqlite
+) => {
     await database.execute(`
         CREATE TABLE IF NOT EXISTS migracoes (
             versao INTEGER PRIMARY KEY,
@@ -242,14 +294,13 @@ export const executarMigracoes = async (database: Database) => {
     for (const migracao of MIGRACOES) {
         if (versoesAplicadas.has(migracao.versao)) continue
 
-        for (const comando of migracao.comandos) {
-            await database.execute(comando)
-        }
-
-        await database.execute("INSERT INTO migracoes (versao, nome, aplicada_em) VALUES ($1, $2, $3)", [
-            migracao.versao,
-            migracao.nome,
-            new Date().toISOString(),
+        const comandosPendentes = await selecionarComandosPendentes(database, migracao)
+        await executarTransacao([
+            ...comandosPendentes.map((query) => ({ query })),
+            {
+                query: "INSERT INTO migracoes (versao, nome, aplicada_em) VALUES ($1, $2, $3)",
+                values: [migracao.versao, migracao.nome, new Date().toISOString()],
+            },
         ])
     }
 }

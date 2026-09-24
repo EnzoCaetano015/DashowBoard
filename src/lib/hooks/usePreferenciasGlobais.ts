@@ -65,6 +65,7 @@ export const usePreferenciasGlobais = () => {
             if (preferencias.notificacoesSistema) {
                 for (const incidente of ativos) {
                     if (incidentesConhecidos.current.has(incidente.id)) continue
+                    if (!incidente.notificacoesAtivas) continue
 
                     void enviarNotificacaoSistema(
                         incidente.projetoNome,

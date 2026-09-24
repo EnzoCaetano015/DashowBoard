@@ -1,17 +1,18 @@
-import { ExternalLink, RefreshCw } from "lucide-react"
+import { ExternalLink, Loader2, RefreshCw } from "lucide-react"
 
 import { IconAction } from "@/components/IconAction/IconAction"
 import type { ProjectServiceActionsProps } from "@/components/ProjectServices/ProjectServiceActions.types"
 
-export const ProjectServiceActions = ({ servico, onAtualizar }: ProjectServiceActionsProps) => (
+export const ProjectServiceActions = ({ servico, atualizando, onAtualizar }: ProjectServiceActionsProps) => (
     <div className="flex justify-end gap-1">
         <IconAction
             size="icon-sm"
             variant="ghost"
             label={`Atualizar dados do serviço ${servico.nome}`}
-            onClick={onAtualizar}
+            disabled={atualizando}
+            onClick={() => onAtualizar(servico)}
         >
-            <RefreshCw />
+            {atualizando ? <Loader2 className="animate-spin" /> : <RefreshCw />}
         </IconAction>
         {servico.urlExterna && (
             <IconAction

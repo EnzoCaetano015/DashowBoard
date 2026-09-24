@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query"
 
+import { useObterPreferencias } from "@/backend/api/controllers/preferencias"
 import {
     obterConexaoRailway,
     obterProjetosRailway,
@@ -8,7 +9,7 @@ import {
     testarConexaoRailway,
 } from "@/backend/api/integrations/railway"
 import { RailwayQueryKeys, type SalvarConexaoRailway } from "@/backend/api/models/railway.types"
-import { INTERVALO_ATUALIZACAO_RAILWAY, TEMPO_CACHE_PROJETOS_RAILWAY } from "@/lib/config/monitoring"
+import { obterConfiguracaoMonitoramento, TEMPO_CACHE_PROJETOS_RAILWAY } from "@/lib/config/monitoring"
 import { queryClient } from "@/lib/config/query-client"
 import { deveTentarNovamenteRailway } from "@/lib/utils/railway"
 import { possuiRuntimeTauri } from "@/lib/utils/tauri"
@@ -49,6 +50,10 @@ export const useRemoverConexaoRailway = () => {
 }
 
 export const useObterProjetosRailway = (enabled = true) => {
+    const { data: preferencias } = useObterPreferencias()
+    const { intervaloAtualizacao, verificacaoSegundoPlano } =
+        obterConfiguracaoMonitoramento(preferencias)
+
     return useQuery({
         queryKey: [RailwayQueryKeys.Projetos],
         queryFn: async () => {
@@ -58,8 +63,8 @@ export const useObterProjetosRailway = (enabled = true) => {
         },
         enabled: enabled && possuiRuntimeTauri(),
         staleTime: TEMPO_CACHE_PROJETOS_RAILWAY,
-        refetchInterval: INTERVALO_ATUALIZACAO_RAILWAY,
-        refetchIntervalInBackground: true,
+        refetchInterval: intervaloAtualizacao,
+        refetchIntervalInBackground: verificacaoSegundoPlano,
         refetchOnReconnect: true,
         retry: deveTentarNovamenteRailway,
     })

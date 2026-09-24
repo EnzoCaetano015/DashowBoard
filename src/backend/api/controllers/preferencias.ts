@@ -56,7 +56,11 @@ export const useObterPreferencias = () => {
 export const useSalvarPreferencias = () => {
     return useMutation({
         mutationFn: (request: SalvarPreferencias.Request) => {
-            if (!possuiRuntimeTauri()) return Promise.resolve(request)
+            if (!possuiRuntimeTauri()) {
+                return Promise.reject(
+                    new Error("As preferências só podem ser salvas no aplicativo desktop.")
+                )
+            }
             return salvarPreferencias(request)
         },
         onMutate: async (preferencias) => {
@@ -80,6 +84,7 @@ export const useObterInformacoesDesktop = () => {
     return useQuery<ObterInformacoesDesktop.Response>({
         queryKey: [PreferenciasQueryKeys.ObterInformacoesDesktop],
         queryFn: obterInformacoesDesktop,
+        enabled: possuiRuntimeTauri(),
         staleTime: Number.POSITIVE_INFINITY,
         retry: false,
     })

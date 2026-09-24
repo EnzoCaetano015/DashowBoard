@@ -23,6 +23,8 @@ export const DetalhesProjetoPage = () => {
         isFetching,
         isError,
         atualizar,
+        atualizarServico,
+        servicoAtualizando,
         alterarAba,
     } = useDetalhesProjeto()
 
@@ -81,7 +83,8 @@ export const DetalhesProjetoPage = () => {
                 <TabsContent value="servicos">
                     <ProjectServices
                         servicos={projeto.servicos}
-                        onAtualizar={() => void atualizar()}
+                        onAtualizar={atualizarServico}
+                        servicoAtualizando={servicoAtualizando}
                     />
                 </TabsContent>
                 <TabsContent value="repositorios">

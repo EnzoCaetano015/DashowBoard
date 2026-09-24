@@ -11,6 +11,12 @@ export type FormularioEditarProjeto = {
     coletarDeployments: boolean
 }
 
+export type CampoInformacoesEditarProjeto = "nome" | "urlAplicacao"
+
+export type ErrosInformacoesEditarProjeto = Partial<
+    Record<CampoInformacoesEditarProjeto, string>
+>
+
 export type EditProjectDialogProps = ModalControlProps & {
     projeto: ObterProjetos.Projeto
 }

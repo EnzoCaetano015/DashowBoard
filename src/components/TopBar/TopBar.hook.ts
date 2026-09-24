@@ -8,6 +8,7 @@ import { useObterProjetos } from "@/backend/api/controllers/projeto"
 import { Enum } from "@/backend/api/enums/enum"
 import { DashboardQueryKeys } from "@/backend/api/models/dashboard.types"
 import { GitHubQueryKeys } from "@/backend/api/models/github.types"
+import { HealthCheckQueryKeys } from "@/backend/api/models/health-check.types"
 import { IncidenteQueryKeys } from "@/backend/api/models/incidente.types"
 import { ProjetoQueryKeys } from "@/backend/api/models/projeto.types"
 import { RailwayQueryKeys } from "@/backend/api/models/railway.types"
@@ -23,6 +24,7 @@ const CHAVES_ATUALIZAVEIS = new Set<unknown>([
     DashboardQueryKeys.ObterDashboard,
     GitHubQueryKeys.Conexoes,
     GitHubQueryKeys.Repositorios,
+    HealthCheckQueryKeys.VerificarProjeto,
     IncidenteQueryKeys.ObterIncidentes,
     ProjetoQueryKeys.ObterProjetoPorId,
     ProjetoQueryKeys.ObterProjetos,

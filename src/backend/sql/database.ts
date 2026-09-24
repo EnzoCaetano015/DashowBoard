@@ -16,6 +16,7 @@ const TABELAS_NECESSARIAS = [
     "projeto_servicos",
     "projetos",
     "status_recursos",
+    "verificacoes_projeto",
 ] as const
 
 const validarBancoDadosDesenvolvimento = async (database: Database) => {

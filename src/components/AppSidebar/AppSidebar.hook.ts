@@ -6,8 +6,10 @@ import {
 } from "@/backend/api/controllers/preferencias"
 import { PREFERENCIAS_PADRAO } from "@/lib/config/preferencias"
 import { obterMensagemErro } from "@/lib/utils/error"
+import { possuiRuntimeTauri } from "@/lib/utils/tauri"
 
 export const useAppSidebar = () => {
+    const runtimeDisponivel = possuiRuntimeTauri()
     const {
         data: preferencias = PREFERENCIAS_PADRAO,
         isLoading: preferenciasIsLoading,
@@ -17,7 +19,13 @@ export const useAppSidebar = () => {
         useSalvarPreferencias()
 
     const alternarSidebar = () => {
-        if (preferenciasIsLoading || preferenciasIsError || salvarPreferenciasIsPending) return
+        if (
+            !runtimeDisponivel ||
+            preferenciasIsLoading ||
+            preferenciasIsError ||
+            salvarPreferenciasIsPending
+        )
+            return
 
         void salvarPreferencias({
             ...preferencias,
@@ -28,9 +36,12 @@ export const useAppSidebar = () => {
     }
 
     return {
-        compacta: preferencias.sidebarCompacta,
+        compacta: runtimeDisponivel ? preferencias.sidebarCompacta : false,
         alternarSidebar,
         alternarSidebarDesabilitado:
-            preferenciasIsLoading || preferenciasIsError || salvarPreferenciasIsPending,
+            !runtimeDisponivel ||
+            preferenciasIsLoading ||
+            preferenciasIsError ||
+            salvarPreferenciasIsPending,
     }
 }

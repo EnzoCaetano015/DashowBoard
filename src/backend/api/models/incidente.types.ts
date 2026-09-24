@@ -16,6 +16,8 @@ export namespace ObterIncidentes {
         servicoId: string | null
         servico: string
         provider: Enum.Provider | null
+        origem: Enum.OrigemIncidente
+        notificacoesAtivas: boolean
         status: Enum.StatusIncidente
         severidade: Enum.SeveridadeIncidente
         iniciadoEm: string

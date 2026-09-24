@@ -1,7 +1,7 @@
 import { Loader2 } from "lucide-react"
 
 import { Enum } from "@/backend/api/enums/enum"
-import type { StatusBadgeProps } from "@/components/StatusBadge/StatusBadge.types"
+import type { StatusBadgeProps, StatusDotProps } from "@/components/StatusBadge/StatusBadge.types"
 import { estilosStatus } from "@/components/StatusBadge/StatusBadge.utils"
 import { cn } from "@/lib/utils"
 import { labelStatusProjeto } from "@/lib/utils/status"
@@ -21,15 +21,26 @@ export const StatusBadge = ({ status, tamanho = "sm", className }: StatusBadgePr
             )}
         >
             {status === Enum.StatusProjeto.Atualizando ? (
-                <Loader2 className="size-3 animate-spin" />
+                <Loader2
+                    aria-hidden="true"
+                    className="size-3 animate-spin"
+                />
             ) : (
-                <span className={cn("status-dot", estilo.ponto)} />
+                <span
+                    aria-hidden="true"
+                    className={cn("status-dot", estilo.ponto)}
+                />
             )}
             {labelStatusProjeto[status]}
         </span>
     )
 }
 
-export const StatusDot = ({ status, className }: Pick<StatusBadgeProps, "status" | "className">) => (
-    <span className={cn("status-dot", estilosStatus[status].ponto, className)} />
+export const StatusDot = ({ status, className, decorativo = false }: StatusDotProps) => (
+    <span
+        role={decorativo ? undefined : "img"}
+        aria-hidden={decorativo || undefined}
+        aria-label={decorativo ? undefined : `Status: ${labelStatusProjeto[status]}`}
+        className={cn("status-dot", estilosStatus[status].ponto, className)}
+    />
 )

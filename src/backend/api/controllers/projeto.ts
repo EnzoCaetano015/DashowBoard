@@ -8,7 +8,8 @@ import {
     type CriarProjeto,
     type ExcluirProjeto,
     type ObterProjetoPorId,
-    type SalvarSnapshotServico,
+    type SalvarSnapshotsServicos,
+    type SalvarVerificacaoProjeto,
 } from "@/backend/api/models/projeto.types"
 import {
     atualizarProjeto,
@@ -17,7 +18,8 @@ import {
     listarProjetos,
     obterDashboard,
     obterProjetoPorId,
-    salvarSnapshotServico,
+    salvarSnapshotsServicos,
+    salvarVerificacaoProjeto,
 } from "@/backend/sql/repositories/projeto"
 import { queryClient } from "@/lib/config/query-client"
 import { possuiRuntimeTauri } from "@/lib/utils/tauri"
@@ -79,12 +81,21 @@ export const useExcluirProjeto = () => {
     })
 }
 
-export const useSalvarSnapshotServico = () => {
+const invalidarMonitoramento = async () => {
+    await invalidarProjetos()
+    await queryClient.invalidateQueries({ queryKey: [IncidenteQueryKeys.ObterIncidentes] })
+}
+
+export const useSalvarSnapshotsServicos = () => {
     return useMutation({
-        mutationFn: (request: SalvarSnapshotServico.Request) => salvarSnapshotServico(request),
-        onSuccess: async () => {
-            await invalidarProjetos()
-            await queryClient.invalidateQueries({ queryKey: [IncidenteQueryKeys.ObterIncidentes] })
-        },
+        mutationFn: (request: SalvarSnapshotsServicos.Request) => salvarSnapshotsServicos(request),
+        onSuccess: invalidarMonitoramento,
+    })
+}
+
+export const useSalvarVerificacaoProjeto = () => {
+    return useMutation({
+        mutationFn: (request: SalvarVerificacaoProjeto.Request) => salvarVerificacaoProjeto(request),
+        onSuccess: invalidarMonitoramento,
     })
 }

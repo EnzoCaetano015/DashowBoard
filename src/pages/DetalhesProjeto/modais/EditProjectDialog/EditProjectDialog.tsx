@@ -9,10 +9,8 @@ import { useEditProjectDialog } from "@/pages/DetalhesProjeto/modais/EditProject
 import type { EditProjectDialogProps } from "@/pages/DetalhesProjeto/modais/EditProjectDialog/EditProjectDialog.types"
 
 export const EditProjectDialog = ({ open, onClose, projeto }: EditProjectDialogProps) => {
-    const { formulario, atualizarProjetoIsPending, alterarCampo, salvar } = useEditProjectDialog(
-        projeto,
-        onClose
-    )
+    const { formulario, erros, atualizarProjetoIsPending, alterarCampo, validarCampo, salvar } =
+        useEditProjectDialog(projeto, onClose)
 
     return (
         <Modal.Content
@@ -40,8 +38,19 @@ export const EditProjectDialog = ({ open, onClose, projeto }: EditProjectDialogP
                                 id="editar-projeto-nome"
                                 value={formulario.nome}
                                 onChange={({ target }) => alterarCampo("nome", target.value)}
+                                onBlur={() => validarCampo("nome")}
                                 disabled={atualizarProjetoIsPending}
+                                aria-invalid={Boolean(erros.nome)}
+                                aria-describedby={erros.nome ? "editar-projeto-nome-erro" : undefined}
                             />
+                            {erros.nome && (
+                                <p
+                                    id="editar-projeto-nome-erro"
+                                    className="text-xs text-destructive"
+                                >
+                                    {erros.nome}
+                                </p>
+                            )}
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="editar-projeto-descricao">Descrição curta</Label>
@@ -59,10 +68,23 @@ export const EditProjectDialog = ({ open, onClose, projeto }: EditProjectDialogP
                                 id="editar-projeto-url"
                                 value={formulario.urlAplicacao}
                                 onChange={({ target }) => alterarCampo("urlAplicacao", target.value)}
+                                onBlur={() => validarCampo("urlAplicacao")}
                                 disabled={atualizarProjetoIsPending}
                                 type="url"
                                 placeholder="https://app.exemplo.com"
+                                aria-invalid={Boolean(erros.urlAplicacao)}
+                                aria-describedby={
+                                    erros.urlAplicacao ? "editar-projeto-url-erro" : undefined
+                                }
                             />
+                            {erros.urlAplicacao && (
+                                <p
+                                    id="editar-projeto-url-erro"
+                                    className="text-xs text-destructive"
+                                >
+                                    {erros.urlAplicacao}
+                                </p>
+                            )}
                         </div>
                     </div>
 

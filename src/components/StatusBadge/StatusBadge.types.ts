@@ -5,3 +5,7 @@ export type StatusBadgeProps = {
     tamanho?: "sm" | "md"
     className?: string
 }
+
+export type StatusDotProps = Pick<StatusBadgeProps, "status" | "className"> & {
+    decorativo?: boolean
+}

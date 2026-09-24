@@ -9,6 +9,8 @@ type IncidenteRow = {
     servicoId: string | null
     servico: string | null
     provider: string | null
+    origem: string
+    notificacoesAtivas: number
     titulo: string
     descricao: string | null
     status: string
@@ -24,6 +26,13 @@ type AbrirIncidenteRequest = {
     status: Enum.StatusProjeto
 }
 
+type AbrirIncidenteHealthCheckRequest = {
+    projetoId: string
+    projetoNome: string
+    status: Enum.StatusProjeto
+    mensagem: string | null
+}
+
 const mapearIncidente = (row: IncidenteRow): ObterIncidentes.Incidente => {
     const fim = row.resolvidoEm ? new Date(row.resolvidoEm).getTime() : Date.now()
     const inicio = new Date(row.abertoEm).getTime()
@@ -36,8 +45,13 @@ const mapearIncidente = (row: IncidenteRow): ObterIncidentes.Incidente => {
         servicoId: row.servicoId,
         titulo: row.titulo,
         descricao: row.descricao,
-        servico: row.servico ?? "Serviço removido",
+        servico:
+            row.origem === Enum.OrigemIncidente.HealthCheck
+                ? "URL da aplicação"
+                : (row.servico ?? "Serviço removido"),
         provider: row.provider as Enum.Provider | null,
+        origem: row.origem as Enum.OrigemIncidente,
+        notificacoesAtivas: row.notificacoesAtivas === 1,
         status: row.status as Enum.StatusIncidente,
         severidade: row.severidade as Enum.SeveridadeIncidente,
         iniciadoEm: row.abertoEm,
@@ -57,6 +71,8 @@ const selecionarIncidentes = async (projetoId?: string) => {
                 i.servico_id AS servicoId,
                 s.nome AS servico,
                 s.provider,
+                i.origem,
+                p.notificacoes_ativas AS notificacoesAtivas,
                 i.titulo,
                 i.descricao,
                 i.status,
@@ -94,6 +110,8 @@ export const obterIncidenteAberto = async (servicoId: string) => {
                 i.servico_id AS servicoId,
                 s.nome AS servico,
                 s.provider,
+                i.origem,
+                p.notificacoes_ativas AS notificacoesAtivas,
                 i.titulo,
                 i.descricao,
                 i.status,
@@ -147,5 +165,60 @@ export const resolverIncidente = async (servicoId: string) => {
             WHERE servico_id = $3 AND resolvido_em IS NULL
         `,
         [Enum.StatusIncidente.Resolvido, new Date().toISOString(), servicoId]
+    )
+}
+
+export const abrirIncidenteHealthCheck = async (request: AbrirIncidenteHealthCheckRequest) => {
+    const database = await obterBancoDados()
+    const [existente] = await database.select<Array<{ id: string }>>(
+        `
+            SELECT id
+            FROM incidentes
+            WHERE projeto_id = $1 AND origem = $2 AND resolvido_em IS NULL
+            LIMIT 1
+        `,
+        [request.projetoId, Enum.OrigemIncidente.HealthCheck]
+    )
+    if (existente) return
+
+    await database.execute(
+        `
+            INSERT INTO incidentes (
+                id, projeto_id, servico_id, titulo, descricao, status, severidade, aberto_em, origem
+            ) VALUES ($1, $2, NULL, $3, $4, $5, $6, $7, $8)
+        `,
+        [
+            crypto.randomUUID(),
+            request.projetoId,
+            `${request.projetoNome} ${
+                request.status === Enum.StatusProjeto.Offline
+                    ? "ficou indisponível"
+                    : "está respondendo com falhas"
+            }`,
+            request.mensagem ?? "Mudança detectada pelo health check da URL da aplicação.",
+            Enum.StatusIncidente.EmAndamento,
+            request.status === Enum.StatusProjeto.Offline
+                ? Enum.SeveridadeIncidente.Alta
+                : Enum.SeveridadeIncidente.Media,
+            new Date().toISOString(),
+            Enum.OrigemIncidente.HealthCheck,
+        ]
+    )
+}
+
+export const resolverIncidenteHealthCheck = async (projetoId: string) => {
+    const database = await obterBancoDados()
+    await database.execute(
+        `
+            UPDATE incidentes
+            SET status = $1, resolvido_em = $2
+            WHERE projeto_id = $3 AND origem = $4 AND resolvido_em IS NULL
+        `,
+        [
+            Enum.StatusIncidente.Resolvido,
+            new Date().toISOString(),
+            projetoId,
+            Enum.OrigemIncidente.HealthCheck,
+        ]
     )
 }

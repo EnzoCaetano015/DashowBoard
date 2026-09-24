@@ -5,7 +5,7 @@ import { StatusDot } from "@/components/StatusBadge/StatusBadge"
 import { Card, CardContent } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 
-export const ProjectServiceCard = ({ servico, onAtualizar }: ProjectServiceActionsProps) => (
+export const ProjectServiceCard = ({ servico, atualizando, onAtualizar }: ProjectServiceActionsProps) => (
     <Card className="gap-3 border-border py-4 shadow-none">
         <CardContent className="space-y-3 px-4">
             <div className="flex items-start justify-between gap-3">
@@ -15,6 +15,7 @@ export const ProjectServiceCard = ({ servico, onAtualizar }: ProjectServiceActio
                 </div>
                 <ProjectServiceActions
                     servico={servico}
+                    atualizando={atualizando}
                     onAtualizar={onAtualizar}
                 />
             </div>
@@ -48,6 +49,12 @@ export const ProjectServiceCard = ({ servico, onAtualizar }: ProjectServiceActio
                         {servico.ultimaVerificacao ?? "Aguardando primeira verificação"}
                     </dd>
                 </div>
+                {servico.mensagemStatus && (
+                    <div className="col-span-2">
+                        <dt className="text-muted-foreground">Detalhe do monitoramento</dt>
+                        <dd className="mt-0.5 text-warning">{servico.mensagemStatus}</dd>
+                    </div>
+                )}
             </dl>
         </CardContent>
     </Card>

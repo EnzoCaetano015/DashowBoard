@@ -5,6 +5,7 @@ import type {
     FormularioNovoProjeto,
     ServicoSelecionado,
 } from "@/components/NovoProjeto/NovoProjeto.types"
+import { validarInformacoesProjeto } from "@/lib/utils/projeto"
 
 export const etapasNovoProjeto = [
     { id: 1, titulo: "Informações" },
@@ -80,21 +81,7 @@ export const inferirTagRepositorio = (repositorio: RepositorioGitHub): Enum.TagR
 export const obterErrosInformacoesNovoProjeto = (
     formulario: Pick<FormularioNovoProjeto, "nome" | "urlAplicacao">
 ): ErrosInformacoesNovoProjeto => {
-    const erros: ErrosInformacoesNovoProjeto = {}
-    if (!formulario.nome.trim()) erros.nome = "Informe o nome do projeto."
-
-    const url = formulario.urlAplicacao.trim()
-    if (url) {
-        try {
-            const protocolo = new URL(url).protocol
-            if (protocolo !== "http:" && protocolo !== "https:")
-                erros.urlAplicacao = "Use uma URL completa iniciada por http:// ou https://."
-        } catch {
-            erros.urlAplicacao = "Informe uma URL válida para a aplicação."
-        }
-    }
-
-    return erros
+    return validarInformacoesProjeto(formulario)
 }
 
 export const formularioNovoProjetoFoiAlterado = (formulario: FormularioNovoProjeto) => {

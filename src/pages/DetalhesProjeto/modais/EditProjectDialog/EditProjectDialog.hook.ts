@@ -3,12 +3,17 @@ import { toast } from "sonner"
 
 import { useAtualizarProjeto } from "@/backend/api/controllers/projeto"
 import type { ObterProjetos } from "@/backend/api/models/projeto.types"
-import type { FormularioEditarProjeto } from "@/pages/DetalhesProjeto/modais/EditProjectDialog/EditProjectDialog.types"
+import type {
+    CampoInformacoesEditarProjeto,
+    FormularioEditarProjeto,
+} from "@/pages/DetalhesProjeto/modais/EditProjectDialog/EditProjectDialog.types"
 import { criarFormularioEditarProjeto } from "@/pages/DetalhesProjeto/modais/EditProjectDialog/EditProjectDialog.utils"
 import { obterMensagemErro } from "@/lib/utils/error"
+import { validarInformacoesProjeto } from "@/lib/utils/projeto"
 
 export const useEditProjectDialog = (projeto: ObterProjetos.Projeto, onClose: () => void) => {
     const [formulario, setFormulario] = useState(() => criarFormularioEditarProjeto(projeto))
+    const [camposValidados, setCamposValidados] = useState({ nome: false, urlAplicacao: false })
     const { mutateAsync: atualizarProjeto, isPending: atualizarProjetoIsPending } = useAtualizarProjeto()
 
     const alterarCampo = <Campo extends keyof FormularioEditarProjeto>(
@@ -18,21 +23,21 @@ export const useEditProjectDialog = (projeto: ObterProjetos.Projeto, onClose: ()
         setFormulario((atual) => ({ ...atual, [campo]: valor }))
     }
 
-    const salvar = async () => {
-        if (!formulario.nome.trim()) {
-            toast.error("Informe o nome do projeto.")
-            return
-        }
+    const errosEncontrados = validarInformacoesProjeto(formulario)
+    const erros = {
+        nome: camposValidados.nome ? errosEncontrados.nome : undefined,
+        urlAplicacao: camposValidados.urlAplicacao
+            ? errosEncontrados.urlAplicacao
+            : undefined,
+    }
+    const validarCampo = (campo: CampoInformacoesEditarProjeto) => {
+        setCamposValidados((atuais) => ({ ...atuais, [campo]: true }))
+    }
 
+    const salvar = async () => {
+        setCamposValidados({ nome: true, urlAplicacao: true })
+        if (errosEncontrados.nome || errosEncontrados.urlAplicacao) return
         const urlAplicacao = formulario.urlAplicacao.trim()
-        if (urlAplicacao) {
-            try {
-                new URL(urlAplicacao)
-            } catch {
-                toast.error("Informe uma URL válida para a aplicação.")
-                return
-            }
-        }
 
         const atualizacao = atualizarProjeto({
             id: projeto.id,
@@ -61,8 +66,10 @@ export const useEditProjectDialog = (projeto: ObterProjetos.Projeto, onClose: ()
 
     return {
         formulario,
+        erros,
         atualizarProjetoIsPending,
         alterarCampo,
+        validarCampo,
         salvar,
     }
 }

@@ -15,10 +15,11 @@ const ordem = [Enum.Provider.Vercel, Enum.Provider.Railway, Enum.Provider.Supaba
 
 type ProjectServicesProps = {
     servicos: ObterProjetos.Servico[]
-    onAtualizar: () => void
+    onAtualizar: (servico: ObterProjetos.Servico) => void
+    servicoAtualizando: (provider: Enum.Provider) => boolean
 }
 
-export const ProjectServices = ({ servicos, onAtualizar }: ProjectServicesProps) => {
+export const ProjectServices = ({ servicos, onAtualizar, servicoAtualizando }: ProjectServicesProps) => {
     if (servicos.length === 0) {
         return (
             <TemplateEstado.Vazio
@@ -58,11 +59,13 @@ export const ProjectServices = ({ servicos, onAtualizar }: ProjectServicesProps)
                                 <RailwayGroups
                                     servicos={lista}
                                     onAtualizar={onAtualizar}
+                                    servicoAtualizando={servicoAtualizando}
                                 />
                             ) : (
                                 <ServiceList
                                     servicos={lista}
                                     onAtualizar={onAtualizar}
+                                    servicoAtualizando={servicoAtualizando}
                                 />
                             )}
                         </section>
@@ -72,7 +75,7 @@ export const ProjectServices = ({ servicos, onAtualizar }: ProjectServicesProps)
     )
 }
 
-const RailwayGroups = ({ servicos, onAtualizar }: ProjectServicesProps) => {
+const RailwayGroups = ({ servicos, onAtualizar, servicoAtualizando }: ProjectServicesProps) => {
     const projetos = agrupar(servicos, (servico) => servico.projetoRailway ?? "Projeto padrão")
     return (
         <div className="space-y-3">
@@ -92,6 +95,7 @@ const RailwayGroups = ({ servicos, onAtualizar }: ProjectServicesProps) => {
                             <ProjectServiceCard
                                 key={servico.id}
                                 servico={servico}
+                                atualizando={servicoAtualizando(servico.provider)}
                                 onAtualizar={onAtualizar}
                             />
                         ))}
@@ -100,6 +104,7 @@ const RailwayGroups = ({ servicos, onAtualizar }: ProjectServicesProps) => {
                         <ServiceTable
                             servicos={lista}
                             onAtualizar={onAtualizar}
+                            servicoAtualizando={servicoAtualizando}
                         />
                     </div>
                 </Card>
@@ -108,13 +113,14 @@ const RailwayGroups = ({ servicos, onAtualizar }: ProjectServicesProps) => {
     )
 }
 
-const ServiceList = ({ servicos, onAtualizar }: ProjectServicesProps) => (
+const ServiceList = ({ servicos, onAtualizar, servicoAtualizando }: ProjectServicesProps) => (
     <>
         <div className="space-y-2 md:hidden">
             {servicos.map((servico) => (
                 <ProjectServiceCard
                     key={servico.id}
                     servico={servico}
+                    atualizando={servicoAtualizando(servico.provider)}
                     onAtualizar={onAtualizar}
                 />
             ))}
@@ -123,12 +129,13 @@ const ServiceList = ({ servicos, onAtualizar }: ProjectServicesProps) => (
             <ServiceTable
                 servicos={servicos}
                 onAtualizar={onAtualizar}
+                servicoAtualizando={servicoAtualizando}
             />
         </Card>
     </>
 )
 
-const ServiceTable = ({ servicos, onAtualizar }: ProjectServicesProps) => (
+const ServiceTable = ({ servicos, onAtualizar, servicoAtualizando }: ProjectServicesProps) => (
     <div className="overflow-x-auto">
         <Table className="min-w-4xl">
             <TableHeader>
@@ -145,9 +152,16 @@ const ServiceTable = ({ servicos, onAtualizar }: ProjectServicesProps) => (
                 {servicos.map((servico) => (
                     <TableRow key={servico.id}>
                         <TableCell>
-                            <div className="flex items-center gap-2">
-                                <StatusDot status={servico.status} />
-                                <span className="font-medium">{servico.nome}</span>
+                            <div>
+                                <div className="flex items-center gap-2">
+                                    <StatusDot status={servico.status} />
+                                    <span className="font-medium">{servico.nome}</span>
+                                </div>
+                                {servico.mensagemStatus && (
+                                    <p className="mt-1 max-w-64 text-xs text-warning">
+                                        {servico.mensagemStatus}
+                                    </p>
+                                )}
                             </div>
                         </TableCell>
                         <TableCell>
@@ -179,6 +193,7 @@ const ServiceTable = ({ servicos, onAtualizar }: ProjectServicesProps) => (
                         <TableCell>
                             <ProjectServiceActions
                                 servico={servico}
+                                atualizando={servicoAtualizando(servico.provider)}
                                 onAtualizar={onAtualizar}
                             />
                         </TableCell>

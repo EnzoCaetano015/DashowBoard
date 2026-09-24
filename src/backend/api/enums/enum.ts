@@ -52,6 +52,11 @@ export namespace Enum {
         Monitorando = "monitoring",
     }
 
+    export enum OrigemIncidente {
+        Servico = "service",
+        HealthCheck = "health_check",
+    }
+
     export enum SeveridadeIncidente {
         Baixa = "low",
         Media = "medium",

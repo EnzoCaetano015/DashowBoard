@@ -52,6 +52,7 @@ export namespace ObterProjetos {
         externalEnvironmentId: string | null
         externalServiceId: string | null
         scopeId: string | null
+        mensagemStatus: string | null
     }
 
     export type Deployment = {
@@ -73,6 +74,16 @@ export namespace ObterProjetos {
         verificadoEm: string
     }
 
+    export type VerificacaoUrl = {
+        id: string
+        statusAnterior: Enum.StatusProjeto | null
+        statusAtual: Enum.StatusProjeto
+        statusHttp: number | null
+        responseTimeMs: number | null
+        mensagem: string | null
+        verificadoEm: string
+    }
+
     export type Projeto = {
         id: string
         nome: string
@@ -85,6 +96,8 @@ export namespace ObterProjetos {
         deployments: Deployment[]
         incidentes: ObterIncidentes.Incidente[]
         historicoStatus: StatusRecurso[]
+        historicoVerificacoesUrl: VerificacaoUrl[]
+        ultimaVerificacaoUrl: VerificacaoUrl | null
         disponibilidade: number[]
         tempoResposta: number[]
         urlAplicacao?: string
@@ -161,12 +174,28 @@ export namespace ExcluirProjeto {
     export type Response = void
 }
 
-export namespace SalvarSnapshotServico {
-    export type Request = {
+export namespace SalvarSnapshotsServicos {
+    export type Atualizacao = {
         servicoId: string
         status: Enum.StatusProjeto
         snapshot?: unknown
         responseTimeMs?: number | null
+        mensagemStatus?: string | null
+    }
+
+    export type Request = { atualizacoes: Atualizacao[] }
+    export type Response = void
+}
+
+export namespace SalvarVerificacaoProjeto {
+    export type Request = {
+        projetoId: string
+        url: string
+        status: Enum.StatusProjeto
+        statusHttp: number | null
+        responseTimeMs: number | null
+        mensagem: string | null
+        verificadoEm: string
     }
     export type Response = void
 }

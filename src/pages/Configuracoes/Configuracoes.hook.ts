@@ -19,8 +19,10 @@ import {
     INFORMACOES_INICIAIS,
     obterMensagemErroConfiguracoes,
 } from "@/pages/Configuracoes/Configuracoes.utils"
+import { possuiRuntimeTauri } from "@/lib/utils/tauri"
 
 export const useConfiguracoes = () => {
+    const runtimeDisponivel = possuiRuntimeTauri()
     const {
         data: preferencias = PREFERENCIAS_PADRAO,
         isLoading: preferenciasIsLoading,
@@ -128,6 +130,7 @@ export const useConfiguracoes = () => {
     }
 
     return {
+        runtimeDisponivel,
         preferencias,
         informacoes,
         nomeDesenvolvedor,

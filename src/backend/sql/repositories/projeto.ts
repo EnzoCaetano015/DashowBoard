@@ -1,19 +1,24 @@
 import { Enum } from "@/backend/api/enums/enum"
+import type Database from "@tauri-apps/plugin-sql"
 import type { ObterDashboard } from "@/backend/api/models/dashboard.types"
 import type {
     AtualizarProjeto,
     CriarProjeto,
     ObterProjetoPorId,
     ObterProjetos,
-    SalvarSnapshotServico,
+    SalvarSnapshotsServicos,
+    SalvarVerificacaoProjeto,
 } from "@/backend/api/models/projeto.types"
 import { obterBancoDados } from "@/backend/sql/database"
 import {
     abrirIncidente,
+    abrirIncidenteHealthCheck,
     listarIncidentesPorProjeto,
     resolverIncidente,
+    resolverIncidenteHealthCheck,
 } from "@/backend/sql/repositories/incidente"
 import type { PeriodoMonitoramento } from "@/lib/types/monitoring"
+import { agregarStatusServicos } from "@/lib/utils/status"
 
 type ProjetoRow = {
     id: string
@@ -53,6 +58,7 @@ type ServicoRow = {
     status: string
     snapshotJson: string | null
     verificadoEm: string | null
+    mensagemStatus: string | null
 }
 
 type StatusRow = {
@@ -61,6 +67,16 @@ type StatusRow = {
     statusAnterior: string | null
     statusAtual: string
     responseTimeMs: number | null
+    verificadoEm: string
+}
+
+type VerificacaoProjetoRow = {
+    id: string
+    statusAnterior: string | null
+    statusAtual: string
+    statusHttp: number | null
+    responseTimeMs: number | null
+    mensagem: string | null
     verificadoEm: string
 }
 
@@ -137,6 +153,7 @@ const mapearServico = (row: ServicoRow): ObterProjetos.Servico => {
         externalEnvironmentId: row.externalEnvironmentId,
         externalServiceId: row.externalServiceId,
         scopeId: row.scopeId,
+        mensagemStatus: row.mensagemStatus,
     }
 }
 
@@ -146,6 +163,18 @@ const mapearStatus = (row: StatusRow): ObterProjetos.StatusRecurso => ({
     statusAnterior: row.statusAnterior as Enum.StatusProjeto | null,
     statusAtual: row.statusAtual as Enum.StatusProjeto,
     responseTimeMs: row.responseTimeMs,
+    verificadoEm: row.verificadoEm,
+})
+
+const mapearVerificacaoProjeto = (
+    row: VerificacaoProjetoRow
+): ObterProjetos.VerificacaoUrl => ({
+    id: row.id,
+    statusAnterior: row.statusAnterior as Enum.StatusProjeto | null,
+    statusAtual: row.statusAtual as Enum.StatusProjeto,
+    statusHttp: row.statusHttp,
+    responseTimeMs: row.responseTimeMs,
+    mensagem: row.mensagem,
     verificadoEm: row.verificadoEm,
 })
 
@@ -173,7 +202,7 @@ const selecionarProjetos = async (id?: string) => {
 
 const montarProjeto = async (row: ProjetoRow): Promise<ObterProjetos.Projeto> => {
     const database = await obterBancoDados()
-    const [repositorios, servicos, historico, incidentes] = await Promise.all([
+    const [repositorios, servicos, historico, verificacoesUrl, incidentes] = await Promise.all([
         database.select<RepositorioRow[]>(
             `
                 SELECT
@@ -207,7 +236,8 @@ const montarProjeto = async (row: ProjetoRow): Promise<ObterProjetos.Projeto> =>
                     repositorio_id AS repositorioId,
                     status,
                     snapshot_json AS snapshotJson,
-                    verificado_em AS verificadoEm
+                    verificado_em AS verificadoEm,
+                    mensagem_status AS mensagemStatus
                 FROM projeto_servicos
                 WHERE projeto_id = $1
                 ORDER BY criado_em
@@ -229,21 +259,48 @@ const montarProjeto = async (row: ProjetoRow): Promise<ObterProjetos.Projeto> =>
             `,
             [row.id]
         ),
+        database.select<VerificacaoProjetoRow[]>(
+            `
+                SELECT
+                    id,
+                    status_anterior AS statusAnterior,
+                    status_atual AS statusAtual,
+                    status_http AS statusHttp,
+                    response_time_ms AS responseTimeMs,
+                    mensagem,
+                    verificado_em AS verificadoEm
+                FROM verificacoes_projeto
+                WHERE projeto_id = $1 AND url = $2
+                ORDER BY verificado_em
+            `,
+            [row.id, row.urlAplicacao ?? ""]
+        ),
         listarIncidentesPorProjeto(row.id),
     ])
     const servicosMapeados = servicos.map(mapearServico)
     const historicoMapeado = historico.map(mapearStatus)
-    const verificacoes = servicos
+    const verificacoesUrlMapeadas = verificacoesUrl.map(mapearVerificacaoProjeto)
+    const ultimaVerificacaoUrl =
+        verificacoesUrlMapeadas[verificacoesUrlMapeadas.length - 1] ?? null
+    const verificacoes = [
+        ...servicos
         .map(({ verificadoEm }) => verificadoEm)
-        .filter((value): value is string => Boolean(value))
-        .sort()
+        .filter((value): value is string => Boolean(value)),
+        ...verificacoesUrlMapeadas.map(({ verificadoEm }) => verificadoEm),
+    ].sort()
     const ultimaVerificacao = verificacoes[verificacoes.length - 1]
+    const historicoDisponibilidade = verificacoesUrlMapeadas.length
+        ? verificacoesUrlMapeadas
+        : historicoMapeado
+    const historicoResposta = verificacoesUrlMapeadas.length
+        ? verificacoesUrlMapeadas
+        : historicoMapeado
 
     return {
         id: row.id,
         nome: row.nome,
         descricao: row.descricao ?? "",
-        status: agregarStatus(servicosMapeados.map(({ status }) => status)),
+        status: agregarStatusServicos(servicosMapeados, ultimaVerificacaoUrl?.statusAtual),
         ultimaVerificacao: ultimaVerificacao ?? null,
         providers: Array.from(new Set(servicosMapeados.map(({ provider }) => provider))),
         repositorios: repositorios.map(mapearRepositorio),
@@ -251,13 +308,15 @@ const montarProjeto = async (row: ProjetoRow): Promise<ObterProjetos.Projeto> =>
         deployments: [],
         incidentes,
         historicoStatus: historicoMapeado,
-        disponibilidade: historicoMapeado.flatMap(({ statusAtual }) => {
+        historicoVerificacoesUrl: verificacoesUrlMapeadas,
+        ultimaVerificacaoUrl,
+        disponibilidade: historicoDisponibilidade.flatMap(({ statusAtual }) => {
             if (statusAtual === Enum.StatusProjeto.Saudavel) return [100]
             if (statusAtual === Enum.StatusProjeto.Degradado) return [50]
             if (statusAtual === Enum.StatusProjeto.Offline) return [0]
             return []
         }),
-        tempoResposta: historicoMapeado
+        tempoResposta: historicoResposta
             .map(({ responseTimeMs }) => responseTimeMs)
             .filter((value): value is number => value !== null),
         ...(row.urlAplicacao ? { urlAplicacao: row.urlAplicacao } : {}),
@@ -468,96 +527,207 @@ export const salvarStatusRecurso = async (
     )
 }
 
-const agregarStatus = (statuses: Enum.StatusProjeto[]) => {
-    if (statuses.length > 0 && statuses.every((status) => status === Enum.StatusProjeto.Offline))
-        return Enum.StatusProjeto.Offline
-    if (statuses.some((status) => status === Enum.StatusProjeto.Offline))
-        return Enum.StatusProjeto.Degradado
-    return Enum.StatusProjeto.Saudavel
-}
-
-export const salvarSnapshotServico = async (request: SalvarSnapshotServico.Request) => {
-    const database = await obterBancoDados()
-    const [servico] = await database.select<ServicoRow[]>(
-        `
-            SELECT
-                id,
-                projeto_id AS projetoId,
-                provider,
-                external_project_id AS externalProjectId,
-                external_environment_id AS externalEnvironmentId,
-                external_service_id AS externalServiceId,
-                scope_id AS scopeId,
-                nome,
-                tipo,
-                critico,
-                repositorio_id AS repositorioId,
-                status,
-                snapshot_json AS snapshotJson,
-                verificado_em AS verificadoEm
-            FROM projeto_servicos
-            WHERE id = $1
-        `,
-        [request.servicoId]
-    )
-    if (!servico) return
-
-    const agora = new Date().toISOString()
-    const statusAnterior = servico.status as Enum.StatusProjeto
-    const primeiraObservacao = !servico.verificadoEm
-    const mudou = statusAnterior !== request.status
-
-    await database.execute(
-        `
-            UPDATE projeto_servicos
-            SET status = $1, snapshot_json = COALESCE($2, snapshot_json),
-                verificado_em = $3, atualizado_em = $3
-            WHERE id = $4
-        `,
-        [
-            request.status,
-            request.snapshot === undefined ? null : (JSON.stringify(request.snapshot) ?? null),
-            agora,
-            request.servicoId,
-        ]
-    )
-    await salvarStatusRecurso(
-        servico.projetoId,
-        servico.id,
-        primeiraObservacao ? null : statusAnterior,
-        request.status,
-        request.responseTimeMs ?? null,
-        agora
-    )
-
-    if (!primeiraObservacao && mudou) {
-        const ficouIndisponivel =
-            statusAnterior === Enum.StatusProjeto.Saudavel &&
-            [Enum.StatusProjeto.Offline, Enum.StatusProjeto.Degradado].includes(request.status)
-        const recuperou =
-            [Enum.StatusProjeto.Offline, Enum.StatusProjeto.Degradado].includes(statusAnterior) &&
-            request.status === Enum.StatusProjeto.Saudavel
-        if (ficouIndisponivel) {
-            await abrirIncidente({
-                projetoId: servico.projetoId,
-                servicoId: servico.id,
-                servicoNome: servico.nome,
-                status: request.status,
-            })
-        }
-        if (recuperou) await resolverIncidente(servico.id)
-    }
-
-    const statusServicos = await database.select<Array<{ status: Enum.StatusProjeto }>>(
-        "SELECT status FROM projeto_servicos WHERE projeto_id = $1",
-        [servico.projetoId]
-    )
-    await database.execute("UPDATE projetos SET status = $1, atualizado_em = $2 WHERE id = $3", [
-        agregarStatus(statusServicos.map(({ status }) => status)),
-        agora,
-        servico.projetoId,
+const obterStatusAgregadoProjeto = async (database: Database, projetoId: string) => {
+    const [servicos, verificacoes] = await Promise.all([
+        database.select<Array<{ status: Enum.StatusProjeto; critico: number }>>(
+            "SELECT status, critico FROM projeto_servicos WHERE projeto_id = $1",
+            [projetoId]
+        ),
+        database.select<Array<{ status: Enum.StatusProjeto }>>(
+            `
+                SELECT v.status_atual AS status
+                FROM verificacoes_projeto v
+                INNER JOIN projetos p ON p.id = v.projeto_id AND p.url_aplicacao = v.url
+                WHERE v.projeto_id = $1
+                ORDER BY v.verificado_em DESC
+                LIMIT 1
+            `,
+            [projetoId]
+        ),
     ])
+
+    return agregarStatusServicos(
+        servicos.map(({ status, critico }) => ({ status, critico: critico === 1 })),
+        verificacoes[0]?.status
+    )
 }
+
+let filaPersistenciaMonitoramento: Promise<void> = Promise.resolve()
+
+const enfileirarPersistenciaMonitoramento = (persistir: () => Promise<void>) => {
+    const execucao = filaPersistenciaMonitoramento.then(persistir, persistir)
+    filaPersistenciaMonitoramento = execucao.catch(() => undefined)
+    return execucao
+}
+
+export const salvarSnapshotsServicos = (request: SalvarSnapshotsServicos.Request) =>
+    enfileirarPersistenciaMonitoramento(async () => {
+    if (request.atualizacoes.length === 0) return
+    const database = await obterBancoDados()
+    const projetosAfetados = new Set<string>()
+    await database.execute("BEGIN IMMEDIATE")
+    try {
+        for (const atualizacao of request.atualizacoes) {
+            const [servico] = await database.select<ServicoRow[]>(
+                `
+                    SELECT
+                        id, projeto_id AS projetoId, provider,
+                        external_project_id AS externalProjectId,
+                        external_environment_id AS externalEnvironmentId,
+                        external_service_id AS externalServiceId, scope_id AS scopeId,
+                        nome, tipo, critico, repositorio_id AS repositorioId,
+                        status, snapshot_json AS snapshotJson,
+                        verificado_em AS verificadoEm, mensagem_status AS mensagemStatus
+                    FROM projeto_servicos
+                    WHERE id = $1
+                `,
+                [atualizacao.servicoId]
+            )
+            if (!servico) continue
+
+            projetosAfetados.add(servico.projetoId)
+            const agora = new Date().toISOString()
+            const statusAnterior = servico.status as Enum.StatusProjeto
+            const primeiraObservacao = !servico.verificadoEm
+            const mudou = statusAnterior !== atualizacao.status
+            await database.execute(
+                `
+                    UPDATE projeto_servicos
+                    SET status = $1, snapshot_json = COALESCE($2, snapshot_json),
+                        mensagem_status = $3, verificado_em = $4, atualizado_em = $4
+                    WHERE id = $5
+                `,
+                [
+                    atualizacao.status,
+                    atualizacao.snapshot === undefined
+                        ? null
+                        : (JSON.stringify(atualizacao.snapshot) ?? null),
+                    atualizacao.mensagemStatus ?? null,
+                    agora,
+                    atualizacao.servicoId,
+                ]
+            )
+            await salvarStatusRecurso(
+                servico.projetoId,
+                servico.id,
+                primeiraObservacao ? null : statusAnterior,
+                atualizacao.status,
+                atualizacao.responseTimeMs ?? null,
+                agora
+            )
+
+            if (!primeiraObservacao && mudou) {
+                const ficouIndisponivel =
+                    statusAnterior === Enum.StatusProjeto.Saudavel &&
+                    [Enum.StatusProjeto.Offline, Enum.StatusProjeto.Degradado].includes(
+                        atualizacao.status
+                    )
+                const recuperou =
+                    [Enum.StatusProjeto.Offline, Enum.StatusProjeto.Degradado].includes(
+                        statusAnterior
+                    ) && atualizacao.status === Enum.StatusProjeto.Saudavel
+                if (ficouIndisponivel) {
+                    await abrirIncidente({
+                        projetoId: servico.projetoId,
+                        servicoId: servico.id,
+                        servicoNome: servico.nome,
+                        status: atualizacao.status,
+                    })
+                }
+                if (recuperou) await resolverIncidente(servico.id)
+            }
+        }
+
+        for (const projetoId of projetosAfetados) {
+            await database.execute(
+                "UPDATE projetos SET status = $1, atualizado_em = $2 WHERE id = $3",
+                [
+                    await obterStatusAgregadoProjeto(database, projetoId),
+                    new Date().toISOString(),
+                    projetoId,
+                ]
+            )
+        }
+        await database.execute("COMMIT")
+    } catch (erro) {
+        await database.execute("ROLLBACK")
+        throw erro
+    }
+    })
+
+export const salvarVerificacaoProjeto = (request: SalvarVerificacaoProjeto.Request) =>
+    enfileirarPersistenciaMonitoramento(async () => {
+    const database = await obterBancoDados()
+    await database.execute("BEGIN IMMEDIATE")
+    try {
+        const [projeto] = await database.select<Array<{ nome: string }>>(
+            "SELECT nome FROM projetos WHERE id = $1",
+            [request.projetoId]
+        )
+        if (!projeto) {
+            await database.execute("ROLLBACK")
+            return
+        }
+        const [anterior] = await database.select<Array<{ status: Enum.StatusProjeto }>>(
+            `
+                SELECT status_atual AS status
+                FROM verificacoes_projeto
+                WHERE projeto_id = $1 AND url = $2
+                ORDER BY verificado_em DESC
+                LIMIT 1
+            `,
+            [request.projetoId, request.url]
+        )
+        await database.execute(
+            `
+                INSERT INTO verificacoes_projeto (
+                    id, projeto_id, url, status_anterior, status_atual,
+                    status_http, response_time_ms, mensagem, verificado_em
+                ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+            `,
+            [
+                crypto.randomUUID(),
+                request.projetoId,
+                request.url,
+                anterior?.status ?? null,
+                request.status,
+                request.statusHttp,
+                request.responseTimeMs,
+                request.mensagem,
+                request.verificadoEm,
+            ]
+        )
+
+        if (anterior && anterior.status !== request.status) {
+            if (
+                [Enum.StatusProjeto.Offline, Enum.StatusProjeto.Degradado].includes(request.status)
+            ) {
+                await abrirIncidenteHealthCheck({
+                    projetoId: request.projetoId,
+                    projetoNome: projeto.nome,
+                    status: request.status,
+                    mensagem: request.mensagem,
+                })
+            }
+            if (request.status === Enum.StatusProjeto.Saudavel) {
+                await resolverIncidenteHealthCheck(request.projetoId)
+            }
+        }
+
+        await database.execute(
+            "UPDATE projetos SET status = $1, atualizado_em = $2 WHERE id = $3",
+            [
+                await obterStatusAgregadoProjeto(database, request.projetoId),
+                request.verificadoEm,
+                request.projetoId,
+            ]
+        )
+        await database.execute("COMMIT")
+    } catch (erro) {
+        await database.execute("ROLLBACK")
+        throw erro
+    }
+    })
 
 const construirTendenciasDashboard = (
     projetos: ObterProjetos.Projeto[],
@@ -568,6 +738,10 @@ const construirTendenciasDashboard = (
 
     for (const projeto of projetos) {
         const observacoesPorData = new Map<string, Map<string, Enum.StatusProjeto>>()
+        const healthCheckPorData = new Map<string, Enum.StatusProjeto>()
+        const servicosCriticos = new Set(
+            projeto.servicos.filter(({ critico }) => critico).map(({ id }) => id)
+        )
         for (const observacao of projeto.historicoStatus) {
             if (new Date(observacao.verificadoEm).getTime() < limite) continue
             const data = observacao.verificadoEm.slice(0, 10)
@@ -578,9 +752,24 @@ const construirTendenciasDashboard = (
             statusServicos.set(observacao.servicoId, observacao.statusAtual)
             observacoesPorData.set(data, statusServicos)
         }
-        for (const [data, statusServicos] of observacoesPorData) {
+        for (const verificacao of projeto.historicoVerificacoesUrl) {
+            if (new Date(verificacao.verificadoEm).getTime() < limite) continue
+            healthCheckPorData.set(verificacao.verificadoEm.slice(0, 10), verificacao.statusAtual)
+        }
+        const datasProjeto = new Set([...observacoesPorData.keys(), ...healthCheckPorData.keys()])
+        for (const data of datasProjeto) {
+            const statusServicos = observacoesPorData.get(data) ?? new Map()
             const projetosNaData = statusPorData.get(data) ?? new Map()
-            projetosNaData.set(projeto.id, agregarStatus(Array.from(statusServicos.values())))
+            projetosNaData.set(
+                projeto.id,
+                agregarStatusServicos(
+                    Array.from(statusServicos, ([id, status]) => ({
+                        status,
+                        critico: servicosCriticos.has(id),
+                    })),
+                    healthCheckPorData.get(data)
+                )
+            )
             statusPorData.set(data, projetosNaData)
         }
     }

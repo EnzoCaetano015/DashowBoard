@@ -187,6 +187,44 @@ const MIGRACOES: Migracao[] = [
             `,
         ],
     },
+    {
+        versao: 4,
+        nome: "adicionar_health_checks_e_detalhes_monitoramento",
+        comandos: [
+            `
+                ALTER TABLE projeto_servicos
+                ADD COLUMN mensagem_status TEXT
+            `,
+            `
+                ALTER TABLE incidentes
+                ADD COLUMN origem TEXT NOT NULL DEFAULT 'service'
+                CHECK (origem IN ('service', 'health_check'))
+            `,
+            `
+                CREATE TABLE IF NOT EXISTS verificacoes_projeto (
+                    id TEXT PRIMARY KEY,
+                    projeto_id TEXT NOT NULL,
+                    url TEXT NOT NULL,
+                    status_anterior TEXT,
+                    status_atual TEXT NOT NULL,
+                    status_http INTEGER,
+                    response_time_ms INTEGER,
+                    mensagem TEXT,
+                    verificado_em TEXT NOT NULL,
+                    FOREIGN KEY (projeto_id) REFERENCES projetos(id) ON DELETE CASCADE
+                )
+            `,
+            `
+                CREATE INDEX IF NOT EXISTS ix_verificacoes_projeto_data
+                ON verificacoes_projeto (projeto_id, verificado_em DESC)
+            `,
+            `
+                CREATE UNIQUE INDEX IF NOT EXISTS ux_incidente_health_check_aberto
+                ON incidentes (projeto_id, origem)
+                WHERE resolvido_em IS NULL AND origem = 'health_check'
+            `,
+        ],
+    },
 ]
 
 export const executarMigracoes = async (database: Database) => {

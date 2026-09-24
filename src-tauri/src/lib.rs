@@ -1,9 +1,11 @@
 mod github;
+mod health_check;
 mod railway;
 mod supabase;
 mod vercel;
 
 use github::client::GitHubClient;
+use health_check::verificar_health_check_projeto;
 use github::commands::{
     obter_conexoes_github, obter_repositorios_github, remover_conexao_github,
     salvar_conexao_github, testar_conexao_github,
@@ -118,6 +120,7 @@ pub fn run() {
             testar_conexao_supabase,
             remover_conexao_supabase,
             obter_projetos_supabase,
+            verificar_health_check_projeto,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

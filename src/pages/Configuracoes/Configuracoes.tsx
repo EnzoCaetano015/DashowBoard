@@ -22,6 +22,7 @@ import {
 export const ConfiguracoesPage = () => {
     const {
         preferencias,
+        runtimeDisponivel,
         informacoes,
         nomeDesenvolvedor,
         setNomeDesenvolvedor,
@@ -46,7 +47,13 @@ export const ConfiguracoesPage = () => {
                 </p>
             </div>
 
-            {preferenciasIsLoading ? (
+            {!runtimeDisponivel ? (
+                <TemplateEstado.Vazio
+                    Icon={Settings}
+                    titulo="Configurações disponíveis no aplicativo desktop"
+                    subtitulo="As preferências e o SQLite não são persistidos durante o desenvolvimento no navegador."
+                />
+            ) : preferenciasIsLoading ? (
                 <TemplateEstado.Carregando
                     Icon={Settings}
                     titulo="Carregando configurações"

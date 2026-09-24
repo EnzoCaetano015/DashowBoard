@@ -1,4 +1,4 @@
-import { CircleAlert, GitCommit } from "lucide-react"
+import { Activity, CircleAlert, GitCommit } from "lucide-react"
 
 import type { ObterProjetos } from "@/backend/api/models/projeto.types"
 import { ProjectStatusDetails } from "@/components/ProjectOverview/ProjectOverview.utils"
@@ -21,6 +21,7 @@ export const ProjectOverview = ({ projeto }: { projeto: ObterProjetos.Projeto })
     const incidente = projeto.incidentes[0]
     const resumoDisponibilidade = resumirSerie(projeto.disponibilidade)
     const resumoTempoResposta = resumirSerie(projeto.tempoResposta)
+    const healthCheck = projeto.ultimaVerificacaoUrl
 
     return (
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
@@ -118,6 +119,37 @@ export const ProjectOverview = ({ projeto }: { projeto: ObterProjetos.Projeto })
                                 </dd>
                             </div>
                         </dl>
+                        {projeto.urlAplicacao && (
+                            <div className="mt-3 rounded-md border border-border bg-surface-2 p-3">
+                                <div className="flex flex-wrap items-center justify-between gap-2">
+                                    <span className="inline-flex items-center gap-1.5 text-xs font-medium">
+                                        <Activity className="size-3.5" />
+                                        Health check da URL
+                                    </span>
+                                    {healthCheck ? (
+                                        <StatusBadge status={healthCheck.statusAtual} />
+                                    ) : (
+                                        <span className="text-xs text-muted-foreground">
+                                            Ainda não verificado
+                                        </span>
+                                    )}
+                                </div>
+                                {healthCheck && (
+                                    <div className="mt-2 space-y-1 text-xs text-muted-foreground">
+                                        <p>
+                                            {healthCheck.statusHttp
+                                                ? `HTTP ${healthCheck.statusHttp} · `
+                                                : ""}
+                                            {healthCheck.responseTimeMs === null
+                                                ? "Tempo não disponível"
+                                                : `${healthCheck.responseTimeMs} ms`}
+                                            {` · ${formatarDataHora(healthCheck.verificadoEm)}`}
+                                        </p>
+                                        {healthCheck.mensagem && <p>{healthCheck.mensagem}</p>}
+                                    </div>
+                                )}
+                            </div>
+                        )}
                     </CardContent>
                 </Card>
                 <Card className="gap-3 border-border py-5 shadow-none">

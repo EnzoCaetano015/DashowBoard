@@ -147,4 +147,4 @@ jobs:
           prerelease: false
           releaseCommitish: ${{ github.sha }}
           args: --config src-tauri/tauri.release.conf.json
-          releaseAssetNamePattern: DashowBoard_[version]_[arch][setup][ext]
+          assetNamePattern: DashowBoard_[version]_[arch][setup][ext]

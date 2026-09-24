@@ -9,6 +9,7 @@ import {
 } from "lucide-react"
 
 import { Enum } from "@/backend/api/enums/enum"
+import { IconAction } from "@/components/IconAction/IconAction"
 import { Modal } from "@/components/Modal"
 import { ProviderIcon } from "@/components/ProviderIcon/ProviderIcon"
 import { TemplateEstado } from "@/components/TemplateEstado"
@@ -155,15 +156,15 @@ export const RailwayIntegrationDialog = ({ open, onClose }: RailwayIntegrationDi
                                             >
                                                 <KeyRound /> Substituir token
                                             </Button>
-                                            <Button
+                                            <IconAction
                                                 size="icon-sm"
                                                 variant="destructive"
-                                                title="Remover conexão"
+                                                label={`Remover conexão Railway ${connection.nome}`}
                                                 disabled={isPending}
                                                 onClick={startRemove}
                                             >
                                                 <Trash2 />
-                                            </Button>
+                                            </IconAction>
                                         </div>
                                     </CardContent>
                                 </Card>

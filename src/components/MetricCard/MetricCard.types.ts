@@ -2,11 +2,22 @@ import type { ReactNode } from "react"
 
 export type DestaqueMetrica = "primary" | "success" | "warning" | "destructive" | "info" | "muted"
 
-export type MetricCardProps = {
+type MetricCardBaseProps = {
     titulo: string
     valor: ReactNode
     dica?: string
     icone?: ReactNode
     destaque?: DestaqueMetrica
-    tendencia?: number[]
 }
+
+export type MetricCardProps = MetricCardBaseProps &
+    (
+        | {
+              tendencia: number[]
+              unidadeTendencia: string
+          }
+        | {
+              tendencia?: undefined
+              unidadeTendencia?: never
+          }
+    )

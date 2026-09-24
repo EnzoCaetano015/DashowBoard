@@ -3,17 +3,24 @@ import { CircleAlert, GitCommit } from "lucide-react"
 import type { ObterProjetos } from "@/backend/api/models/projeto.types"
 import { ProjectStatusDetails } from "@/components/ProjectOverview/ProjectOverview.utils"
 import { ProviderIcon } from "@/components/ProviderIcon/ProviderIcon"
+import { ResumoSerie } from "@/components/ResumoSerie/ResumoSerie"
 import { DeploymentStatus, IncidentStatus } from "@/components/ProjectStatusDetails/ProjectStatusDetails"
 import { Sparkline } from "@/components/Sparkline/Sparkline"
 import { StatusBadge } from "@/components/StatusBadge/StatusBadge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 import { formatarDataHora } from "@/lib/utils/date"
+import { resumirSerie } from "@/lib/utils/chart"
+
+const formatarPercentual = (valor: number) => `${valor.toFixed(2)}%`
+const formatarMilissegundos = (valor: number) => `${Math.round(valor)} ms`
 
 export const ProjectOverview = ({ projeto }: { projeto: ObterProjetos.Projeto }) => {
     const resumo = ProjectStatusDetails(projeto)
     const deployment = projeto.deployments[0]
     const incidente = projeto.incidentes[0]
+    const resumoDisponibilidade = resumirSerie(projeto.disponibilidade)
+    const resumoTempoResposta = resumirSerie(projeto.tempoResposta)
 
     return (
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
@@ -31,11 +38,20 @@ export const ProjectOverview = ({ projeto }: { projeto: ObterProjetos.Projeto })
                     {projeto.disponibilidade.length > 0 ? (
                         <Sparkline
                             dados={projeto.disponibilidade}
+                            titulo="Disponibilidade observada"
+                            unidade="%"
+                            descricao="Disponibilidade observada nas amostras dos últimos 30 dias"
                             cor="var(--color-success)"
                             altura={110}
                         />
                     ) : (
                         <EstadoSemDados />
+                    )}
+                    {resumoDisponibilidade && (
+                        <ResumoSerie
+                            resumo={resumoDisponibilidade}
+                            formatarValor={formatarPercentual}
+                        />
                     )}
                 </Grafico>
                 <Grafico
@@ -51,11 +67,20 @@ export const ProjectOverview = ({ projeto }: { projeto: ObterProjetos.Projeto })
                     {projeto.tempoResposta.length > 0 ? (
                         <Sparkline
                             dados={projeto.tempoResposta}
+                            titulo="Tempo de resposta"
+                            unidade="ms"
+                            descricao="Tempo de resposta nas amostras dos últimos 30 dias"
                             cor="var(--color-info)"
                             altura={110}
                         />
                     ) : (
                         <EstadoSemDados />
+                    )}
+                    {resumoTempoResposta && (
+                        <ResumoSerie
+                            resumo={resumoTempoResposta}
+                            formatarValor={formatarMilissegundos}
+                        />
                     )}
                 </Grafico>
             </div>
@@ -76,7 +101,7 @@ export const ProjectOverview = ({ projeto }: { projeto: ObterProjetos.Projeto })
                         </div>
                         <dl className="mt-4 grid grid-cols-2 gap-3 text-sm">
                             <div className="rounded-md bg-surface-2 p-3">
-                                <dt className="text-xs text-muted-foreground">Serviços online</dt>
+                                <dt className="text-xs text-muted-foreground">Serviços saudáveis</dt>
                                 <dd className="mt-1 text-lg font-semibold text-success tabular-nums">
                                     {resumo.online}
                                 </dd>

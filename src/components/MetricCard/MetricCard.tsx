@@ -23,6 +23,7 @@ export const MetricCard = ({
     icone,
     destaque = "primary",
     tendencia,
+    unidadeTendencia,
 }: MetricCardProps) => {
     const estilo = estilos[destaque]
 
@@ -59,6 +60,9 @@ export const MetricCard = ({
                 {tendencia?.length ? (
                     <Sparkline
                         dados={tendencia}
+                        titulo={`Tendência de ${titulo.toLocaleLowerCase("pt-BR")}`}
+                        unidade={unidadeTendencia}
+                        descricao="Evolução das amostras recentes desta métrica"
                         cor={estilo.cor}
                         altura={32}
                     />

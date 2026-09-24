@@ -1,10 +1,11 @@
-import { ExternalLink, RefreshCw, Server } from "lucide-react"
+import { Server } from "lucide-react"
 import { Enum } from "@/backend/api/enums/enum"
 import type { ObterProjetos } from "@/backend/api/models/projeto.types"
 import { ProviderIcon } from "@/components/ProviderIcon/ProviderIcon"
+import { ProjectServiceActions } from "@/components/ProjectServices/ProjectServiceActions"
+import { ProjectServiceCard } from "@/components/ProjectServices/ProjectServiceCard"
 import { StatusDot } from "@/components/StatusBadge/StatusBadge"
 import { TemplateEstado } from "@/components/TemplateEstado"
-import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { cn } from "@/lib/utils"
@@ -59,12 +60,10 @@ export const ProjectServices = ({ servicos, onAtualizar }: ProjectServicesProps)
                                     onAtualizar={onAtualizar}
                                 />
                             ) : (
-                                <Card className="overflow-hidden border-border py-0 shadow-none">
-                                    <ServiceTable
-                                        servicos={lista}
-                                        onAtualizar={onAtualizar}
-                                    />
-                                </Card>
+                                <ServiceList
+                                    servicos={lista}
+                                    onAtualizar={onAtualizar}
+                                />
                             )}
                         </section>
                     )
@@ -88,15 +87,46 @@ const RailwayGroups = ({ servicos, onAtualizar }: ProjectServicesProps) => {
                         </span>
                         <StatusDot status={agregarStatusServicos(lista)} />
                     </div>
-                    <ServiceTable
-                        servicos={lista}
-                        onAtualizar={onAtualizar}
-                    />
+                    <div className="space-y-2 p-3 md:hidden">
+                        {lista.map((servico) => (
+                            <ProjectServiceCard
+                                key={servico.id}
+                                servico={servico}
+                                onAtualizar={onAtualizar}
+                            />
+                        ))}
+                    </div>
+                    <div className="hidden md:block">
+                        <ServiceTable
+                            servicos={lista}
+                            onAtualizar={onAtualizar}
+                        />
+                    </div>
                 </Card>
             ))}
         </div>
     )
 }
+
+const ServiceList = ({ servicos, onAtualizar }: ProjectServicesProps) => (
+    <>
+        <div className="space-y-2 md:hidden">
+            {servicos.map((servico) => (
+                <ProjectServiceCard
+                    key={servico.id}
+                    servico={servico}
+                    onAtualizar={onAtualizar}
+                />
+            ))}
+        </div>
+        <Card className="hidden overflow-hidden border-border py-0 shadow-none md:block">
+            <ServiceTable
+                servicos={servicos}
+                onAtualizar={onAtualizar}
+            />
+        </Card>
+    </>
+)
 
 const ServiceTable = ({ servicos, onAtualizar }: ProjectServicesProps) => (
     <div className="overflow-x-auto">
@@ -147,33 +177,10 @@ const ServiceTable = ({ servicos, onAtualizar }: ProjectServicesProps) => (
                             {servico.ultimaVerificacao ?? "Aguardando primeira verificação"}
                         </TableCell>
                         <TableCell>
-                            <div className="flex justify-end gap-1">
-                                <Button
-                                    size="icon-sm"
-                                    variant="ghost"
-                                    title="Atualizar serviço"
-                                    onClick={onAtualizar}
-                                >
-                                    <RefreshCw />
-                                </Button>
-                                {servico.urlExterna && (
-                                    <Button
-                                        render={
-                                            <a
-                                                href={servico.urlExterna}
-                                                target="_blank"
-                                                rel="noreferrer"
-                                            />
-                                        }
-                                        nativeButton={false}
-                                        size="icon-sm"
-                                        variant="ghost"
-                                        title="Abrir provider"
-                                    >
-                                        <ExternalLink />
-                                    </Button>
-                                )}
-                            </div>
+                            <ProjectServiceActions
+                                servico={servico}
+                                onAtualizar={onAtualizar}
+                            />
                         </TableCell>
                     </TableRow>
                 ))}

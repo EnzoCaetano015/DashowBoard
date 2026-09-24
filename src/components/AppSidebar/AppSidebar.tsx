@@ -13,6 +13,7 @@ import { NavLink } from "react-router-dom"
 import { useAppSidebar } from "@/components/AppSidebar/AppSidebar.hook"
 import type { AppSidebarProps } from "@/components/AppSidebar/AppSidebar.types"
 import { Button } from "@/components/ui/button"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { cn } from "@/lib/utils"
 
 const navegacao = [
@@ -59,33 +60,44 @@ export const AppSidebar = ({ modo = "desktop" }: AppSidebarProps) => {
                 className="flex-1 space-y-1 px-2 py-3"
                 aria-label="Navegação principal"
             >
-                {navegacao.map((item) => (
-                    <NavLink
-                        key={item.rota}
-                        to={item.rota}
-                        end={"fim" in item ? item.fim : false}
-                        title={compacta && !ehMobile ? item.titulo : undefined}
-                        className={({ isActive }) =>
-                            cn(
-                                "flex items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring",
-                                isActive
-                                    ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-inner"
-                                    : "text-muted-foreground hover:bg-sidebar-accent/60 hover:text-sidebar-foreground",
-                                compacta && !ehMobile && "justify-center px-2"
-                            )
-                        }
-                    >
-                        {({ isActive }) => (
-                            <>
-                                <item.Icone className="size-4 shrink-0" />
-                                {(!compacta || ehMobile) && <span>{item.titulo}</span>}
-                                {isActive && (!compacta || ehMobile) && (
-                                    <span className="ml-auto size-1.5 rounded-full bg-primary" />
-                                )}
-                            </>
-                        )}
-                    </NavLink>
-                ))}
+                {navegacao.map((item) => {
+                    const link = (
+                        <NavLink
+                            key={item.rota}
+                            to={item.rota}
+                            end={"fim" in item ? item.fim : false}
+                            aria-label={compacta && !ehMobile ? item.titulo : undefined}
+                            className={({ isActive }) =>
+                                cn(
+                                    "flex items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring",
+                                    isActive
+                                        ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-inner"
+                                        : "text-muted-foreground hover:bg-sidebar-accent/60 hover:text-sidebar-foreground",
+                                    compacta && !ehMobile && "justify-center px-2"
+                                )
+                            }
+                        >
+                            {({ isActive }) => (
+                                <>
+                                    <item.Icone className="size-4 shrink-0" />
+                                    {(!compacta || ehMobile) && <span>{item.titulo}</span>}
+                                    {isActive && (!compacta || ehMobile) && (
+                                        <span className="ml-auto size-1.5 rounded-full bg-primary" />
+                                    )}
+                                </>
+                            )}
+                        </NavLink>
+                    )
+
+                    return compacta && !ehMobile ? (
+                        <Tooltip key={item.rota}>
+                            <TooltipTrigger render={link} />
+                            <TooltipContent side="right">{item.titulo}</TooltipContent>
+                        </Tooltip>
+                    ) : (
+                        link
+                    )
+                })}
             </nav>
             {!ehMobile && (
                 <div className="px-2 pb-2">
@@ -116,7 +128,8 @@ export const AppSidebar = ({ modo = "desktop" }: AppSidebarProps) => {
                 {compacta && !ehMobile ? (
                     <span
                         className="status-dot bg-success text-success"
-                        title="SQLite local disponível"
+                        role="status"
+                        aria-label="SQLite local disponível"
                     />
                 ) : (
                     <>

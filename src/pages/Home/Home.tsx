@@ -99,6 +99,7 @@ export const HomePage = () => {
                                 valor={metricas.totalProjetos}
                                 icone={<Boxes />}
                                 tendencia={metricas.tendencias.projetos}
+                                unidadeTendencia="projetos"
                             />
                             <MetricCard
                                 titulo="Saudáveis"
@@ -106,6 +107,7 @@ export const HomePage = () => {
                                 icone={<CheckCircle2 />}
                                 destaque="success"
                                 tendencia={metricas.tendencias.online}
+                                unidadeTendencia="projetos"
                             />
                             <MetricCard
                                 titulo="Degradados"
@@ -113,6 +115,7 @@ export const HomePage = () => {
                                 icone={<AlertTriangle />}
                                 destaque="warning"
                                 tendencia={metricas.tendencias.degradados}
+                                unidadeTendencia="projetos"
                             />
                             <MetricCard
                                 titulo="Offline"
@@ -120,6 +123,7 @@ export const HomePage = () => {
                                 icone={<ServerCrash />}
                                 destaque="destructive"
                                 tendencia={metricas.tendencias.offline}
+                                unidadeTendencia="projetos"
                             />
                             <MetricCard
                                 titulo="Serviços monitorados"
@@ -127,6 +131,7 @@ export const HomePage = () => {
                                 icone={<Server />}
                                 destaque="info"
                                 tendencia={metricas.tendencias.servicos}
+                                unidadeTendencia="serviços"
                             />
                         </div>
                         <div className="mb-4 mt-8 flex flex-wrap items-center gap-3">

@@ -3,6 +3,7 @@ import { useState } from "react"
 
 import type { ObterProjetos } from "@/backend/api/models/projeto.types"
 import { BarChart } from "@/components/BarChart/BarChart"
+import { ResumoSerie } from "@/components/ResumoSerie/ResumoSerie"
 import {
     filtrarEventosHistoricoPorPeriodo,
     obterEventosHistorico,
@@ -14,10 +15,15 @@ import { PERIODOS_MONITORAMENTO } from "@/lib/config/monitoring"
 import type { PeriodoMonitoramento } from "@/lib/types/monitoring"
 import { cn } from "@/lib/utils"
 import { formatarDataHora } from "@/lib/utils/date"
+import { resumirSerie } from "@/lib/utils/chart"
+
+const formatarMilissegundos = (valor: number) => `${Math.round(valor)} ms`
 
 export const ProjectHistory = ({ projeto }: { projeto: ObterProjetos.Projeto }) => {
     const [periodo, setPeriodo] = useState<PeriodoMonitoramento>(15)
     const eventos = filtrarEventosHistoricoPorPeriodo(obterEventosHistorico(projeto), periodo)
+    const temposResposta = projeto.tempoResposta.slice(-periodo)
+    const resumoTemposResposta = resumirSerie(temposResposta)
 
     return (
         <div className="space-y-4">
@@ -48,7 +54,10 @@ export const ProjectHistory = ({ projeto }: { projeto: ObterProjetos.Projeto }) 
                 <CardContent className="px-5">
                     {projeto.tempoResposta.length > 0 ? (
                         <BarChart
-                            dados={projeto.tempoResposta.slice(-periodo)}
+                            dados={temposResposta}
+                            titulo={`Tempo de resposta em ${periodo} dias`}
+                            unidade="ms"
+                            descricao={`Tempos de resposta das últimas ${temposResposta.length} amostras disponíveis`}
                             cor="var(--color-info)"
                             altura={120}
                         />
@@ -56,6 +65,12 @@ export const ProjectHistory = ({ projeto }: { projeto: ObterProjetos.Projeto }) 
                         <div className="flex h-30 items-center justify-center rounded-md border border-dashed text-sm text-muted-foreground">
                             Ainda não há tempos de resposta coletados.
                         </div>
+                    )}
+                    {resumoTemposResposta && (
+                        <ResumoSerie
+                            resumo={resumoTemposResposta}
+                            formatarValor={formatarMilissegundos}
+                        />
                     )}
                 </CardContent>
             </Card>

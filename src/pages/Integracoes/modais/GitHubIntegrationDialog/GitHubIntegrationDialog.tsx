@@ -1,6 +1,7 @@
 import { AlertCircle, CheckCircle2, KeyRound, Plus, RefreshCw, ShieldCheck, Trash2 } from "lucide-react"
 
 import { Enum } from "@/backend/api/enums/enum"
+import { IconAction } from "@/components/IconAction/IconAction"
 import { Modal } from "@/components/Modal"
 import { TemplateEstado } from "@/components/TemplateEstado"
 import { Button } from "@/components/ui/button"
@@ -158,15 +159,15 @@ export const GitHubIntegrationDialog = ({ open, onClose }: GitHubIntegrationDial
                                             >
                                                 <KeyRound /> Substituir token
                                             </Button>
-                                            <Button
+                                            <IconAction
                                                 size="icon-sm"
                                                 variant="destructive"
-                                                title="Remover conexão"
+                                                label={`Remover conexão GitHub ${connection.nome}`}
                                                 disabled={isPending}
                                                 onClick={() => startRemove(connection)}
                                             >
                                                 <Trash2 />
-                                            </Button>
+                                            </IconAction>
                                         </div>
                                     </CardContent>
                                 </Card>

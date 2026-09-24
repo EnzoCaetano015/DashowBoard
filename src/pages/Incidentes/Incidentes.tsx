@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils"
 import { formatarDataHora, formatarDuracao } from "@/lib/utils/date"
 import { labelProvider } from "@/lib/utils/status"
 import { Resumo } from "@/pages/Incidentes/components/Resumo/Resumo"
+import { IncidentCard } from "@/pages/Incidentes/components/IncidentCard/IncidentCard"
 import { useIncidentes } from "@/pages/Incidentes/Incidentes.hook"
 import type { FiltrosIncidentes } from "@/pages/Incidentes/Incidentes.types"
 import {
@@ -186,7 +187,16 @@ export const IncidentesPage = () => {
                             className="mt-6"
                         />
                     ) : (
-                        <Card className="mt-6 overflow-hidden border-border py-0 shadow-none">
+                        <>
+                            <div className="mt-6 space-y-3 md:hidden">
+                                {incidentes.map((incidente) => (
+                                    <IncidentCard
+                                        key={incidente.id}
+                                        incidente={incidente}
+                                    />
+                                ))}
+                            </div>
+                            <Card className="mt-6 hidden overflow-hidden border-border py-0 shadow-none md:block">
                             <div className="overflow-x-auto">
                                 <Table className="min-w-5xl">
                                     <TableHeader>
@@ -277,7 +287,8 @@ export const IncidentesPage = () => {
                                     </TableBody>
                                 </Table>
                             </div>
-                        </Card>
+                            </Card>
+                        </>
                     )}
                     <p className="mt-4 text-xs text-muted-foreground">
                         {projetosMonitorados} projetos com incidentes registrados · janela de{" "}

@@ -1,0 +1,150 @@
+name: Release
+
+run-name: Release ${{ inputs.version }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Stable version (vMAJOR.MINOR.PATCH)"
+        required: true
+        type: string
+      message:
+        description: "Release notes introduction"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ inputs.version }}
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    name: Validate release
+    runs-on: windows-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+          targets: x86_64-pc-windows-msvc
+          components: rustfmt
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri -> target
+
+      - name: Install frontend dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Test frontend
+        run: pnpm test
+
+      - name: Build frontend
+        run: pnpm build
+
+      - name: Check Rust formatting
+        run: cargo fmt --check --manifest-path src-tauri/Cargo.toml
+
+      - name: Check Rust application
+        run: cargo check --manifest-path src-tauri/Cargo.toml
+
+      - name: Test Rust application
+        run: cargo test --manifest-path src-tauri/Cargo.toml
+
+  publish:
+    name: Build and publish Windows installers
+    needs: verify
+    runs-on: windows-latest
+    timeout-minutes: 60
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+          targets: x86_64-pc-windows-msvc
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri -> target
+
+      - name: Install frontend dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Validate release input
+        id: release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_MESSAGE: ${{ inputs.message }}
+          RELEASE_TAG: ${{ inputs.version }}
+        run: |
+          if ($env:GITHUB_REF -ne "refs/heads/main") {
+              throw "Stable releases must run from the main branch."
+          }
+          if ($env:RELEASE_TAG -notmatch '^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$') {
+              throw "Release tag must match vMAJOR.MINOR.PATCH."
+          }
+          if ([string]::IsNullOrWhiteSpace($env:RELEASE_MESSAGE)) {
+              throw "Release message must not be empty."
+          }
+
+          gh release view $env:RELEASE_TAG *> $null
+          if ($LASTEXITCODE -eq 0) {
+              throw "Release $env:RELEASE_TAG already exists."
+          }
+
+          git ls-remote --exit-code --tags origin "refs/tags/$env:RELEASE_TAG" *> $null
+          if ($LASTEXITCODE -eq 0) {
+              throw "Tag $env:RELEASE_TAG already exists."
+          }
+
+          "app_version=$($env:RELEASE_TAG.Substring(1))" >> $env:GITHUB_OUTPUT
+
+      - name: Create release build configuration
+        shell: pwsh
+        env:
+          APP_VERSION: ${{ steps.release.outputs.app_version }}
+        run: |
+          @{ version = $env:APP_VERSION } |
+              ConvertTo-Json |
+              Set-Content -Path src-tauri/tauri.release.conf.json -Encoding utf8
+
+      - name: Build installers and publish GitHub Release
+        uses: tauri-apps/tauri-action@v0.6.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ inputs.version }}
+          releaseName: DashowBoard ${{ inputs.version }}
+          releaseBody: ${{ inputs.message }}
+          generateReleaseNotes: true
+          releaseDraft: false
+          prerelease: false
+          releaseCommitish: ${{ github.sha }}
+          args: --config src-tauri/tauri.release.conf.json
+          releaseAssetNamePattern: DashowBoard_[version]_[arch][setup][ext]

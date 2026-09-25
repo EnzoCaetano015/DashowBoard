@@ -22,59 +22,39 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  verify:
-    name: Validate release
-    runs-on: windows-latest
-    timeout-minutes: 45
-    steps:
-      - uses: actions/checkout@v5
-
-      - uses: pnpm/action-setup@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: pnpm
-
-      - uses: dtolnay/rust-toolchain@stable
-        with:
-          toolchain: stable
-          targets: x86_64-pc-windows-msvc
-          components: rustfmt
-
-      - uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: src-tauri -> target
-
-      - name: Install frontend dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Test frontend
-        run: pnpm test
-
-      - name: Build frontend
-        run: pnpm build
-
-      - name: Check Rust formatting
-        run: cargo fmt --check --manifest-path src-tauri/Cargo.toml
-
-      - name: Check Rust application
-        run: cargo check --manifest-path src-tauri/Cargo.toml
-
-      - name: Test Rust application
-        run: cargo test --manifest-path src-tauri/Cargo.toml
-
   publish:
     name: Build and publish Windows installers
-    needs: verify
     runs-on: windows-latest
     timeout-minutes: 60
     permissions:
+      actions: read
       contents: write
     steps:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0
+
+      - name: Require successful CI for this commit
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $runs = gh run list `
+              --repo $env:GITHUB_REPOSITORY `
+              --workflow ci.yml `
+              --commit $env:GITHUB_SHA `
+              --status success `
+              --limit 1 `
+              --json databaseId,headSha,url | ConvertFrom-Json
+
+          if ($LASTEXITCODE -ne 0) {
+              throw "Could not verify the CI status for commit $env:GITHUB_SHA."
+          }
+          if (@($runs).Count -eq 0) {
+              throw "A successful CI run is required for commit $env:GITHUB_SHA before releasing."
+          }
+
+          Write-Host "Using successful CI run: $($runs[0].url)"
 
       - uses: pnpm/action-setup@v4
 

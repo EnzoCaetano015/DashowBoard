@@ -38,6 +38,19 @@ export const converterDensidade = (valor: string) => {
     return OPCOES_DENSIDADE.find((opcao) => opcao.valor === valor)?.valor
 }
 
+export const obterTituloIntervaloAtualizacao = (valor: unknown) => {
+    return OPCOES_INTERVALO_ATUALIZACAO.find((opcao) => String(opcao.valor) === String(valor))
+        ?.titulo
+}
+
+export const obterTituloTema = (valor: unknown) => {
+    return OPCOES_TEMA.find((opcao) => opcao.valor === valor)?.titulo
+}
+
+export const obterTituloDensidade = (valor: unknown) => {
+    return OPCOES_DENSIDADE.find((opcao) => opcao.valor === valor)?.titulo
+}
+
 export const obterMensagemErroConfiguracoes = (erro: unknown) => {
     return obterMensagemErro(erro, "Não foi possível concluir a operação.")
 }

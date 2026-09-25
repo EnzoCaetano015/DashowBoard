@@ -14,6 +14,9 @@ import {
     converterDensidade,
     converterIntervaloAtualizacao,
     converterTema,
+    obterTituloDensidade,
+    obterTituloIntervaloAtualizacao,
+    obterTituloTema,
     OPCOES_DENSIDADE,
     OPCOES_INTERVALO_ATUALIZACAO,
     OPCOES_TEMA,
@@ -114,7 +117,7 @@ export const ConfiguracoesPage = () => {
                                 }}
                             >
                                 <SelectTrigger id="intervalo-padrao">
-                                    <SelectValue />
+                                    <SelectValue>{obterTituloIntervaloAtualizacao}</SelectValue>
                                 </SelectTrigger>
                                 <SelectContent>
                                     {OPCOES_INTERVALO_ATUALIZACAO.map((opcao) => (
@@ -215,7 +218,7 @@ export const ConfiguracoesPage = () => {
                                 }}
                             >
                                 <SelectTrigger id="tema">
-                                    <SelectValue />
+                                    <SelectValue>{obterTituloTema}</SelectValue>
                                 </SelectTrigger>
                                 <SelectContent>
                                     {OPCOES_TEMA.map((opcao) => (
@@ -242,7 +245,7 @@ export const ConfiguracoesPage = () => {
                                 }}
                             >
                                 <SelectTrigger id="densidade">
-                                    <SelectValue />
+                                    <SelectValue>{obterTituloDensidade}</SelectValue>
                                 </SelectTrigger>
                                 <SelectContent>
                                     {OPCOES_DENSIDADE.map((opcao) => (

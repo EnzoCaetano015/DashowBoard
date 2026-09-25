@@ -183,22 +183,28 @@ export const NovoProjetoConteudo = ({ open, onClose }: NovoProjetoConteudoProps)
                         />
                     )}
                 </Modal.Body>
-                <Modal.Actions className="m-0 min-w-0 flex-row items-center justify-between rounded-none border-t border-border bg-surface-1 p-4">
-                    <Button
-                        variant="ghost"
-                        disabled={etapa === 1 || criarProjetoIsPending}
-                        onClick={voltar}
-                    >
-                        <ChevronLeft />
-                        Voltar
-                    </Button>
-                    <span className="text-xs text-muted-foreground">
+                <Modal.Actions className="m-0 grid min-w-0 grid-cols-[1fr_auto_1fr] items-center rounded-none border-t border-border bg-surface-1 p-4">
+                    {etapa > 1 ? (
+                        <Button
+                            variant="ghost"
+                            disabled={criarProjetoIsPending}
+                            onClick={voltar}
+                            className="justify-self-start"
+                        >
+                            <ChevronLeft />
+                            Voltar
+                        </Button>
+                    ) : (
+                        <span aria-hidden="true" />
+                    )}
+                    <span className="whitespace-nowrap text-xs text-muted-foreground">
                         Passo {etapa} de {etapasNovoProjeto.length}
                     </span>
                     {etapa < 6 ? (
                         <Button
                             onClick={continuar}
                             disabled={criarProjetoIsPending}
+                            className="justify-self-end"
                         >
                             Continuar
                             <ChevronRight />
@@ -207,7 +213,7 @@ export const NovoProjetoConteudo = ({ open, onClose }: NovoProjetoConteudoProps)
                         <Button
                             onClick={concluir}
                             disabled={criarProjetoIsPending}
-                            className="bg-success text-success-foreground hover:bg-success/90"
+                            className="justify-self-end bg-success text-success-foreground hover:bg-success/90"
                         >
                             <Check />
                             {criarProjetoIsPending ? "Criando..." : "Criar projeto"}

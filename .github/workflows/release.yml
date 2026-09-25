@@ -93,13 +93,24 @@ jobs:
               throw "Release message must not be empty."
           }
 
-          gh release view $env:RELEASE_TAG *> $null
-          if ($LASTEXITCODE -eq 0) {
+          $previousNativeCommandPreference = $PSNativeCommandUseErrorActionPreference
+          $PSNativeCommandUseErrorActionPreference = $false
+
+          try {
+              gh release view $env:RELEASE_TAG *> $null
+              $releaseExists = $LASTEXITCODE -eq 0
+
+              git ls-remote --exit-code --tags origin "refs/tags/$env:RELEASE_TAG" *> $null
+              $tagExists = $LASTEXITCODE -eq 0
+          } finally {
+              $PSNativeCommandUseErrorActionPreference = $previousNativeCommandPreference
+          }
+
+          if ($releaseExists) {
               throw "Release $env:RELEASE_TAG already exists."
           }
 
-          git ls-remote --exit-code --tags origin "refs/tags/$env:RELEASE_TAG" *> $null
-          if ($LASTEXITCODE -eq 0) {
+          if ($tagExists) {
               throw "Tag $env:RELEASE_TAG already exists."
           }
 

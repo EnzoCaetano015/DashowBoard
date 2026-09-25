@@ -63,14 +63,14 @@ export const NovoProjetoConteudo = ({ open, onClose }: NovoProjetoConteudoProps)
                 open={open}
                 onClose={solicitarFechamento}
                 disableClose={criarProjetoIsPending}
-                className="max-h-[90dvh] gap-0 overflow-hidden border-border bg-card p-0 sm:max-w-3xl"
+                className="min-w-0 max-h-[90dvh] gap-0 overflow-hidden border-border bg-card p-0 sm:max-w-3xl"
             >
                 <Modal.Header
                     titulo="Novo projeto"
                     subTitulo="Um projeto é um agrupador local. Ele não cria nada nas plataformas externas."
-                    className="border-b border-border p-5 pr-12"
+                    className="min-w-0 border-b border-border p-5 pr-12"
                 >
-                    <div className="mt-4 flex items-center gap-1 overflow-x-auto pb-1">
+                    <div className="scrollbar-thin mt-4 flex w-full min-w-0 items-center gap-1 overflow-x-auto pb-1">
                         {etapasNovoProjeto.map((etapaConfig, indice) => {
                             const ativa = etapa === etapaConfig.id
                             const concluida = !ativa && etapaConfig.id < maiorEtapaVisitada
@@ -118,7 +118,7 @@ export const NovoProjetoConteudo = ({ open, onClose }: NovoProjetoConteudoProps)
                         })}
                     </div>
                 </Modal.Header>
-                <Modal.Body className="scrollbar-thin max-h-[52dvh] overflow-y-auto p-5">
+                <Modal.Body className="scrollbar-thin min-w-0 max-h-[52dvh] overflow-y-auto p-5">
                     {etapa === 1 && (
                         <InformacoesStep
                             nome={formulario.nome}
@@ -183,7 +183,7 @@ export const NovoProjetoConteudo = ({ open, onClose }: NovoProjetoConteudoProps)
                         />
                     )}
                 </Modal.Body>
-                <Modal.Actions className="m-0 flex-row items-center justify-between rounded-none border-t border-border bg-surface-1 p-4">
+                <Modal.Actions className="m-0 min-w-0 flex-row items-center justify-between rounded-none border-t border-border bg-surface-1 p-4">
                     <Button
                         variant="ghost"
                         disabled={etapa === 1 || criarProjetoIsPending}

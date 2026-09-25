@@ -98,20 +98,24 @@ jobs:
 
           try {
               gh release view $env:RELEASE_TAG *> $null
-              $releaseExists = $LASTEXITCODE -eq 0
+              $releaseCheckExitCode = $LASTEXITCODE
 
               git ls-remote --exit-code --tags origin "refs/tags/$env:RELEASE_TAG" *> $null
-              $tagExists = $LASTEXITCODE -eq 0
+              $tagCheckExitCode = $LASTEXITCODE
           } finally {
               $PSNativeCommandUseErrorActionPreference = $previousNativeCommandPreference
+              $global:LASTEXITCODE = 0
           }
 
-          if ($releaseExists) {
+          if ($releaseCheckExitCode -eq 0) {
               throw "Release $env:RELEASE_TAG already exists."
           }
 
-          if ($tagExists) {
+          if ($tagCheckExitCode -eq 0) {
               throw "Tag $env:RELEASE_TAG already exists."
+          }
+          if ($tagCheckExitCode -ne 2) {
+              throw "Could not verify whether tag $env:RELEASE_TAG already exists."
           }
 
           "app_version=$($env:RELEASE_TAG.Substring(1))" >> $env:GITHUB_OUTPUT

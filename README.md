@@ -1,6 +1,8 @@
 <div align="center">
 
-# 🛰️ DashowBoard
+<img src="./src/img/logo_without_background.png" alt="Logo do DashowBoard" width="220" />
+
+# DashowBoard
 
 ### Seu cockpit open-source para acompanhar projetos, deploys, serviços e incidentes em um só lugar.
 

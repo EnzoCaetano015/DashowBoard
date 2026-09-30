@@ -23,6 +23,16 @@
 
 ---
 
+## Landing page e GitHub Pages
+
+A landing page fica em [`site/index.html`](./site/index.html), com HTML, CSS, JavaScript e logo embutidos no mesmo arquivo. Abra esse arquivo no navegador para visualizar, sem instalar dependências ou executar build.
+
+Para habilitar a publicação, selecione **GitHub Actions** em **Settings → Pages → Build and deployment → Source** no repositório. O workflow [`Pages`](./.github/workflows/pages.yml) publica somente a pasta `site` quando alterações nela ou no próprio workflow chegam à `main`. Também é possível executá-lo manualmente na aba **Actions** a partir da `main`.
+
+Após o primeiro deploy, a página ficará disponível em <https://enzocaetano015.github.io/DashowBoard/>. A publicação da landing page é independente do build e dos releases do aplicativo desktop.
+
+---
+
 ## ✨ O que é o DashowBoard?
 
 O **DashowBoard** é um aplicativo desktop open-source criado para centralizar a visibilidade de projetos que vivem espalhados entre **GitHub**, **Vercel**, **Railway** e **Supabase**.

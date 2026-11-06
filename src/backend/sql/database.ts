@@ -14,7 +14,7 @@ const TABELAS_NECESSARIAS = [
     "preferencias_aplicacao",
     "projeto_repositorios",
     "projeto_servicos",
-    "projetos",
+    "projects",
     "status_recursos",
     "verificacoes_projeto",
 ] as const
@@ -24,7 +24,7 @@ const validarBancoDadosDesenvolvimento = async (database: Database) => {
 
     const violacoes = await database.select<unknown[]>("PRAGMA foreign_key_check")
     if (violacoes.length > 0) {
-        throw new Error(`O banco possui ${violacoes.length} violação(ões) de chave estrangeira.`)
+        throw new Error(`The database has ${violacoes.length} foreign key violation(s).`)
     }
 
     const tabelas = await database.select<Array<{ name: string }>>(
@@ -34,7 +34,7 @@ const validarBancoDadosDesenvolvimento = async (database: Database) => {
     const tabelasAusentes = TABELAS_NECESSARIAS.filter((nome) => !nomesTabelas.has(nome))
 
     if (tabelasAusentes.length > 0) {
-        throw new Error(`Tabelas ausentes no banco: ${tabelasAusentes.join(", ")}.`)
+        throw new Error(`Missing database tables: ${tabelasAusentes.join(", ")}.`)
     }
 }
 

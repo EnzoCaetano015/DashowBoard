@@ -3,7 +3,7 @@ import { obterMensagemErro } from "@/lib/utils/error"
 import type { InformacoesConfiguracoes } from "@/pages/Configuracoes/Configuracoes.types"
 
 export const INFORMACOES_INICIAIS: InformacoesConfiguracoes = {
-    caminhoBanco: "Informação indisponível",
+    caminhoBanco: "Information unavailable",
     versao: "—",
     runtime: "—",
     build: "—",
@@ -16,14 +16,14 @@ export const OPCOES_INTERVALO_ATUALIZACAO = [
 ] as const
 
 export const OPCOES_TEMA = [
-    { valor: Enum.TemaAplicacao.Escuro, titulo: "Escuro" },
-    { valor: Enum.TemaAplicacao.Claro, titulo: "Claro" },
-    { valor: Enum.TemaAplicacao.Sistema, titulo: "Sistema" },
+    { valor: Enum.TemaAplicacao.Escuro, titulo: "Dark" },
+    { valor: Enum.TemaAplicacao.Claro, titulo: "Light" },
+    { valor: Enum.TemaAplicacao.Sistema, titulo: "System" },
 ] as const
 
 export const OPCOES_DENSIDADE = [
-    { valor: Enum.DensidadeAplicacao.Confortavel, titulo: "Confortável" },
-    { valor: Enum.DensidadeAplicacao.Compacta, titulo: "Compacto" },
+    { valor: Enum.DensidadeAplicacao.Confortavel, titulo: "Comfortable" },
+    { valor: Enum.DensidadeAplicacao.Compacta, titulo: "Compact" },
 ] as const
 
 export const converterIntervaloAtualizacao = (valor: string) => {
@@ -52,5 +52,5 @@ export const obterTituloDensidade = (valor: unknown) => {
 }
 
 export const obterMensagemErroConfiguracoes = (erro: unknown) => {
-    return obterMensagemErro(erro, "Não foi possível concluir a operação.")
+    return obterMensagemErro(erro, "Unable to complete the operation.")
 }

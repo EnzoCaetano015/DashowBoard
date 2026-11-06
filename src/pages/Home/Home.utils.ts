@@ -29,7 +29,7 @@ const PRIORIDADE_STATUS: Record<Enum.StatusProjeto, number> = {
 const compararNomeProjeto = (
     primeiro: ObterProjetos.Projeto,
     segundo: ObterProjetos.Projeto
-) => primeiro.nome.localeCompare(segundo.nome, "pt-BR", { sensitivity: "base" })
+) => primeiro.nome.localeCompare(segundo.nome, "en-US", { sensitivity: "base" })
 
 const contarIncidentesAtivos = (projeto: ObterProjetos.Projeto) =>
     projeto.incidentes.filter(({ status }) => status !== Enum.StatusIncidente.Resolvido).length

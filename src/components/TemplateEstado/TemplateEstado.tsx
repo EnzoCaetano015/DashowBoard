@@ -38,15 +38,15 @@ export const Carregando = ({ skeleton, Icon, className, titulo, subtitulo }: Car
 }
 
 export const Vazio = ({
-    titulo = "Nenhum item encontrado",
-    subtitulo = "Tente novamente ou revise os termos de busca.",
+    titulo = "No items found",
+    subtitulo = "Try again or refine your search.",
     Icon = CircleQuestionMark,
     acao,
     className,
 }: VazioProps) => (
     <Card
         data-slot="template-estado-vazio"
-        className={cn("border-dashed bg-card/50", className)}
+        className={cn("border-dashed", className)}
     >
         <CardContent className="py-12 text-center">
             <Icon className="mx-auto size-8 text-muted-foreground" />

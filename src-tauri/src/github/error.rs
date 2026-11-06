@@ -24,61 +24,57 @@ impl GitHubError {
     pub fn connection_not_found() -> Self {
         Self::new(
             "GITHUB_CONEXAO_NAO_ENCONTRADA",
-            "A conexão GitHub informada não foi encontrada.",
+            "The requested GitHub connection was not found.",
         )
     }
 
     pub fn keyring(_error: keyring::Error) -> Self {
         Self::new(
             "GITHUB_COFRE_INDISPONIVEL",
-            "Não foi possível acessar o cofre de credenciais do sistema.",
+            "Unable to access the system credential vault.",
         )
     }
 
     pub fn network(error: reqwest::Error) -> Self {
         if error.is_timeout() {
-            return Self::new("GITHUB_TIMEOUT", "O GitHub demorou demais para responder.");
+            return Self::new("GITHUB_TIMEOUT", "GitHub took too long to respond.");
         }
         if error.is_connect() {
             return Self::new(
                 "GITHUB_SEM_CONEXAO",
-                "Não foi possível conectar ao GitHub. Verifique sua internet.",
+                "Unable to connect to GitHub. Check your internet connection.",
             );
         }
-        Self::new(
-            "GITHUB_INDISPONIVEL",
-            "O GitHub está indisponível no momento.",
-        )
+        Self::new("GITHUB_INDISPONIVEL", "GitHub is currently unavailable.")
     }
 
     pub fn status(status: StatusCode, headers: &HeaderMap) -> Self {
         match status {
             StatusCode::UNAUTHORIZED if token_expired(headers) => Self::new(
                 "GITHUB_TOKEN_EXPIRADO",
-                "O token desta conexão expirou. Substitua-o para continuar.",
+                "This connection's token has expired. Replace it to continue.",
             ),
             StatusCode::UNAUTHORIZED => Self::new(
                 "GITHUB_TOKEN_INVALIDO",
-                "O token informado é inválido ou foi revogado.",
+                "The supplied token is invalid or has been revoked.",
             ),
             StatusCode::FORBIDDEN if header_u32(headers, "x-ratelimit-remaining") == Some(0) => {
                 Self {
                     code: "GITHUB_RATE_LIMIT".to_owned(),
-                    message: "O limite de requisições do GitHub foi atingido.".to_owned(),
+                    message: "The GitHub rate limit has been reached.".to_owned(),
                     reset_at: header_reset(headers),
                 }
             }
             StatusCode::FORBIDDEN => Self::new(
                 "GITHUB_SEM_PERMISSAO",
-                "O token não possui permissão para consultar estes repositórios.",
+                "The token does not have permission to access these repositories.",
             ),
-            status if status.is_server_error() => Self::new(
-                "GITHUB_INDISPONIVEL",
-                "O GitHub está indisponível no momento.",
-            ),
+            status if status.is_server_error() => {
+                Self::new("GITHUB_INDISPONIVEL", "GitHub is currently unavailable.")
+            }
             _ => Self::new(
                 "GITHUB_ERRO_DESCONHECIDO",
-                "Não foi possível concluir a operação no GitHub.",
+                "Unable to complete the GitHub operation.",
             ),
         }
     }

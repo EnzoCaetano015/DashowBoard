@@ -25,9 +25,9 @@ export const SupabaseProjectsSection = ({
     <section className="space-y-3">
         <div className="flex items-center justify-between gap-3">
             <div>
-                <h3 className="text-sm font-medium">Projetos Supabase</h3>
+                <h3 className="text-sm font-medium">Supabase projects</h3>
                 <p className="text-xs text-muted-foreground">
-                    Selecione bancos acessíveis ao Personal Access Token.
+                    Select databases accessible with the Personal Access Token.
                 </p>
             </div>
             {runtimeDisponivel && configurada && !isLoading && (
@@ -37,15 +37,15 @@ export const SupabaseProjectsSection = ({
                     disabled={isFetching}
                     onClick={atualizar}
                 >
-                    <RefreshCw className={isFetching ? "animate-spin" : undefined} /> Atualizar
+                    <RefreshCw className={isFetching ? "animate-spin" : undefined} /> Refresh
                 </Button>
             )}
         </div>
 
         {!runtimeDisponivel ? (
-            <EstadoSupabase descricao="A integração Supabase está disponível no aplicativo desktop." />
+            <EstadoSupabase descricao="The Supabase integration is available in the desktop app." />
         ) : !isLoading && !configurada ? (
-            <EstadoSupabase descricao="Conecte sua conta Supabase para listar os projetos." />
+            <EstadoSupabase descricao="Connect your Supabase account to list projects." />
         ) : isLoading ? (
             <TemplateEstado.Carregando
                 skeleton={{ quantidade: 3, orientacao: "vertical" }}
@@ -54,8 +54,8 @@ export const SupabaseProjectsSection = ({
         ) : projetos.length === 0 ? (
             <div className="space-y-3">
                 <TemplateEstado.Vazio
-                    titulo="Nenhum projeto Supabase encontrado"
-                    subtitulo="Nenhum projeto acessível foi encontrado nas organizações configuradas."
+                    titulo="No Supabase projects found"
+                    subtitulo="No accessible projects were found in the configured organizations."
                     Icon={Database}
                 />
                 {falhas.length > 0 && <FalhasSupabase falhas={falhas} />}
@@ -79,7 +79,7 @@ export const SupabaseProjectsSection = ({
                             <Checkbox
                                 checked={selecionado}
                                 onCheckedChange={() => alternar(projeto)}
-                                aria-label={`Selecionar ${projeto.nome}`}
+                                aria-label={`Select ${projeto.nome}`}
                             />
                             <ProviderIcon provider={Enum.Provider.Supabase} />
                             <div className="min-w-0 flex-1">
@@ -91,18 +91,18 @@ export const SupabaseProjectsSection = ({
                                             ? "Pausado"
                                             : projeto.statusOriginal === "ACTIVE_HEALTHY"
                                               ? "Ativo"
-                                              : projeto.statusOriginal || "Desconhecido"}
+                                              : projeto.statusOriginal || "Unknown"}
                                     </Badge>
                                 </div>
                                 <p className="mt-1 text-xs text-muted-foreground">
                                     {projeto.organizacaoNome} ·{" "}
-                                    {projeto.regiao || "Região não informada"}
+                                    {projeto.regiao || "Region not specified"}
                                     {" · "}
-                                    {projeto.cloudProvider || "Cloud não informada"}
+                                    {projeto.cloudProvider || "Cloud not specified"}
                                 </p>
                                 <p className="mt-1 text-xs text-muted-foreground">
-                                    Banco: {projeto.banco?.statusOriginal || "Não informado"} · Compute:{" "}
-                                    {projeto.banco?.computeSize || "Não informado"}
+                                    Database: {projeto.banco?.statusOriginal || "Not specified"} · Compute:{" "}
+                                    {projeto.banco?.computeSize || "Not specified"}
                                 </p>
                             </div>
                             {inativo && (
@@ -111,7 +111,7 @@ export const SupabaseProjectsSection = ({
                                     variant="outline"
                                     onClick={() => void abrirUrlExterna(projeto.dashboardUrl)}
                                 >
-                                    Abrir no Supabase <ExternalLink />
+                                    Open in Supabase <ExternalLink />
                                 </Button>
                             )}
                         </div>
@@ -147,7 +147,7 @@ const EstadoSupabase = ({ descricao }: { descricao: string }) => (
             nativeButton={false}
             className="mt-4"
         >
-            Ir para Integrações
+            Go to integrations
         </Button>
     </div>
 )

@@ -136,7 +136,7 @@ const mapearServico = (row: ServicoRow): ObterProjetos.Servico => {
         ambiente:
             lerTexto(snapshot, "environmentName") ??
             lerTexto(snapshot, "regiao") ??
-            (provider === Enum.Provider.Vercel ? "production" : "Não informado"),
+            (provider === Enum.Provider.Vercel ? "production" : "Not specified"),
         status: row.status as Enum.StatusProjeto,
         ultimoDeployment,
         deploymentStatusOriginal:
@@ -478,7 +478,7 @@ export const criarProjeto = async (request: CriarProjeto.Request): Promise<Criar
 
     try {
         const projeto = await obterProjetoPorId(projetoId)
-        if (!projeto) throw new Error("O projeto criado não pôde ser carregado.")
+        if (!projeto) throw new Error("The new project could not be loaded.")
         return projeto
     } catch (erro) {
         if (import.meta.env.DEV) {
@@ -492,7 +492,7 @@ export const atualizarProjeto = async (
     request: AtualizarProjeto.Request
 ): Promise<AtualizarProjeto.Response> => {
     const projeto = await obterProjetoPorId(request.id)
-    if (!projeto) throw new Error("Projeto não encontrado.")
+    if (!projeto) throw new Error("Project not found.")
     const database = await obterBancoDados()
     await database.execute(
         `
@@ -515,7 +515,7 @@ export const atualizarProjeto = async (
         ]
     )
     const atualizado = await obterProjetoPorId(request.id)
-    if (!atualizado) throw new Error("Projeto não encontrado.")
+    if (!atualizado) throw new Error("Project not found.")
     return atualizado
 }
 
@@ -715,10 +715,10 @@ export const salvarSnapshotsServicos = (request: SalvarSnapshotsServicos.Request
                             servico.id,
                             `${servico.nome} ${
                                 atualizacao.status === Enum.StatusProjeto.Offline
-                                    ? "ficou offline"
-                                    : "está degradado"
+                                    ? "went offline"
+                                    : "is degraded"
                             }`,
-                            "Mudança de status detectada automaticamente pelo monitoramento.",
+                            "Status change detected automatically by monitoring.",
                             Enum.StatusIncidente.EmAndamento,
                             atualizacao.status === Enum.StatusProjeto.Offline
                                 ? Enum.SeveridadeIncidente.Alta
@@ -836,11 +836,11 @@ export const salvarVerificacoesProjeto = (request: SalvarVerificacoesProjeto.Req
                             atualizacao.projetoId,
                             `${projeto.nome} ${
                                 atualizacao.status === Enum.StatusProjeto.Offline
-                                    ? "ficou indisponível"
-                                    : "está respondendo com falhas"
+                                    ? "became unavailable"
+                                    : "is responding with errors"
                             }`,
                             atualizacao.mensagem ??
-                                "Mudança detectada pelo health check da URL da aplicação.",
+                                "Change detected by the application URL health check.",
                             Enum.StatusIncidente.EmAndamento,
                             atualizacao.status === Enum.StatusProjeto.Offline
                                 ? Enum.SeveridadeIncidente.Alta

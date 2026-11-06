@@ -11,6 +11,7 @@ export const FiltroSelect = ({
     className,
 }: FiltroSelectProps) => (
     <Select
+        items={opcoes.map(([valor, titulo]) => ({ value: valor, label: titulo }))}
         value={value}
         onValueChange={(valor) => valor && onValueChange(valor)}
     >

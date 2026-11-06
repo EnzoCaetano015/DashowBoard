@@ -7,8 +7,8 @@ export const exigirRuntimeTauri = (provider?: string) => {
         throw {
             code: "TAURI_NAO_DISPONIVEL",
             message: provider
-                ? `A integração ${provider} está disponível no aplicativo desktop.`
-                : "Esta integração está disponível no aplicativo desktop.",
+                ? `The integration ${provider} is available in the desktop app.`
+                : "This integration is available in the desktop app.",
         }
     }
 }

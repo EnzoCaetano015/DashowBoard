@@ -32,10 +32,10 @@ export const obterEventosHistorico = (projeto: ObterProjetos.Projeto): EventoHis
             data: deployment.data,
             titulo:
                 deployment.status === Enum.StatusDeployment.Sucesso
-                    ? "Deploy concluído"
+                    ? "Deployment completed"
                     : deployment.status === Enum.StatusDeployment.Falha
-                      ? "Deploy falhou"
-                      : "Deploy em andamento",
+                      ? "Deployment failed"
+                      : "Deployment in progress",
             detalhe: [deployment.servico, deployment.commit, deployment.autor]
                 .filter(Boolean)
                 .join(" · "),
@@ -50,10 +50,10 @@ export const obterEventosHistorico = (projeto: ObterProjetos.Projeto): EventoHis
             id: status.id,
             tipo: "status" as const,
             data: status.verificadoEm,
-            titulo: `Status observado: ${status.statusAtual}`,
+            titulo: `Observed status: ${status.statusAtual}`,
             detalhe: status.statusAnterior
                 ? `${status.statusAnterior} → ${status.statusAtual}`
-                : "Primeira observação registrada",
+                : "First observation recorded",
             tom:
                 status.statusAtual === Enum.StatusProjeto.Saudavel
                     ? ("success" as const)

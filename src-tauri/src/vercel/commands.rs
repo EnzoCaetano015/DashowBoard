@@ -22,7 +22,7 @@ pub async fn salvar_conexao_vercel(
     if request.token.trim().is_empty() {
         return Err(VercelError::new(
             "VERCEL_TOKEN_INVALIDO",
-            "Informe o token da Vercel.",
+            "Enter your Vercel token.",
         ));
     }
     let result = save_connection(&client, request.token.trim()).await;
@@ -56,10 +56,7 @@ pub async fn testar_conexao_vercel(
     client: State<'_, VercelClient>,
 ) -> Result<VercelConnection, VercelError> {
     let mut connection = storage::load_connection()?.ok_or_else(|| {
-        VercelError::new(
-            "VERCEL_SEM_CONEXAO",
-            "Nenhuma conexão Vercel está configurada.",
-        )
+        VercelError::new("VERCEL_SEM_CONEXAO", "No Vercel connection is configured.")
     })?;
     refresh_connection(&client, &mut connection).await;
     storage::save_connection(&connection)?;

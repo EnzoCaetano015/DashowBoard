@@ -34,7 +34,7 @@ impl VercelClient {
         self.http.as_ref().map_err(|_| {
             VercelError::new(
                 "VERCEL_ERRO_DESCONHECIDO",
-                "Não foi possível inicializar o cliente da Vercel.",
+                "Unable to initialize the Vercel client.",
             )
         })
     }
@@ -146,7 +146,7 @@ impl VercelClient {
         serde_json::from_str(&body).map_err(|_| {
             VercelError::new(
                 "VERCEL_ERRO_DESCONHECIDO",
-                "A Vercel retornou dados em um formato inesperado.",
+                "Vercel returned data in an unexpected format.",
             )
         })
     }

@@ -55,14 +55,14 @@ export const useIntegracoes = () => {
                 runtimeDisponivel,
                 isLoading: githubIsLoading,
                 erro: githubError
-                    ? obterMensagemErro(githubError, "Falha ao consultar o GitHub.")
+                    ? obterMensagemErro(githubError, "Unable to query GitHub.")
                     : undefined,
             }),
             montarIntegracaoVercel(conexaoVercel ?? null, {
                 runtimeDisponivel,
                 isLoading: vercelIsLoading,
                 erro: vercelError
-                    ? obterMensagemErro(vercelError, "Falha ao consultar a Vercel.")
+                    ? obterMensagemErro(vercelError, "Unable to query Vercel.")
                     : undefined,
             }),
             montarIntegracaoSupabase(conexaoSupabase ?? null, projetosSupabase, {
@@ -72,7 +72,7 @@ export const useIntegracoes = () => {
                     supabaseError || projetosSupabaseError
                         ? obterMensagemErro(
                               supabaseError ?? projetosSupabaseError,
-                              "Falha ao consultar o Supabase."
+                              "Unable to query Supabase."
                           )
                         : undefined,
             }),
@@ -80,7 +80,7 @@ export const useIntegracoes = () => {
                 runtimeDisponivel,
                 isLoading: railwayIsLoading,
                 erro: railwayError
-                    ? obterMensagemErro(railwayError, "Falha ao consultar a Railway.")
+                    ? obterMensagemErro(railwayError, "Unable to query Railway.")
                     : undefined,
             }),
         ],
@@ -112,7 +112,7 @@ export const useIntegracoes = () => {
         isLoading: githubIsLoading || vercelIsLoading || supabaseIsLoading || railwayIsLoading,
         isError: todasConexoesFalharam,
         error: todasConexoesFalharam && error
-            ? obterMensagemErro(error, "Não foi possível consultar as integrações configuradas.")
+            ? obterMensagemErro(error, "Unable to query the configured integrations.")
             : undefined,
         atualizar: () =>
             Promise.all([

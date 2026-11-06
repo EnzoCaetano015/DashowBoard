@@ -158,7 +158,7 @@ export const useMonitoramentoProjetos = () => {
         if (atualizacoes.length === 0) return
         void salvarSnapshots({ atualizacoes }).catch(() => {
             for (const { servicoId } of atualizacoes) assinaturas.current.delete(servicoId)
-            toast.error("Não foi possível persistir as atualizações do monitoramento.", {
+            toast.error("Unable to save monitoring updates.", {
                 id: "erro-persistencia-monitoramento",
             })
         })
@@ -217,7 +217,7 @@ export const useMonitoramentoProjetos = () => {
                     assinaturasHealthCheck.current.delete(projetoId)
                 }
             }
-            toast.error("Não foi possível persistir os health checks dos projetos.", {
+            toast.error("Unable to save project health checks.", {
                 id: "erro-persistencia-health-checks",
             })
         })

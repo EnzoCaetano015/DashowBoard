@@ -13,11 +13,11 @@ export const RelacionamentosStep = ({
 }: RelacionamentosStepProps) => (
     <div className="space-y-3">
         <p className="text-sm text-muted-foreground">
-            Relacione cada serviço a um repositório selecionado, quando houver essa relação.
+            Link each service to a selected repository when applicable.
         </p>
         {servicos.length === 0 ? (
             <div className="rounded-md border border-dashed p-6 text-center text-sm text-muted-foreground">
-                Nenhum serviço selecionado.
+                No services selected.
             </div>
         ) : (
             servicos.map((servico) => {
@@ -42,7 +42,7 @@ export const RelacionamentosStep = ({
                                 <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value={SEM_REPOSITORIO}>— sem repositório —</SelectItem>
+                                <SelectItem value={SEM_REPOSITORIO}>— no repository —</SelectItem>
                                 {repositorios.map((repositorio) => (
                                     <SelectItem
                                         key={repositorio.id}

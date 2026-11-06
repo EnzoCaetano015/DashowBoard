@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button"
 
 export const ProjetoNaoEncontrado = () => (
     <TemplateEstado.Vazio
-        titulo="Projeto não encontrado"
-        subtitulo="O agrupamento local que você buscou não existe mais."
+        titulo="Project not found"
+        subtitulo="The local group you requested no longer exists."
         Icon={FolderX}
         acao={
             <Button
@@ -16,7 +16,7 @@ export const ProjetoNaoEncontrado = () => (
                 variant="outline"
             >
                 <ArrowLeft />
-                Voltar para projetos
+                Back to projects
             </Button>
         }
     />

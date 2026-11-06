@@ -16,7 +16,7 @@ pub fn load_connection() -> Result<Option<RailwayConnection>, RailwayError> {
         Ok(serialized) => serde_json::from_str(&serialized).map(Some).map_err(|_| {
             RailwayError::new(
                 "RAILWAY_COFRE_INDISPONIVEL",
-                "Os dados seguros da conexão Railway estão corrompidos.",
+                "The secure Railway connection data is corrupted.",
             )
         }),
         Err(KeyringError::NoEntry) => Ok(None),
@@ -28,7 +28,7 @@ pub fn save_connection(connection: &RailwayConnection) -> Result<(), RailwayErro
     let serialized = serde_json::to_string(connection).map_err(|_| {
         RailwayError::new(
             "RAILWAY_COFRE_INDISPONIVEL",
-            "Não foi possível preparar os dados seguros da conexão Railway.",
+            "Unable to prepare the secure Railway connection data.",
         )
     })?;
     entry(CONNECTION_ACCOUNT)?
@@ -41,7 +41,7 @@ pub fn get_token() -> Result<String, RailwayError> {
         Ok(token) => Ok(token),
         Err(KeyringError::NoEntry) => Err(RailwayError::new(
             "RAILWAY_SEM_CONEXAO",
-            "Nenhuma conexão Railway está configurada.",
+            "No Railway connection is configured.",
         )),
         Err(error) => Err(RailwayError::keyring(error)),
     }

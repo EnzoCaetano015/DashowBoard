@@ -55,8 +55,8 @@ export const GitHubIntegrationDialog = ({ open, onClose }: GitHubIntegrationDial
                 className="max-h-[90dvh] overflow-y-auto sm:max-w-3xl"
             >
                 <Modal.Header
-                    titulo="Conexões GitHub"
-                    subTitulo="Cadastre uma conexão para sua conta pessoal e outra para organizações como a Nexus."
+                    titulo="GitHub connections"
+                    subTitulo="Add a connection for your personal account and another for your organizations."
                 />
                 <Modal.Body className="space-y-4">
                     {!runtimeDisponivel ? (
@@ -64,7 +64,7 @@ export const GitHubIntegrationDialog = ({ open, onClose }: GitHubIntegrationDial
                             <CardContent className="py-10 text-center">
                                 <KeyRound className="mx-auto size-8 text-muted-foreground" />
                                 <p className="mt-3 text-sm">
-                                    A integração GitHub está disponível no aplicativo desktop.
+                                    The GitHub integration is available in the desktop app.
                                 </p>
                             </CardContent>
                         </Card>
@@ -77,11 +77,11 @@ export const GitHubIntegrationDialog = ({ open, onClose }: GitHubIntegrationDial
                             {connections.length === 0 && !formVisible && (
                                 <TemplateEstado.Vazio
                                     Icon={KeyRound}
-                                    titulo="Nenhuma conexão GitHub"
-                                    subtitulo="Adicione uma conexão para consultar seus repositórios."
+                                    titulo="No GitHub connections"
+                                    subtitulo="Add a connection to access your repositories."
                                     acao={
                                         <Button onClick={startNew}>
-                                            <Plus /> Adicionar conexão
+                                            <Plus /> Add connection
                                         </Button>
                                     }
                                 />
@@ -121,19 +121,19 @@ export const GitHubIntegrationDialog = ({ open, onClose }: GitHubIntegrationDial
                                                     )}
                                                     {connection.status ===
                                                     Enum.StatusIntegracao.Conectado
-                                                        ? "Conectada"
-                                                        : "Erro"}
+                                                        ? "Connected"
+                                                        : "Error"}
                                                 </span>
                                             </div>
                                             <p className="text-xs text-muted-foreground">
                                                 @{connection.login} ·{" "}
                                                 {connection.tipo === Enum.TipoConexaoGitHub.Organizacao
-                                                    ? "Organização"
-                                                    : "Pessoal"}{" "}
+                                                    ? "Organization"
+                                                    : "Personal"}{" "}
                                                 · {connection.resourceOwner}
                                             </p>
                                             <p className="mt-1 text-xs text-muted-foreground">
-                                                {connection.quantidadeRepositorios} repositórios ·{" "}
+                                                {connection.quantidadeRepositorios} repositories ·{" "}
                                                 {formatarDataHora(connection.ultimaSincronizacao)}
                                             </p>
                                             {connection.erro && (
@@ -149,7 +149,7 @@ export const GitHubIntegrationDialog = ({ open, onClose }: GitHubIntegrationDial
                                                 disabled={isPending}
                                                 onClick={() => void test(connection.id)}
                                             >
-                                                <RefreshCw /> Testar
+                                                <RefreshCw /> Test
                                             </Button>
                                             <Button
                                                 size="sm"
@@ -157,12 +157,12 @@ export const GitHubIntegrationDialog = ({ open, onClose }: GitHubIntegrationDial
                                                 disabled={isPending}
                                                 onClick={() => startUpdate(connection)}
                                             >
-                                                <KeyRound /> Substituir token
+                                                <KeyRound /> Replace token
                                             </Button>
                                             <IconAction
                                                 size="icon-sm"
                                                 variant="destructive"
-                                                label={`Remover conexão GitHub ${connection.nome}`}
+                                                label={`Remove GitHub connection ${connection.nome}`}
                                                 disabled={isPending}
                                                 onClick={() => startRemove(connection)}
                                             >
@@ -179,16 +179,16 @@ export const GitHubIntegrationDialog = ({ open, onClose }: GitHubIntegrationDial
                         <div className="space-y-4 rounded-lg border border-border bg-surface-2 p-4">
                             <div className="grid gap-4 sm:grid-cols-2">
                                 <div className="space-y-2">
-                                    <Label htmlFor="github-connection-name">Nome da conexão</Label>
+                                    <Label htmlFor="github-connection-name">Connection name</Label>
                                     <Input
                                         id="github-connection-name"
                                         value={nome}
                                         onChange={(event) => setNome(event.target.value)}
-                                        placeholder="Conta pessoal"
+                                        placeholder="Personal account"
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label>Tipo</Label>
+                                    <Label>Type</Label>
                                     <Select
                                         value={tipo}
                                         onValueChange={(value) =>
@@ -200,10 +200,10 @@ export const GitHubIntegrationDialog = ({ open, onClose }: GitHubIntegrationDial
                                         </SelectTrigger>
                                         <SelectContent>
                                             <SelectItem value={Enum.TipoConexaoGitHub.Pessoal}>
-                                                Pessoal
+                                                Personal
                                             </SelectItem>
                                             <SelectItem value={Enum.TipoConexaoGitHub.Organizacao}>
-                                                Organização
+                                                Organization
                                             </SelectItem>
                                         </SelectContent>
                                     </Select>
@@ -214,7 +214,7 @@ export const GitHubIntegrationDialog = ({ open, onClose }: GitHubIntegrationDial
                                         id="github-resource-owner"
                                         value={resourceOwner}
                                         onChange={(event) => setResourceOwner(event.target.value)}
-                                        placeholder="seu-login ou Nexus"
+                                        placeholder="your-username or organization"
                                     />
                                 </div>
                                 <div className="space-y-2">
@@ -232,9 +232,7 @@ export const GitHubIntegrationDialog = ({ open, onClose }: GitHubIntegrationDial
                             <div className="flex items-start gap-2 rounded-md border border-success/30 bg-success/10 p-3 text-xs text-muted-foreground">
                                 <ShieldCheck className="mt-0.5 size-4 shrink-0 text-success" />
                                 <span>
-                                    Use um fine-grained PAT somente leitura, limitado aos repositórios
-                                    necessários. O token fica no cofre nativo e nunca é exibido
-                                    novamente.
+                                    Use a read-only fine-grained PAT limited to the required repositories. The token stays in the native credential vault and is never displayed again.
                                 </span>
                             </div>
                             <div className="flex justify-end gap-2">
@@ -243,14 +241,14 @@ export const GitHubIntegrationDialog = ({ open, onClose }: GitHubIntegrationDial
                                     disabled={isPending}
                                     onClick={resetForm}
                                 >
-                                    Cancelar
+                                    Cancel
                                 </Button>
                                 <Button
                                     disabled={isPending}
                                     onClick={() => void save()}
                                 >
                                     {isPending ? <RefreshCw className="animate-spin" /> : <KeyRound />}
-                                    {connectionId ? "Atualizar conexão" : "Salvar e validar"}
+                                    {connectionId ? "Update connection" : "Save and validate"}
                                 </Button>
                             </div>
                         </div>
@@ -259,7 +257,7 @@ export const GitHubIntegrationDialog = ({ open, onClose }: GitHubIntegrationDial
                 <Modal.Actions>
                     {runtimeDisponivel && !formVisible && connections.length > 0 && (
                         <Button onClick={startNew}>
-                            <Plus /> Adicionar conexão
+                            <Plus /> Add connection
                         </Button>
                     )}
                 </Modal.Actions>
@@ -267,8 +265,8 @@ export const GitHubIntegrationDialog = ({ open, onClose }: GitHubIntegrationDial
             <ConfirmarRemocao
                 open={modal.removerConexao}
                 onClose={cancelRemove}
-                titulo={`Remover ${connectionToRemove?.nome ?? "conexão"}?`}
-                descricao="O token desta conexão será removido do cofre. As outras conexões permanecem intactas."
+                titulo={`Remove ${connectionToRemove?.nome ?? "connection"}?`}
+                descricao="This connection's token will be removed from the vault. Other connections are unaffected."
                 isPending={removeIsPending}
                 onConfirm={() => void remove()}
             />

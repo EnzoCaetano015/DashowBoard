@@ -31,7 +31,7 @@ export const useAppSidebar = () => {
             ...preferencias,
             sidebarCompacta: !preferencias.sidebarCompacta,
         }).catch((erro) => {
-            toast.error(obterMensagemErro(erro, "Não foi possível salvar o estado da barra lateral."))
+            toast.error(obterMensagemErro(erro, "Unable to save the sidebar state."))
         })
     }
 

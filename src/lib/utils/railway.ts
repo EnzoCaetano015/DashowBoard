@@ -19,7 +19,7 @@ export const normalizarErroRailway = (error: unknown): ErroRailway => {
     }
     return {
         code: "RAILWAY_ERRO_DESCONHECIDO",
-        message: "Não foi possível concluir a operação com a Railway.",
+        message: "Unable to complete the Railway operation.",
     }
 }
 

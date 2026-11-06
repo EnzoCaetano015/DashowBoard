@@ -36,11 +36,10 @@ fn classificar_status(status: StatusCode) -> &'static str {
 async fn executar_health_check(
     request: VerificarHealthCheckRequest,
 ) -> Result<VerificarHealthCheckResponse, String> {
-    let url = Url::parse(request.url.trim()).map_err(|_| {
-        "Informe uma URL válida para executar o monitoramento do projeto.".to_owned()
-    })?;
+    let url = Url::parse(request.url.trim())
+        .map_err(|_| "Enter a valid URL to monitor the project.".to_owned())?;
     if !matches!(url.scheme(), "http" | "https") {
-        return Err("O monitoramento aceita somente URLs HTTP ou HTTPS.".to_owned());
+        return Err("Monitoring only supports HTTP or HTTPS URLs.".to_owned());
     }
 
     let timeout_segundos = request.timeout_segundos.clamp(1, 60);
@@ -48,7 +47,7 @@ async fn executar_health_check(
     let client = Client::builder()
         .timeout(Duration::from_secs(timeout_segundos))
         .build()
-        .map_err(|_| "Não foi possível preparar o health check do projeto.".to_owned())?;
+        .map_err(|_| "Unable to prepare the project health check.".to_owned())?;
     let resultado = client.get(url).send().await;
     let tempo_resposta_ms = inicio.elapsed().as_millis().try_into().unwrap_or(u64::MAX);
     let verificado_em = Utc::now().to_rfc3339_opts(SecondsFormat::Millis, true);
@@ -61,7 +60,7 @@ async fn executar_health_check(
                 None
             } else {
                 Some(format!(
-                    "A URL respondeu com status HTTP {}.",
+                    "The URL responded with HTTP status {}.",
                     status_http.as_u16()
                 ))
             };
@@ -78,19 +77,19 @@ async fn executar_health_check(
                 (
                     "offline",
                     format!(
-                        "A URL excedeu o timeout de {} segundo(s).",
+                        "The URL exceeded the timeout of {} second(s).",
                         timeout_segundos
                     ),
                 )
             } else if error.is_connect() {
                 (
                     "offline",
-                    "Não foi possível conectar à URL da aplicação.".to_owned(),
+                    "Unable to connect to the application URL.".to_owned(),
                 )
             } else {
                 (
                     "unknown",
-                    "Não foi possível concluir o health check da aplicação.".to_owned(),
+                    "Unable to complete the application health check.".to_owned(),
                 )
             };
             Ok(VerificarHealthCheckResponse {
@@ -124,10 +123,10 @@ mod tests {
     use reqwest::StatusCode;
 
     fn iniciar_servidor(status: u16, atraso: Duration) -> String {
-        let listener = TcpListener::bind("127.0.0.1:0").expect("porta local disponível");
-        let endereco = listener.local_addr().expect("endereço local");
+        let listener = TcpListener::bind("127.0.0.1:0").expect("available local port");
+        let endereco = listener.local_addr().expect("local address");
         thread::spawn(move || {
-            let (mut stream, _) = listener.accept().expect("conexão do health check");
+            let (mut stream, _) = listener.accept().expect("health check connection");
             let mut request = [0_u8; 1_024];
             let _ = stream.read(&mut request);
             thread::sleep(atraso);
@@ -186,8 +185,8 @@ mod tests {
 
     #[test]
     fn normaliza_conexao_recusada_como_offline() {
-        let listener = TcpListener::bind("127.0.0.1:0").expect("porta local disponível");
-        let endereco = listener.local_addr().expect("endereço local");
+        let listener = TcpListener::bind("127.0.0.1:0").expect("available local port");
+        let endereco = listener.local_addr().expect("local address");
         drop(listener);
 
         let resposta = executar(format!("http://{endereco}"), 1);

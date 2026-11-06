@@ -31,8 +31,8 @@ export const DetalhesProjetoPage = () => {
     if (!runtimeDisponivel)
         return (
             <TemplateEstado.Vazio
-                titulo="Detalhes disponíveis no aplicativo desktop"
-                subtitulo="Projetos locais e snapshots reais dependem do SQLite e do runtime nativo."
+                titulo="Details are available in the desktop app"
+                subtitulo="Local projects and live snapshots require SQLite and the native runtime."
             />
         )
     if (isLoading)
@@ -45,9 +45,9 @@ export const DetalhesProjetoPage = () => {
     if (isError)
         return (
             <TemplateEstado.Erro
-                titulo="Falha ao carregar o projeto"
-                subtitulo="Não foi possível consultar o agrupamento no banco local."
-                acao={<Button onClick={() => void atualizar()}>Tentar novamente</Button>}
+                titulo="Unable to load the project"
+                subtitulo="Unable to load the group from the local database."
+                acao={<Button onClick={() => void atualizar()}>Try again</Button>}
             />
         )
     if (!projeto) return <ProjetoNaoEncontrado />
@@ -70,11 +70,11 @@ export const DetalhesProjetoPage = () => {
                         variant="line"
                         className="min-w-max"
                     >
-                        <TabsTrigger value="visao-geral">Visão geral</TabsTrigger>
-                        <TabsTrigger value="servicos">Serviços</TabsTrigger>
-                        <TabsTrigger value="repositorios">Repositórios</TabsTrigger>
-                        <TabsTrigger value="historico">Histórico</TabsTrigger>
-                        <TabsTrigger value="configuracoes">Configurações</TabsTrigger>
+                        <TabsTrigger value="visao-geral">Overview</TabsTrigger>
+                        <TabsTrigger value="servicos">Services</TabsTrigger>
+                        <TabsTrigger value="repositorios">Repositories</TabsTrigger>
+                        <TabsTrigger value="historico">History</TabsTrigger>
+                        <TabsTrigger value="configuracoes">Settings</TabsTrigger>
                     </TabsList>
                 </div>
                 <TabsContent value="visao-geral">

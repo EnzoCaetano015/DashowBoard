@@ -1,3 +1,4 @@
+import { serviceTypeLabels, repositoryTagLabels } from "@/lib/utils/status"
 import {
     AlertTriangle,
     Boxes,
@@ -46,9 +47,9 @@ export const HomePage = () => {
         <div>
             <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
                 <div>
-                    <h1 className="text-2xl font-semibold tracking-tight">Visão geral</h1>
+                    <h1 className="text-2xl font-semibold tracking-tight">Overview</h1>
                     <p className="mt-1 text-sm text-muted-foreground">
-                        Estado agregado dos seus projetos e serviços monitorados.
+                        The combined status of your projects and monitored services.
                     </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
@@ -57,15 +58,15 @@ export const HomePage = () => {
                         disabled={!runtimeDisponivel}
                     >
                         <Plus />
-                        Novo projeto
+                        New project
                     </Button>
                 </div>
             </div>
 
             {!runtimeDisponivel ? (
                 <TemplateEstado.Vazio
-                    titulo="Dados locais disponíveis no aplicativo desktop"
-                    subtitulo="Integrações e SQLite exigem o runtime nativo. O layout permanece disponível no navegador."
+                    titulo="Local data is available in the desktop app"
+                    subtitulo="Integrations and SQLite require the native runtime. You can preview the interface in the browser."
                     Icon={Boxes}
                 />
             ) : isLoading ? (
@@ -75,14 +76,14 @@ export const HomePage = () => {
                 />
             ) : isError ? (
                 <TemplateEstado.Erro
-                    titulo="Falha ao carregar o dashboard"
-                    subtitulo="Não foi possível consultar os projetos e incidentes locais."
-                    acao={<Button onClick={() => void atualizar()}>Tentar novamente</Button>}
+                    titulo="Unable to load the dashboard"
+                    subtitulo="Unable to load local projects and incidents."
+                    acao={<Button onClick={() => void atualizar()}>Try again</Button>}
                 />
             ) : !metricas ? (
                 <TemplateEstado.Vazio
-                    titulo="Nenhum dado disponível"
-                    subtitulo="Ainda não há informações para exibir no dashboard."
+                    titulo="No data available"
+                    subtitulo="There is no information to display on the dashboard yet."
                     Icon={Boxes}
                 />
             ) : (
@@ -95,27 +96,27 @@ export const HomePage = () => {
                             )}
                         >
                             <MetricCard
-                                titulo="Total de projetos"
+                                titulo="Total projects"
                                 valor={metricas.totalProjetos}
                                 icone={<Boxes />}
                                 tendencia={metricas.tendencias.projetos}
-                                unidadeTendencia="projetos"
+                                unidadeTendencia="projects"
                             />
                             <MetricCard
-                                titulo="Saudáveis"
+                                titulo="Healthy"
                                 valor={metricas.online}
                                 icone={<CheckCircle2 />}
                                 destaque="success"
                                 tendencia={metricas.tendencias.online}
-                                unidadeTendencia="projetos"
+                                unidadeTendencia="projects"
                             />
                             <MetricCard
-                                titulo="Degradados"
+                                titulo="Degraded"
                                 valor={metricas.degradados}
                                 icone={<AlertTriangle />}
                                 destaque="warning"
                                 tendencia={metricas.tendencias.degradados}
-                                unidadeTendencia="projetos"
+                                unidadeTendencia="projects"
                             />
                             <MetricCard
                                 titulo="Offline"
@@ -123,41 +124,41 @@ export const HomePage = () => {
                                 icone={<ServerCrash />}
                                 destaque="destructive"
                                 tendencia={metricas.tendencias.offline}
-                                unidadeTendencia="projetos"
+                                unidadeTendencia="projects"
                             />
                             <MetricCard
-                                titulo="Serviços monitorados"
+                                titulo="Monitored services"
                                 valor={metricas.servicosMonitorados}
                                 icone={<Server />}
                                 destaque="info"
                                 tendencia={metricas.tendencias.servicos}
-                                unidadeTendencia="serviços"
+                                unidadeTendencia="services"
                             />
                         </div>
                         <div className="mb-4 mt-8 flex flex-wrap items-center gap-3">
                             <div className="flex items-center gap-2 text-sm text-muted-foreground">
                                 <Filter className="size-4" />
-                                Filtros:
+                                Filters:
                             </div>
                             <div className="relative min-w-48 flex-1 sm:max-w-64">
                                 <Search className="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
                                 <Input
                                     value={filtros.busca}
                                     onChange={(evento) => alterarFiltro("busca", evento.target.value)}
-                                    placeholder="Filtrar projetos nesta página…"
-                                    aria-label="Filtrar projetos nesta página"
+                                    placeholder="Filter projects on this page…"
+                                    aria-label="Filter projects on this page"
                                     className="h-9 bg-surface-2 pl-8"
                                 />
                             </div>
                             <FiltroSelect
                                 value={filtros.status}
                                 placeholder="Status"
-                                ariaLabel="Filtrar por status do projeto"
+                                ariaLabel="Filter by project status"
                                 onValueChange={(valor) =>
                                     alterarFiltro("status", valor as FiltrosHome["status"])
                                 }
                                 opcoes={[
-                                    ["todos", "Todos status"],
+                                    ["todos", "All statuses"],
                                     ...STATUS_PROJETO_FILTROS.map(
                                         (valor) => [valor, labelStatusProjeto[valor]] as const
                                     ),
@@ -166,12 +167,12 @@ export const HomePage = () => {
                             <FiltroSelect
                                 value={filtros.provider}
                                 placeholder="Provider"
-                                ariaLabel="Filtrar por provider"
+                                ariaLabel="Filter by provider"
                                 onValueChange={(valor) =>
                                     alterarFiltro("provider", valor as FiltrosHome["provider"])
                                 }
                                 opcoes={[
-                                    ["todos", "Todos providers"],
+                                    ["todos", "All providers"],
                                     ...Object.values(Enum.Provider).map(
                                         (valor) => [valor, labelProvider[valor]] as const
                                     ),
@@ -179,22 +180,22 @@ export const HomePage = () => {
                             />
                             <FiltroSelect
                                 value={filtros.tipoServico}
-                                placeholder="Tipo"
-                                ariaLabel="Filtrar por tipo de serviço"
+                                placeholder="Type"
+                                ariaLabel="Filter by service type"
                                 onValueChange={(valor) =>
                                     alterarFiltro("tipoServico", valor as FiltrosHome["tipoServico"])
                                 }
                                 opcoes={[
-                                    ["todos", "Todos tipos"],
+                                    ["todos", "All types"],
                                     ...Object.values(Enum.TipoServico).map(
-                                        (valor) => [valor, valor] as const
+                                        (valor) => [valor, serviceTypeLabels[valor]] as const
                                     ),
                                 ]}
                             />
                             <FiltroSelect
                                 value={filtros.tagRepositorio}
                                 placeholder="Tag"
-                                ariaLabel="Filtrar por tag de repositório"
+                                ariaLabel="Filter by repository tag"
                                 onValueChange={(valor) =>
                                     alterarFiltro(
                                         "tagRepositorio",
@@ -202,24 +203,24 @@ export const HomePage = () => {
                                     )
                                 }
                                 opcoes={[
-                                    ["todos", "Todas tags"],
+                                    ["todos", "All tags"],
                                     ...Object.values(Enum.TagRepositorio).map(
-                                        (valor) => [valor, valor] as const
+                                        (valor) => [valor, repositoryTagLabels[valor]] as const
                                     ),
                                 ]}
                             />
                             <FiltroSelect
                                 value={filtros.ordenacao}
-                                placeholder="Ordenar"
-                                ariaLabel="Ordenar projetos"
+                                placeholder="Sort"
+                                ariaLabel="Sort projects"
                                 onValueChange={(valor) =>
                                     alterarFiltro("ordenacao", valor as FiltrosHome["ordenacao"])
                                 }
                                 opcoes={[
-                                    ["criticidade", "Mais críticos"],
-                                    ["nome", "Nome A–Z"],
-                                    ["verificacao", "Verificação recente"],
-                                    ["incidentes", "Mais incidentes ativos"],
+                                    ["criticidade", "Most critical"],
+                                    ["nome", "Name A–Z"],
+                                    ["verificacao", "Recently checked"],
+                                    ["incidentes", "Most active incidents"],
                                 ]}
                                 className="min-w-44"
                             />
@@ -230,11 +231,11 @@ export const HomePage = () => {
                                     onClick={limparFiltros}
                                 >
                                     <RotateCcw />
-                                    Limpar filtros ({quantidadeFiltrosAtivos})
+                                    Clear filters ({quantidadeFiltrosAtivos})
                                 </Button>
                             )}
                             <span className="ml-auto text-xs text-muted-foreground tabular-nums">
-                                {projetosFiltrados.length} de {totalProjetos} projetos
+                                {projetosFiltrados.length} of {totalProjetos} projects
                             </span>
                         </div>
                         {projetosFiltrados.length ? (
@@ -248,8 +249,8 @@ export const HomePage = () => {
                             </div>
                         ) : (
                             <TemplateEstado.Vazio
-                                titulo="Nenhum projeto encontrado"
-                                subtitulo="Ajuste os filtros para ampliar os resultados."
+                                titulo="No projects found"
+                                subtitulo="Adjust your filters to see more results."
                                 Icon={Search}
                             />
                         )}

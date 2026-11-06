@@ -56,8 +56,8 @@ export const SupabaseIntegrationDialog = ({ open, onClose }: SupabaseIntegration
                 className="max-h-[90dvh] overflow-y-auto sm:max-w-2xl"
             >
                 <Modal.Header
-                    titulo="Integração Supabase"
-                    subTitulo="Consulte organizações e projetos pela Management API, somente para leitura."
+                    titulo="Supabase integration"
+                    subTitulo="Browse organizations and projects through the read-only Management API integration."
                 />
                 <Modal.Body className="space-y-4">
                     {!runtimeDisponivel ? (
@@ -65,7 +65,7 @@ export const SupabaseIntegrationDialog = ({ open, onClose }: SupabaseIntegration
                             <CardContent className="py-10 text-center">
                                 <KeyRound className="mx-auto size-8 text-muted-foreground" />
                                 <p className="mt-3 text-sm">
-                                    A integração Supabase está disponível no aplicativo desktop.
+                                    The Supabase integration is available in the desktop app.
                                 </p>
                             </CardContent>
                         </Card>
@@ -108,17 +108,17 @@ export const SupabaseIntegrationDialog = ({ open, onClose }: SupabaseIntegration
                                                     )}
                                                     {connection.status ===
                                                     Enum.StatusIntegracao.Conectado
-                                                        ? "Conectado"
-                                                        : "Erro"}
+                                                        ? "Connected"
+                                                        : "Error"}
                                                 </span>
                                             </div>
                                             <p className="text-xs text-muted-foreground">
                                                 {connection.email} · {connection.quantidadeOrganizacoes}{" "}
-                                                organização(ões) · {connection.quantidadeProjetos}{" "}
-                                                projeto(s)
+                                                organization(s) · {connection.quantidadeProjetos}{" "}
+                                                project(s)
                                             </p>
                                             <p className="mt-1 text-xs text-muted-foreground">
-                                                Última sincronização:{" "}
+                                                Last sync:{" "}
                                                 {formatarDataHora(connection.ultimaSincronizacao)}
                                             </p>
                                             {connection.erro && (
@@ -134,7 +134,7 @@ export const SupabaseIntegrationDialog = ({ open, onClose }: SupabaseIntegration
                                                 disabled={isPending}
                                                 onClick={() => void test()}
                                             >
-                                                <RefreshCw /> Testar
+                                                <RefreshCw /> Test
                                             </Button>
                                             <Button
                                                 size="sm"
@@ -142,12 +142,12 @@ export const SupabaseIntegrationDialog = ({ open, onClose }: SupabaseIntegration
                                                 disabled={isPending}
                                                 onClick={startUpdate}
                                             >
-                                                <KeyRound /> Substituir token
+                                                <KeyRound /> Replace token
                                             </Button>
                                             <IconAction
                                                 size="icon-sm"
                                                 variant="destructive"
-                                                label={`Remover conexão Supabase @${connection.username}`}
+                                                label={`Remove Supabase connection @${connection.username}`}
                                                 disabled={isPending}
                                                 onClick={startRemove}
                                             >
@@ -175,14 +175,13 @@ export const SupabaseIntegrationDialog = ({ open, onClose }: SupabaseIntegration
                                             className="h-auto p-0 text-xs"
                                             onClick={() => void abrirUrlExterna(SUPABASE_TOKENS_URL)}
                                         >
-                                            Criar token em Account → Access Tokens <ExternalLink />
+                                            Create a token in Account → Access Tokens <ExternalLink />
                                         </Button>
                                     </div>
                                     <div className="flex items-start gap-2 rounded-md border border-success/30 bg-success/10 p-3 text-xs text-muted-foreground">
                                         <ShieldCheck className="mt-0.5 size-4 shrink-0 text-success" />
                                         <span>
-                                            O PAT é validado antes de ser salvo e permanece somente no
-                                            cofre nativo do sistema operacional.
+                                            The PAT is validated before being saved and stays in the operating system's native credential vault.
                                         </span>
                                     </div>
                                     <Modal.Actions>
@@ -191,14 +190,14 @@ export const SupabaseIntegrationDialog = ({ open, onClose }: SupabaseIntegration
                                                 variant="ghost"
                                                 onClick={resetForm}
                                             >
-                                                Cancelar
+                                                Cancel
                                             </Button>
                                         )}
                                         <Button
                                             disabled={isPending}
                                             onClick={() => void save()}
                                         >
-                                            <ShieldCheck /> Salvar e validar
+                                            <ShieldCheck /> Save and validate
                                         </Button>
                                     </Modal.Actions>
                                 </div>
@@ -210,8 +209,8 @@ export const SupabaseIntegrationDialog = ({ open, onClose }: SupabaseIntegration
             <ConfirmarRemocao
                 open={modal.removerConexao}
                 onClose={cancelRemove}
-                titulo="Remover conexão Supabase?"
-                descricao="O PAT será removido do cofre nativo do sistema."
+                titulo="Remove Supabase connection?"
+                descricao="The PAT will be removed from the system's native credential vault."
                 isPending={removeIsPending}
                 onConfirm={() => void remove()}
             />

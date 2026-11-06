@@ -25,9 +25,9 @@ export const IntegracoesPage = () => {
     return (
         <div>
             <div className="mb-6">
-                <h1 className="text-2xl font-semibold tracking-tight">Integrações</h1>
+                <h1 className="text-2xl font-semibold tracking-tight">Integrations</h1>
                 <p className="mt-1 text-sm text-muted-foreground">
-                    Conecte contas e tokens para o DashowBoard ler o estado dos seus recursos.
+                    Connect accounts and tokens so DashowBoard can read the status of your resources.
                 </p>
             </div>
             {isLoading ? (
@@ -37,9 +37,9 @@ export const IntegracoesPage = () => {
                 />
             ) : isError ? (
                 <TemplateEstado.Erro
-                    titulo="Falha ao carregar integrações"
-                    subtitulo={error ?? "Não foi possível consultar as integrações configuradas."}
-                    acao={<Button onClick={() => void atualizar()}>Tentar novamente</Button>}
+                    titulo="Unable to load integrations"
+                    subtitulo={error ?? "Unable to query the configured integrations."}
+                    acao={<Button onClick={() => void atualizar()}>Try again</Button>}
                 />
             ) : integracoes.length > 0 ? (
                 <div className="grid gap-4 md:grid-cols-2">
@@ -56,8 +56,8 @@ export const IntegracoesPage = () => {
                 </div>
             ) : (
                 <TemplateEstado.Vazio
-                    titulo="Nenhuma integração disponível"
-                    subtitulo="Configure uma integração para começar a consultar seus recursos."
+                    titulo="No integrations available"
+                    subtitulo="Configure an integration to start monitoring your resources."
                 />
             )}
             <GitHubIntegrationDialog

@@ -12,7 +12,7 @@ export const StatusBadge = ({ status, tamanho = "sm", className }: StatusBadgePr
     return (
         <span
             className={cn(
-                "inline-flex shrink-0 items-center gap-1.5 rounded-full border font-medium",
+                "inline-flex shrink-0 items-center gap-1.5 rounded-full border font-medium shadow-sm",
                 estilo.fundo,
                 estilo.borda,
                 estilo.texto,

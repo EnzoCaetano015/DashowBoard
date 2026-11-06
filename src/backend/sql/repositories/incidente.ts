@@ -47,8 +47,8 @@ const mapearIncidente = (row: IncidenteRow): ObterIncidentes.Incidente => {
         descricao: row.descricao,
         servico:
             row.origem === Enum.OrigemIncidente.HealthCheck
-                ? "URL da aplicação"
-                : (row.servico ?? "Serviço removido"),
+                ? "Application URL"
+                : (row.servico ?? "Service removed"),
         provider: row.provider as Enum.Provider | null,
         origem: row.origem as Enum.OrigemIncidente,
         notificacoesAtivas: row.notificacoesAtivas === 1,
@@ -147,8 +147,8 @@ export const abrirIncidente = async (request: AbrirIncidenteRequest) => {
             crypto.randomUUID(),
             request.projetoId,
             request.servicoId,
-            `${request.servicoNome} ${request.status === Enum.StatusProjeto.Offline ? "ficou offline" : "está degradado"}`,
-            "Mudança de status detectada automaticamente pelo monitoramento.",
+            `${request.servicoNome} ${request.status === Enum.StatusProjeto.Offline ? "went offline" : "is degraded"}`,
+            "Status change detected automatically by monitoring.",
             Enum.StatusIncidente.EmAndamento,
             severidade,
             new Date().toISOString(),
@@ -192,10 +192,10 @@ export const abrirIncidenteHealthCheck = async (request: AbrirIncidenteHealthChe
             request.projetoId,
             `${request.projetoNome} ${
                 request.status === Enum.StatusProjeto.Offline
-                    ? "ficou indisponível"
-                    : "está respondendo com falhas"
+                    ? "became unavailable"
+                    : "is responding with errors"
             }`,
-            request.mensagem ?? "Mudança detectada pelo health check da URL da aplicação.",
+            request.mensagem ?? "Change detected by the application URL health check.",
             Enum.StatusIncidente.EmAndamento,
             request.status === Enum.StatusProjeto.Offline
                 ? Enum.SeveridadeIncidente.Alta

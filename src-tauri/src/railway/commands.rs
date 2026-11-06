@@ -20,7 +20,7 @@ pub async fn salvar_conexao_railway(
     if request.token.trim().is_empty() {
         return Err(RailwayError::new(
             "RAILWAY_TOKEN_INVALIDO",
-            "Informe o Account Token da Railway.",
+            "Enter your Railway Account Token.",
         ));
     }
     let validation = build_connection(&client, request.token.trim()).await;
@@ -44,7 +44,7 @@ pub async fn testar_conexao_railway(
     let mut connection = storage::load_connection()?.ok_or_else(|| {
         RailwayError::new(
             "RAILWAY_SEM_CONEXAO",
-            "Nenhuma conexão Railway está configurada.",
+            "No Railway connection is configured.",
         )
     })?;
     refresh_connection(&client, &mut connection).await;
@@ -121,7 +121,7 @@ async fn get_projects(
     token: &str,
 ) -> Result<GetRailwayProjectsResponse, RailwayError> {
     let account = client.get_account(token).await?.me;
-    let mut scopes = vec![(None, "Pessoal".to_owned())];
+    let mut scopes = vec![(None, "Personal".to_owned())];
     scopes.extend(
         account
             .workspaces

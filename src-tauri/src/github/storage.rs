@@ -19,7 +19,7 @@ pub fn load_connections() -> Result<Vec<GitHubConnection>, GitHubError> {
         Ok(serialized) => serde_json::from_str(&serialized).map_err(|_| {
             GitHubError::new(
                 "GITHUB_COFRE_INDISPONIVEL",
-                "O índice seguro de conexões GitHub está corrompido.",
+                "The secure GitHub connection index is corrupted.",
             )
         }),
         Err(KeyringError::NoEntry) => Ok(Vec::new()),
@@ -31,7 +31,7 @@ pub fn save_connections(connections: &[GitHubConnection]) -> Result<(), GitHubEr
     let serialized = serde_json::to_string(connections).map_err(|_| {
         GitHubError::new(
             "GITHUB_COFRE_INDISPONIVEL",
-            "Não foi possível preparar o índice seguro de conexões.",
+            "Unable to prepare the secure connection index.",
         )
     })?;
     entry(INDEX_ACCOUNT)?

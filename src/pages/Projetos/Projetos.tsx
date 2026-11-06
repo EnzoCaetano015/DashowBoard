@@ -13,9 +13,9 @@ export const ProjetosPage = () => {
         <div>
             <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
                 <div>
-                    <h1 className="text-2xl font-semibold tracking-tight">Projetos</h1>
+                    <h1 className="text-2xl font-semibold tracking-tight">Projects</h1>
                     <p className="mt-1 text-sm text-muted-foreground">
-                        Todos os agrupamentos locais de repositórios e serviços.
+                        All your local groups of repositories and services.
                     </p>
                 </div>
                 <Button
@@ -23,13 +23,13 @@ export const ProjetosPage = () => {
                     disabled={!runtimeDisponivel}
                 >
                     <Plus />
-                    Novo projeto
+                    New project
                 </Button>
             </div>
             {!runtimeDisponivel ? (
                 <TemplateEstado.Vazio
-                    titulo="Projetos locais disponíveis no aplicativo desktop"
-                    subtitulo="O SQLite e as integrações nativas não são acessados durante o desenvolvimento no navegador."
+                    titulo="Local projects are available in the desktop app"
+                    subtitulo="SQLite and native integrations are not accessed during browser development."
                     Icon={FolderGit2}
                 />
             ) : isLoading ? (
@@ -39,19 +39,19 @@ export const ProjetosPage = () => {
                 />
             ) : isError ? (
                 <TemplateEstado.Erro
-                    titulo="Falha ao carregar projetos"
-                    subtitulo="Não foi possível consultar os agrupamentos no banco local."
-                    acao={<Button onClick={() => void atualizar()}>Tentar novamente</Button>}
+                    titulo="Unable to load projects"
+                    subtitulo="Unable to load groups from the local database."
+                    acao={<Button onClick={() => void atualizar()}>Try again</Button>}
                 />
             ) : projetos.length === 0 ? (
                 <TemplateEstado.Vazio
-                    titulo="Nenhum projeto criado"
-                    subtitulo="Crie seu primeiro agrupamento local para começar."
+                    titulo="No projects yet"
+                    subtitulo="Create your first local group to get started."
                     Icon={FolderGit2}
                     acao={
                         <Button onClick={() => setModal("novoProjeto", { open: true })}>
                             <Plus />
-                            Novo projeto
+                            New project
                         </Button>
                     }
                 />

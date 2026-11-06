@@ -14,9 +14,9 @@ type EstadoConsulta = {
 
 const integracaoDesktop = (provider: Enum.Provider): ObterIntegracoes.Integracao => ({
     provider,
-    conta: "Disponível no aplicativo desktop",
+    conta: "Available in the desktop app",
     status: Enum.StatusIntegracao.Desconectado,
-    ultimaSincronizacao: "Não disponível",
+    ultimaSincronizacao: "Not available",
 })
 
 export const montarIntegracaoGitHub = (
@@ -27,18 +27,18 @@ export const montarIntegracaoGitHub = (
     if (consulta.erro) {
         return {
             provider: Enum.Provider.GitHub,
-            conta: "Falha ao consultar conexões",
+            conta: "Unable to load connections",
             status: Enum.StatusIntegracao.Erro,
             erro: consulta.erro,
-            ultimaSincronizacao: "Não disponível",
+            ultimaSincronizacao: "Not available",
         }
     }
     if (consulta.isLoading) {
         return {
             provider: Enum.Provider.GitHub,
-            conta: "Consultando conexões...",
+            conta: "Loading connections...",
             status: Enum.StatusIntegracao.Desconectado,
-            ultimaSincronizacao: "Não disponível",
+            ultimaSincronizacao: "Not available",
         }
     }
 
@@ -54,8 +54,8 @@ export const montarIntegracaoGitHub = (
         provider: Enum.Provider.GitHub,
         conta:
             conexoes.length === 0
-                ? "Nenhuma conexão configurada"
-                : `${conexoes.length} conex${conexoes.length === 1 ? "ão" : "ões"} · ${validas.length} válida${validas.length === 1 ? "" : "s"}`,
+                ? "No connection configured"
+                : `${conexoes.length} connection${conexoes.length === 1 ? "" : "s"} · ${validas.length} valid`,
         status:
             comErro.length > 0
                 ? Enum.StatusIntegracao.Erro
@@ -64,9 +64,9 @@ export const montarIntegracaoGitHub = (
                   : Enum.StatusIntegracao.Desconectado,
         erro:
             comErro.length > 0
-                ? `${comErro.length} conexão(ões) precisa(m) de atenção. As demais continuam disponíveis.`
+                ? `${comErro.length} connection(s) need attention. Other connections remain available.`
                 : undefined,
-        ultimaSincronizacao: ultimaSincronizacao ? formatarDataHora(ultimaSincronizacao) : "Nunca",
+        ultimaSincronizacao: ultimaSincronizacao ? formatarDataHora(ultimaSincronizacao) : "Never",
     }
 }
 
@@ -78,23 +78,23 @@ export const montarIntegracaoVercel = (
     if (consulta.erro) {
         return {
             provider: Enum.Provider.Vercel,
-            conta: "Falha ao consultar conexão",
+            conta: "Unable to load connection",
             status: Enum.StatusIntegracao.Erro,
             erro: consulta.erro,
-            ultimaSincronizacao: "Não disponível",
+            ultimaSincronizacao: "Not available",
         }
     }
     if (!conexao) {
         return {
             provider: Enum.Provider.Vercel,
-            conta: consulta.isLoading ? "Consultando conexão..." : "Nenhuma conexão configurada",
+            conta: consulta.isLoading ? "Loading connection..." : "No connection configured",
             status: Enum.StatusIntegracao.Desconectado,
-            ultimaSincronizacao: consulta.isLoading ? "Não disponível" : "Nunca",
+            ultimaSincronizacao: consulta.isLoading ? "Not available" : "Never",
         }
     }
     return {
         provider: Enum.Provider.Vercel,
-        conta: `@${conexao.username} · ${conexao.quantidadeTimes} time(s) · ${conexao.quantidadeProjetos} projeto(s)`,
+        conta: `@${conexao.username} · ${conexao.quantidadeTimes} team(s) · ${conexao.quantidadeProjetos} project(s)`,
         status: conexao.status,
         erro: conexao.erro ?? undefined,
         ultimaSincronizacao: formatarDataHora(conexao.ultimaSincronizacao),
@@ -110,25 +110,25 @@ export const montarIntegracaoSupabase = (
     if (consulta.erro) {
         return {
             provider: Enum.Provider.Supabase,
-            conta: "Falha ao consultar conexão",
+            conta: "Unable to load connection",
             status: Enum.StatusIntegracao.Erro,
             erro: consulta.erro,
-            ultimaSincronizacao: "Não disponível",
+            ultimaSincronizacao: "Not available",
         }
     }
     if (!conexao) {
         return {
             provider: Enum.Provider.Supabase,
-            conta: consulta.isLoading ? "Consultando conexão..." : "Nenhuma conexão configurada",
+            conta: consulta.isLoading ? "Loading connection..." : "No connection configured",
             status: Enum.StatusIntegracao.Desconectado,
-            ultimaSincronizacao: consulta.isLoading ? "Não disponível" : "Nunca",
+            ultimaSincronizacao: consulta.isLoading ? "Not available" : "Never",
         }
     }
 
     const falha = projetos?.failures[0]
     return {
         provider: Enum.Provider.Supabase,
-        conta: `@${conexao.username} · ${conexao.quantidadeOrganizacoes} organização(ões) · ${projetos?.projects.length ?? conexao.quantidadeProjetos} projeto(s)`,
+        conta: `@${conexao.username} · ${conexao.quantidadeOrganizacoes} organization(s) · ${projetos?.projects.length ?? conexao.quantidadeProjetos} project(s)`,
         status:
             falha || conexao.status === Enum.StatusIntegracao.Erro
                 ? Enum.StatusIntegracao.Erro
@@ -146,23 +146,23 @@ export const montarIntegracaoRailway = (
     if (consulta.erro) {
         return {
             provider: Enum.Provider.Railway,
-            conta: "Falha ao consultar conexão",
+            conta: "Unable to load connection",
             status: Enum.StatusIntegracao.Erro,
             erro: consulta.erro,
-            ultimaSincronizacao: "Não disponível",
+            ultimaSincronizacao: "Not available",
         }
     }
     if (!conexao) {
         return {
             provider: Enum.Provider.Railway,
-            conta: consulta.isLoading ? "Consultando conexão..." : "Nenhuma conexão configurada",
+            conta: consulta.isLoading ? "Loading connection..." : "No connection configured",
             status: Enum.StatusIntegracao.Desconectado,
-            ultimaSincronizacao: consulta.isLoading ? "Não disponível" : "Nunca",
+            ultimaSincronizacao: consulta.isLoading ? "Not available" : "Never",
         }
     }
     return {
         provider: Enum.Provider.Railway,
-        conta: `${conexao.email} · ${conexao.quantidadeWorkspaces} workspace(s) · ${conexao.quantidadeProjetos} projeto(s)`,
+        conta: `${conexao.email} · ${conexao.quantidadeWorkspaces} workspace(s) · ${conexao.quantidadeProjetos} project(s)`,
         status: conexao.status,
         erro: conexao.erro ?? undefined,
         ultimaSincronizacao: formatarDataHora(conexao.ultimaSincronizacao),

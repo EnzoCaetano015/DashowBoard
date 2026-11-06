@@ -87,7 +87,7 @@ impl RailwayClient {
         self.http.as_ref().map_err(|_| {
             RailwayError::new(
                 "RAILWAY_ERRO_DESCONHECIDO",
-                "Não foi possível inicializar o cliente da Railway.",
+                "Unable to initialize the Railway client.",
             )
         })
     }
@@ -124,19 +124,19 @@ impl RailwayClient {
             let next = response.projects.page_info.end_cursor.ok_or_else(|| {
                 RailwayError::new(
                     "RAILWAY_GRAPHQL",
-                    "A Railway informou mais páginas sem fornecer um cursor válido.",
+                    "Railway reported more pages without providing a valid cursor.",
                 )
             })?;
             if !seen.insert(next.clone()) {
                 return Err(RailwayError::new(
                     "RAILWAY_GRAPHQL",
-                    "A Railway repetiu o cursor durante a paginação.",
+                    "Railway repeated the cursor during pagination.",
                 ));
             }
             if page + 1 == MAX_PAGES {
                 return Err(RailwayError::new(
                     "RAILWAY_GRAPHQL",
-                    "A paginação da Railway excedeu o limite seguro da consulta.",
+                    "Railway pagination exceeded the safe query limit.",
                 ));
             }
             cursor = Some(next);

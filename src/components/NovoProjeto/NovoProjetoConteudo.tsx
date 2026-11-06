@@ -66,8 +66,8 @@ export const NovoProjetoConteudo = ({ open, onClose }: NovoProjetoConteudoProps)
                 className="min-w-0 max-h-[90dvh] gap-0 overflow-hidden border-border bg-card p-0 sm:max-w-3xl"
             >
                 <Modal.Header
-                    titulo="Novo projeto"
-                    subTitulo="Um projeto é um agrupador local. Ele não cria nada nas plataformas externas."
+                    titulo="New project"
+                    subTitulo="A project is a local group. It does not create resources on external platforms."
                     className="min-w-0 border-b border-border p-5 pr-12"
                 >
                     <div className="scrollbar-thin mt-4 flex w-full min-w-0 items-center gap-1 overflow-x-auto pb-1">
@@ -91,7 +91,8 @@ export const NovoProjetoConteudo = ({ open, onClose }: NovoProjetoConteudoProps)
                                             className={cn(
                                                 "flex size-7 shrink-0 items-center justify-center rounded-full border text-xs font-medium",
                                                 concluida && "border-success bg-success/20 text-success",
-                                                ativa && "border-primary bg-primary/20 text-primary",
+                                                ativa &&
+                                                    "border-foreground/15 bg-primary/15 text-primary",
                                                 !concluida &&
                                                     !ativa &&
                                                     "border-border bg-surface-2 text-muted-foreground"
@@ -192,13 +193,13 @@ export const NovoProjetoConteudo = ({ open, onClose }: NovoProjetoConteudoProps)
                             className="justify-self-start"
                         >
                             <ChevronLeft />
-                            Voltar
+                            Back
                         </Button>
                     ) : (
                         <span aria-hidden="true" />
                     )}
                     <span className="whitespace-nowrap text-xs text-muted-foreground">
-                        Passo {etapa} de {etapasNovoProjeto.length}
+                        Step {etapa} of {etapasNovoProjeto.length}
                     </span>
                     {etapa < 6 ? (
                         <Button
@@ -206,7 +207,7 @@ export const NovoProjetoConteudo = ({ open, onClose }: NovoProjetoConteudoProps)
                             disabled={criarProjetoIsPending}
                             className="justify-self-end"
                         >
-                            Continuar
+                            Continue
                             <ChevronRight />
                         </Button>
                     ) : (
@@ -216,7 +217,7 @@ export const NovoProjetoConteudo = ({ open, onClose }: NovoProjetoConteudoProps)
                             className="justify-self-end bg-success text-success-foreground hover:bg-success/90"
                         >
                             <Check />
-                            {criarProjetoIsPending ? "Criando..." : "Criar projeto"}
+                            {criarProjetoIsPending ? "Criando..." : "Create project"}
                         </Button>
                     )}
                 </Modal.Actions>
@@ -230,20 +231,20 @@ export const NovoProjetoConteudo = ({ open, onClose }: NovoProjetoConteudoProps)
             >
                 <AlertDialogContent>
                     <AlertDialogHeader>
-                        <AlertDialogTitle>Descartar alterações?</AlertDialogTitle>
+                        <AlertDialogTitle>Discard changes?</AlertDialogTitle>
                         <AlertDialogDescription>
-                            Os dados preenchidos neste projeto serão perdidos.
+                            The information entered for this project will be lost.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                         <AlertDialogCancel onClick={manterEditando}>
-                            Continuar editando
+                            Keep editing
                         </AlertDialogCancel>
                         <AlertDialogAction
                             variant="destructive"
                             onClick={descartarAlteracoes}
                         >
-                            Descartar alterações
+                            Discard changes
                         </AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>

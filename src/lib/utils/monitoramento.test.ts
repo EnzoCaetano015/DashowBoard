@@ -28,7 +28,7 @@ describe("resolverAtualizacaoMonitoramento", () => {
             resolverAtualizacaoMonitoramento({ servicoId: "1", coletaConcluida: true })
         ).toMatchObject({
             status: Enum.StatusProjeto.Desconhecido,
-            mensagemStatus: "Recurso não localizado no provider.",
+            mensagemStatus: "Resource not found on the provider.",
         })
         expect(
             resolverAtualizacaoMonitoramento({

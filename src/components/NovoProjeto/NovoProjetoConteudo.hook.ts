@@ -321,9 +321,9 @@ export const useNovoProjetoConteudo = (open: boolean, onClose: () => void) => {
 
         const criacao = criarProjeto(montarRequest())
         toast.promise(criacao, {
-            loading: "Criando projeto...",
-            success: "Projeto criado com sucesso.",
-            error: (erro) => obterMensagemErro(erro, "Não foi possível criar o projeto."),
+            loading: "Creating project...",
+            success: "Project created successfully.",
+            error: (erro) => obterMensagemErro(erro, "Unable to create the project."),
         })
         try {
             const projeto = await criacao

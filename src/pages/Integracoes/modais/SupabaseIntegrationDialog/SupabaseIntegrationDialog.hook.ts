@@ -32,15 +32,15 @@ export const useSupabaseIntegrationDialog = () => {
     const save = () => {
         const tokenNormalizado = token.trim()
         if (!tokenNormalizado) {
-            toast.error("Informe o Personal Access Token do Supabase.")
+            toast.error("Enter your Supabase Personal Access Token.")
             return
         }
 
         toast.promise(saveConnection({ token: tokenNormalizado }), {
-            loading: connection ? "Substituindo token Supabase..." : "Conectando ao Supabase...",
+            loading: connection ? "Replacing Supabase token..." : "Connecting to Supabase...",
             success: () => {
                 resetForm()
-                return connection ? "Token Supabase substituído." : "Supabase conectado."
+                return connection ? "Supabase token replaced." : "Supabase connected."
             },
             error: (error) => normalizarErroSupabase(error).message,
         })
@@ -51,7 +51,7 @@ export const useSupabaseIntegrationDialog = () => {
             if (testedConnection.status === Enum.StatusIntegracao.Erro) {
                 return Promise.reject({
                     code: "SUPABASE_CONEXAO_INVALIDA",
-                    message: testedConnection.erro ?? "A conexão Supabase apresentou um erro.",
+                    message: testedConnection.erro ?? "The Supabase connection returned an error.",
                 })
             }
 
@@ -59,19 +59,19 @@ export const useSupabaseIntegrationDialog = () => {
         })
 
         toast.promise(testPromise, {
-            loading: "Testando conexão Supabase...",
-            success: "Conexão Supabase validada.",
+            loading: "Testing Supabase connection...",
+            success: "Supabase connection validated.",
             error: (error) => normalizarErroSupabase(error).message,
         })
     }
 
     const remove = () => {
         toast.promise(removeConnection(), {
-            loading: "Removendo conexão Supabase...",
+            loading: "Removing Supabase connection...",
             success: () => {
                 resetForm()
                 setModal("removerConexao", { open: false })
-                return "Conexão e token Supabase removidos."
+                return "Supabase connection and token removed."
             },
             error: (error) => normalizarErroSupabase(error).message,
         })

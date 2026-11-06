@@ -8,17 +8,17 @@ export const validarInformacoesProjeto = (informacoes: {
     urlAplicacao: string
 }): ErrosInformacoesProjeto => {
     const erros: ErrosInformacoesProjeto = {}
-    if (!informacoes.nome.trim()) erros.nome = "Informe o nome do projeto."
+    if (!informacoes.nome.trim()) erros.nome = "Enter a project name."
 
     const url = informacoes.urlAplicacao.trim()
     if (url) {
         try {
             const protocolo = new URL(url).protocol
             if (protocolo !== "http:" && protocolo !== "https:") {
-                erros.urlAplicacao = "Use uma URL completa iniciada por http:// ou https://."
+                erros.urlAplicacao = "Use a complete URL starting with http:// or https://."
             }
         } catch {
-            erros.urlAplicacao = "Informe uma URL válida para a aplicação."
+            erros.urlAplicacao = "Enter a valid application URL."
         }
     }
     return erros

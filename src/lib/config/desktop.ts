@@ -35,7 +35,7 @@ export const garantirPermissaoNotificacoes = async () => {
 
     const permissao = await requestPermission()
     if (permissao !== "granted") {
-        throw new Error("Permissão para notificações não concedida pelo sistema operacional.")
+        throw new Error("Notification permission was not granted by the operating system.")
     }
 }
 
@@ -63,7 +63,7 @@ const criarIconeBadgeWindows = async (quantidade: number) => {
     const canvas = document.createElement("canvas")
     const contexto = canvas.getContext("2d")
 
-    if (!contexto) throw new Error("Não foi possível criar o badge do aplicativo.")
+    if (!contexto) throw new Error("Unable to create the app badge.")
 
     canvas.width = tamanho
     canvas.height = tamanho
@@ -88,7 +88,7 @@ const criarIconeBadgeWindows = async (quantidade: number) => {
                 return
             }
 
-            reject(new Error("Não foi possível gerar o badge do aplicativo."))
+            reject(new Error("Unable to generate the app badge."))
         }, "image/png")
     })
 
@@ -114,7 +114,7 @@ export const sincronizarBadgeDesktop = async (quantidade: number, habilitado: bo
 export const obterInformacoesDesktop = async () => {
     if (!possuiRuntimeTauri()) {
         return {
-            caminhoBanco: "Disponível no aplicativo desktop",
+            caminhoBanco: "Available in the desktop app",
             versao: "0.1.0",
             runtime: "Navegador",
             build: import.meta.env.DEV ? "dev-web" : "release-web",

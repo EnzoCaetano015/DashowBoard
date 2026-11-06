@@ -6,14 +6,14 @@ describe("validarInformacoesProjeto", () => {
     it("valida nome e protocolos aceitos", () => {
         expect(validarInformacoesProjeto({ nome: "  ", urlAplicacao: "" }).nome).toBeDefined()
         expect(
-            validarInformacoesProjeto({ nome: "Projeto", urlAplicacao: "ftp://exemplo.com" })
+            validarInformacoesProjeto({ nome: "Project", urlAplicacao: "ftp://exemplo.com" })
                 .urlAplicacao
         ).toContain("http://")
         expect(
-            validarInformacoesProjeto({ nome: "Projeto", urlAplicacao: "exemplo" }).urlAplicacao
+            validarInformacoesProjeto({ nome: "Project", urlAplicacao: "example" }).urlAplicacao
         ).toBeDefined()
         expect(
-            validarInformacoesProjeto({ nome: "Projeto", urlAplicacao: "https://exemplo.com" })
+            validarInformacoesProjeto({ nome: "Project", urlAplicacao: "https://exemplo.com" })
         ).toEqual({})
     })
 })

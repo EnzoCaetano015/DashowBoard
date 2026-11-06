@@ -3,7 +3,7 @@ import { toast } from "sonner"
 
 import { obterMensagemErro } from "@/lib/utils/error"
 
-const MENSAGEM_ERRO_CONSULTA = "Não foi possível concluir a consulta. Tente novamente."
+const MENSAGEM_ERRO_CONSULTA = "Unable to complete the request. Please try again."
 
 export const queryClient = new QueryClient({
     queryCache: new QueryCache({

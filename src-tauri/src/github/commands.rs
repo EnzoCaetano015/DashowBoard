@@ -28,12 +28,12 @@ async fn save_connection(
     client: &GitHubClient,
     request: &SaveGitHubConnectionRequest,
 ) -> Result<GitHubConnection, GitHubError> {
-    validate_field(&request.nome, "Informe um nome para a conexão.")?;
+    validate_field(&request.nome, "Enter a connection name.")?;
     validate_field(
         &request.resource_owner,
-        "Informe o resource owner desta conexão.",
+        "Enter the resource owner for this connection.",
     )?;
-    validate_field(&request.token, "Informe o token do GitHub.")?;
+    validate_field(&request.token, "Enter your GitHub token.")?;
 
     let user = client.get_user(request.token.trim()).await?;
     let repositories = client.get_repositories(request.token.trim()).await?;

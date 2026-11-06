@@ -11,7 +11,7 @@ export const normalizarErroSupabase = (error: unknown): ErroSupabase => {
     }
     return {
         code: "SUPABASE_ERRO_DESCONHECIDO",
-        message: "Não foi possível concluir a operação com o Supabase.",
+        message: "Unable to complete the Supabase operation.",
     }
 }
 

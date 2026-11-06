@@ -27,13 +27,13 @@ export const EditProjectDialog = ({ open, onClose, projeto }: EditProjectDialogP
                 }}
             >
                 <Modal.Header
-                    titulo="Editar projeto"
-                    subTitulo="Atualize as informações e configurações do agrupamento local."
+                    titulo="Edit project"
+                    subTitulo="Update the information and settings for this local group."
                 />
                 <Modal.Body className="space-y-5">
                     <div className="space-y-4">
                         <div className="space-y-2">
-                            <Label htmlFor="editar-projeto-nome">Nome do projeto</Label>
+                            <Label htmlFor="editar-projeto-nome">Project name</Label>
                             <Input
                                 id="editar-projeto-nome"
                                 value={formulario.nome}
@@ -53,7 +53,7 @@ export const EditProjectDialog = ({ open, onClose, projeto }: EditProjectDialogP
                             )}
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="editar-projeto-descricao">Descrição curta</Label>
+                            <Label htmlFor="editar-projeto-descricao">Short description</Label>
                             <Textarea
                                 id="editar-projeto-descricao"
                                 value={formulario.descricao}
@@ -63,7 +63,7 @@ export const EditProjectDialog = ({ open, onClose, projeto }: EditProjectDialogP
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="editar-projeto-url">URL da aplicação (opcional)</Label>
+                            <Label htmlFor="editar-projeto-url">Application URL (optional)</Label>
                             <Input
                                 id="editar-projeto-url"
                                 value={formulario.urlAplicacao}
@@ -71,7 +71,7 @@ export const EditProjectDialog = ({ open, onClose, projeto }: EditProjectDialogP
                                 onBlur={() => validarCampo("urlAplicacao")}
                                 disabled={atualizarProjetoIsPending}
                                 type="url"
-                                placeholder="https://app.exemplo.com"
+                                placeholder="https://app.example.com"
                                 aria-invalid={Boolean(erros.urlAplicacao)}
                                 aria-describedby={
                                     erros.urlAplicacao ? "editar-projeto-url-erro" : undefined
@@ -90,7 +90,7 @@ export const EditProjectDialog = ({ open, onClose, projeto }: EditProjectDialogP
 
                     <div className="grid gap-3 sm:grid-cols-2">
                         <div className="space-y-2">
-                            <Label htmlFor="editar-projeto-intervalo">Intervalo de verificação</Label>
+                            <Label htmlFor="editar-projeto-intervalo">Check interval</Label>
                             <Select
                                 value={String(formulario.intervaloVerificacaoSegundos)}
                                 onValueChange={(valor) =>
@@ -105,14 +105,14 @@ export const EditProjectDialog = ({ open, onClose, projeto }: EditProjectDialogP
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="30">30 segundos</SelectItem>
-                                    <SelectItem value="60">1 minuto</SelectItem>
-                                    <SelectItem value="300">5 minutos</SelectItem>
+                                    <SelectItem value="30">30 seconds</SelectItem>
+                                    <SelectItem value="60">1 minute</SelectItem>
+                                    <SelectItem value="300">5 minutes</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="editar-projeto-timeout">Timeout de resposta</Label>
+                            <Label htmlFor="editar-projeto-timeout">Response timeout</Label>
                             <Select
                                 value={String(formulario.timeoutSegundos)}
                                 onValueChange={(valor) =>
@@ -127,9 +127,9 @@ export const EditProjectDialog = ({ open, onClose, projeto }: EditProjectDialogP
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="2">2 segundos</SelectItem>
-                                    <SelectItem value="5">5 segundos</SelectItem>
-                                    <SelectItem value="10">10 segundos</SelectItem>
+                                    <SelectItem value="2">2 seconds</SelectItem>
+                                    <SelectItem value="5">5 seconds</SelectItem>
+                                    <SelectItem value="10">10 seconds</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
@@ -144,7 +144,7 @@ export const EditProjectDialog = ({ open, onClose, projeto }: EditProjectDialogP
                                 }
                                 disabled={atualizarProjetoIsPending}
                             />
-                            Registrar deployments disponíveis
+                            Record available deployments
                         </label>
                         <label className="flex items-center gap-2 text-sm">
                             <Checkbox
@@ -154,7 +154,7 @@ export const EditProjectDialog = ({ open, onClose, projeto }: EditProjectDialogP
                                 }
                                 disabled={atualizarProjetoIsPending}
                             />
-                            Notificar no sistema quando um serviço cair
+                            Send a system notification when a service goes down
                         </label>
                     </div>
                 </Modal.Body>
@@ -165,13 +165,13 @@ export const EditProjectDialog = ({ open, onClose, projeto }: EditProjectDialogP
                         onClick={onClose}
                         disabled={atualizarProjetoIsPending}
                     >
-                        Cancelar
+                        Cancel
                     </Button>
                     <Button
                         type="submit"
                         disabled={atualizarProjetoIsPending}
                     >
-                        {atualizarProjetoIsPending ? "Salvando..." : "Salvar alterações"}
+                        {atualizarProjetoIsPending ? "Saving..." : "Save changes"}
                     </Button>
                 </Modal.Actions>
             </form>

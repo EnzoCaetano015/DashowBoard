@@ -1,3 +1,4 @@
+import { repositoryTagLabels } from "@/lib/utils/status"
 import { FolderGit2, LockKeyhole, RefreshCw } from "lucide-react"
 import { Link } from "react-router-dom"
 
@@ -24,10 +25,10 @@ export const RepositoriosStep = ({
     atualizar,
 }: RepositoriosStepProps) => {
     if (!runtimeDisponivel) {
-        return <EstadoConexao descricao="A integração GitHub está disponível no aplicativo desktop." />
+        return <EstadoConexao descricao="The GitHub integration is available in the desktop app." />
     }
     if (!isLoading && quantidadeConexoes === 0) {
-        return <EstadoConexao descricao="Conecte sua conta GitHub para listar os repositórios." />
+        return <EstadoConexao descricao="Connect your GitHub account to list repositories." />
     }
     if (isLoading) {
         return <TemplateEstado.Carregando skeleton={{ quantidade: 4, orientacao: "vertical" }} />
@@ -36,15 +37,15 @@ export const RepositoriosStep = ({
         return (
             <div className="space-y-3">
                 <TemplateEstado.Vazio
-                    titulo="Nenhum repositório encontrado"
-                    subtitulo="Nenhum repositório acessível foi encontrado nas conexões configuradas."
+                    titulo="No repositories found"
+                    subtitulo="No accessible repositories were found in the configured connections."
                     Icon={FolderGit2}
                     acao={
                         <Button
                             variant="outline"
                             onClick={atualizar}
                         >
-                            Atualizar
+                            Refresh
                         </Button>
                     }
                 />
@@ -65,7 +66,7 @@ export const RepositoriosStep = ({
         <div className="space-y-3">
             <div className="flex items-center justify-between gap-3">
                 <p className="text-sm text-muted-foreground">
-                    Selecione os repositórios reais que compõem este projeto.
+                    Select the repositories that make up this project.
                 </p>
                 <Button
                     size="sm"
@@ -73,7 +74,7 @@ export const RepositoriosStep = ({
                     disabled={isFetching}
                     onClick={atualizar}
                 >
-                    <RefreshCw className={isFetching ? "animate-spin" : undefined} /> Atualizar
+                    <RefreshCw className={isFetching ? "animate-spin" : undefined} /> Refresh
                 </Button>
             </div>
             {falhas.length > 0 && (
@@ -104,12 +105,12 @@ export const RepositoriosStep = ({
                                     {repositorio.private && <LockKeyhole className="size-3" />}
                                 </b>
                                 <span className="line-clamp-1 text-xs text-muted-foreground">
-                                    {repositorio.description || "Sem descrição"}
+                                    {repositorio.description || "No description"}
                                 </span>
                                 <span className="mt-1 flex flex-wrap items-center gap-1.5 text-[11px] text-muted-foreground">
                                     <span>{repositorio.defaultBranch}</span>
                                     <span>·</span>
-                                    <span>{repositorio.language || "Linguagem não informada"}</span>
+                                    <span>{repositorio.language || "Language not specified"}</span>
                                     <span>·</span>
                                     <span>{formatarDataHora(repositorio.updatedAt)}</span>
                                     <Badge variant="outline">{repositorio.connectionName}</Badge>
@@ -118,6 +119,7 @@ export const RepositoriosStep = ({
                         </label>
                         {selected && (
                             <Select
+                                items={repositoryTagLabels}
                                 value={selected.tag}
                                 onValueChange={(tag) =>
                                     tag && alterarTag(repositorio.id, tag as Enum.TagRepositorio)
@@ -132,7 +134,7 @@ export const RepositoriosStep = ({
                                             key={tag}
                                             value={tag}
                                         >
-                                            {tag}
+                                            {repositoryTagLabels[tag]}
                                         </SelectItem>
                                     ))}
                                 </SelectContent>
@@ -157,7 +159,7 @@ const EstadoConexao = ({ descricao }: { descricao: string }) => (
             nativeButton={false}
             className="mt-4"
         >
-            Ir para Integrações
+            Go to integrations
         </Button>
     </div>
 )

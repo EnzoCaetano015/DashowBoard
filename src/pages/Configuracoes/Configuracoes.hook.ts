@@ -75,26 +75,26 @@ export const useConfiguracoes = () => {
 
         toast.promise(salvar(), {
             id: "salvar-preferencias-aplicacao",
-            loading: "Salvando preferência...",
+            loading: "Saving preference...",
             success: () => {
                 if (campo !== "notificacoesSistema" || valor !== true) {
-                    return "Preferência atualizada."
+                    return "Preference updated."
                 }
 
                 toast.promise(
                     enviarNotificacaoSistema(
                         "DashowBoard",
-                        "Notificações do sistema ativadas.",
+                        "System notifications enabled.",
                         atualizadas.somIncidente
                     ),
                     {
-                        loading: "Enviando notificação de teste...",
-                        success: "Notificações do sistema ativadas.",
+                        loading: "Sending a test notification...",
+                        success: "System notifications enabled.",
                         error: obterMensagemErroConfiguracoes,
                     }
                 )
 
-                return "Preferência atualizada."
+                return "Preference updated."
             },
             error: (erro) => {
                 if (campo === "iniciarComSistema") {
@@ -110,16 +110,16 @@ export const useConfiguracoes = () => {
 
     const abrirPasta = () => {
         toast.promise(revelarBancoDados(), {
-            loading: "Abrindo pasta do banco de dados...",
-            success: "Pasta do banco de dados aberta.",
+            loading: "Opening the database folder...",
+            success: "Database folder opened.",
             error: obterMensagemErroConfiguracoes,
         })
     }
 
     const exportarBackup = () => {
         toast.promise(exportarBackupBancoDados(), {
-            loading: "Exportando backup...",
-            success: "Backup exportado para a pasta de downloads.",
+            loading: "Exporting backup...",
+            success: "Backup exported to the downloads folder.",
             error: obterMensagemErroConfiguracoes,
         })
     }

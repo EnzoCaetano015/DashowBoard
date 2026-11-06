@@ -2,11 +2,11 @@ import { Enum } from "@/backend/api/enums/enum"
 import type { ObterProjetos } from "@/backend/api/models/projeto.types"
 
 export const labelStatusProjeto: Record<Enum.StatusProjeto, string> = {
-    [Enum.StatusProjeto.Saudavel]: "Saudável",
-    [Enum.StatusProjeto.Degradado]: "Degradado",
+    [Enum.StatusProjeto.Saudavel]: "Healthy",
+    [Enum.StatusProjeto.Degradado]: "Degraded",
     [Enum.StatusProjeto.Offline]: "Offline",
-    [Enum.StatusProjeto.Atualizando]: "Atualizando",
-    [Enum.StatusProjeto.Desconhecido]: "Desconhecido",
+    [Enum.StatusProjeto.Atualizando]: "Updating",
+    [Enum.StatusProjeto.Desconhecido]: "Unknown",
 }
 
 export const labelProvider: Record<Enum.Provider, string> = {
@@ -42,4 +42,24 @@ export const agregarStatusServicos = (
     const statuses = relevantes.map(({ status }) => status)
     if (statusHealthCheck) statuses.push(statusHealthCheck)
     return agregarStatus(statuses)
+}
+
+// Persisted enum values remain stable; presentation labels are English.
+export const serviceTypeLabels: Record<Enum.TipoServico, string> = {
+    [Enum.TipoServico.Frontend]: "Frontend",
+    [Enum.TipoServico.Api]: "API",
+    [Enum.TipoServico.Worker]: "Worker",
+    [Enum.TipoServico.BancoDados]: "Database",
+    [Enum.TipoServico.Cache]: "Cache",
+    [Enum.TipoServico.Fila]: "Queue",
+    [Enum.TipoServico.CronJob]: "Cron job",
+}
+
+export const repositoryTagLabels: Record<Enum.TagRepositorio, string> = {
+    [Enum.TagRepositorio.Frontend]: "Frontend",
+    [Enum.TagRepositorio.Api]: "API",
+    [Enum.TagRepositorio.Worker]: "Worker",
+    [Enum.TagRepositorio.Biblioteca]: "Library",
+    [Enum.TagRepositorio.Infraestrutura]: "Infrastructure",
+    [Enum.TagRepositorio.Documentacao]: "Documentation",
 }

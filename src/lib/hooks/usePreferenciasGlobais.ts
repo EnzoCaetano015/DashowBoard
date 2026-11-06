@@ -14,6 +14,7 @@ import {
     resolverTemaAplicacao,
 } from "@/lib/config/preferencias"
 import { queryClient } from "@/lib/config/query-client"
+import { possuiRuntimeTauri } from "@/lib/utils/tauri"
 
 const consultaTemaEscuroDoSistema = () => window.matchMedia("(prefers-color-scheme: dark)")
 
@@ -29,7 +30,18 @@ export const usePreferenciasGlobais = () => {
     const { data: preferencias = PREFERENCIAS_PADRAO } = useObterPreferencias()
     const sistemaEscuro = useSyncExternalStore(assinarTemaDoSistema, obterTemaEscuroDoSistema)
     const incidentesConhecidos = useRef<Set<string> | null>(null)
-    const temaEfetivo = resolverTemaAplicacao(preferencias.tema, sistemaEscuro)
+    // Browser-only visual preview; packaged desktop preferences remain authoritative.
+    const temaVisualizacao =
+        import.meta.env.DEV && !possuiRuntimeTauri()
+            ? (new URLSearchParams(window.location.search).get("theme") ??
+                new URLSearchParams(window.location.search).get("tema"))
+            : null
+    const tema =
+        temaVisualizacao === Enum.TemaAplicacao.Claro ||
+        temaVisualizacao === Enum.TemaAplicacao.Escuro
+            ? temaVisualizacao
+            : preferencias.tema
+    const temaEfetivo = resolverTemaAplicacao(tema, sistemaEscuro)
 
     useEffect(() => {
         const elemento = document.documentElement

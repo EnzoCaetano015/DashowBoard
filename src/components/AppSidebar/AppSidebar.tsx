@@ -6,9 +6,10 @@ import {
     LayoutDashboard,
     Plug,
     Settings,
-    Terminal,
 } from "lucide-react"
 import { NavLink } from "react-router-dom"
+
+import logo from "@/img/logo-sidebar.png"
 
 import { useAppSidebar } from "@/components/AppSidebar/AppSidebar.hook"
 import type { AppSidebarProps } from "@/components/AppSidebar/AppSidebar.types"
@@ -17,11 +18,11 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { cn } from "@/lib/utils"
 
 const navegacao = [
-    { rota: "/", titulo: "Visão geral", Icone: LayoutDashboard, fim: true },
-    { rota: "/projetos", titulo: "Projetos", Icone: FolderGit2 },
-    { rota: "/incidentes", titulo: "Incidentes", Icone: AlertTriangle },
-    { rota: "/integracoes", titulo: "Integrações", Icone: Plug },
-    { rota: "/configuracoes", titulo: "Configurações", Icone: Settings },
+    { rota: "/", titulo: "Overview", Icone: LayoutDashboard, fim: true },
+    { rota: "/projetos", titulo: "Projects", Icone: FolderGit2 },
+    { rota: "/incidentes", titulo: "Incidents", Icone: AlertTriangle },
+    { rota: "/integracoes", titulo: "Integrations", Icone: Plug },
+    { rota: "/configuracoes", titulo: "Settings", Icone: Settings },
 ] as const
 
 export const AppSidebar = ({ modo = "desktop" }: AppSidebarProps) => {
@@ -33,23 +34,30 @@ export const AppSidebar = ({ modo = "desktop" }: AppSidebarProps) => {
     return (
         <aside
             className={cn(
-                "flex h-full shrink-0 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground transition-[width]",
-                ehMobile ? "w-full border-r-0" : "hidden md:flex",
-                !ehMobile && (compacta ? "w-16" : "w-60")
+                "glass-panel relative z-20 flex h-full shrink-0 flex-col text-sidebar-foreground transition-[width]",
+                ehMobile
+                    ? "w-full rounded-none border-0 shadow-none backdrop-filter-none"
+                    : "m-3 mr-0 hidden h-[calc(100%-1.5rem)] rounded-3xl md:flex",
+                !ehMobile && (compacta ? "w-[4.5rem]" : "w-60")
             )}
         >
             <div
                 className={cn(
-                    "flex h-16 items-center gap-2.5 border-b border-sidebar-border px-4",
+                    "flex h-20 shrink-0 items-center gap-2.5 px-3",
                     compacta && !ehMobile && "justify-center px-2"
                 )}
             >
-                <span className="flex size-8 shrink-0 items-center justify-center rounded-md bg-primary/15 ring-1 ring-primary/40">
-                    <Terminal className="size-4 text-primary" />
-                </span>
+                <img
+                    src={logo}
+                    alt=""
+                    aria-hidden="true"
+                    className="size-12 shrink-0 object-contain drop-shadow-lg"
+                    width={48}
+                    height={48}
+                />
                 {(!compacta || ehMobile) && (
                     <div className="min-w-0 leading-tight">
-                        <strong className="block truncate text-sm tracking-tight">DashowBoard</strong>
+                        <strong className="block truncate text-base tracking-tight">DashowBoard</strong>
                         <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
                             Desktop · v0.1
                         </span>
@@ -57,8 +65,8 @@ export const AppSidebar = ({ modo = "desktop" }: AppSidebarProps) => {
                 )}
             </div>
             <nav
-                className="flex-1 space-y-1 px-2 py-3"
-                aria-label="Navegação principal"
+                className="scrollbar-thin min-h-0 flex-1 space-y-1.5 overflow-y-auto px-3 py-2"
+                aria-label="Main navigation"
             >
                 {navegacao.map((item) => {
                     const link = (
@@ -69,17 +77,17 @@ export const AppSidebar = ({ modo = "desktop" }: AppSidebarProps) => {
                             aria-label={compacta && !ehMobile ? item.titulo : undefined}
                             className={({ isActive }) =>
                                 cn(
-                                    "flex items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring",
+                                    "flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring",
                                     isActive
-                                        ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-inner"
-                                        : "text-muted-foreground hover:bg-sidebar-accent/60 hover:text-sidebar-foreground",
+                                        ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-sm ring-1 ring-white/20"
+                                        : "text-muted-foreground hover:bg-sidebar-accent/45 hover:text-sidebar-foreground",
                                     compacta && !ehMobile && "justify-center px-2"
                                 )
                             }
                         >
                             {({ isActive }) => (
                                 <>
-                                    <item.Icone className="size-4 shrink-0" />
+                                    <item.Icone className="size-[1.1rem] shrink-0" />
                                     {(!compacta || ehMobile) && <span>{item.titulo}</span>}
                                     {isActive && (!compacta || ehMobile) && (
                                         <span className="ml-auto size-1.5 rounded-full bg-primary" />
@@ -100,20 +108,20 @@ export const AppSidebar = ({ modo = "desktop" }: AppSidebarProps) => {
                 })}
             </nav>
             {!ehMobile && (
-                <div className="px-2 pb-2">
+                <div className="px-3 pb-2">
                     <Button
                         variant="ghost"
                         size="sm"
                         className="w-full justify-center text-muted-foreground"
                         onClick={alternarSidebar}
                         disabled={alternarSidebarDesabilitado}
-                        aria-label={compacta ? "Expandir barra lateral" : "Recolher barra lateral"}
+                        aria-label={compacta ? "Expand sidebar" : "Collapse sidebar"}
                     >
                         {compacta ? (
                             <ChevronRight />
                         ) : (
                             <>
-                                <ChevronLeft /> Recolher
+                                <ChevronLeft /> Collapse
                             </>
                         )}
                     </Button>
@@ -121,7 +129,7 @@ export const AppSidebar = ({ modo = "desktop" }: AppSidebarProps) => {
             )}
             <div
                 className={cn(
-                    "border-t border-sidebar-border px-4 py-3 text-xs text-muted-foreground",
+                    "mx-3 mb-3 rounded-2xl border border-sidebar-border bg-sidebar-accent/30 px-3 py-3 text-xs text-muted-foreground",
                     compacta && !ehMobile && "px-2 text-center"
                 )}
             >
@@ -129,12 +137,12 @@ export const AppSidebar = ({ modo = "desktop" }: AppSidebarProps) => {
                     <span
                         className="status-dot bg-success text-success"
                         role="status"
-                        aria-label="SQLite local disponível"
+                        aria-label="Local SQLite available"
                     />
                 ) : (
                     <>
                         <div className="flex items-center justify-between">
-                            <span>Modo local</span>
+                            <span>Local mode</span>
                             <span className="inline-flex items-center gap-1.5">
                                 <span className="status-dot bg-success text-success" />
                                 SQLite

@@ -16,7 +16,7 @@ pub fn load_connection() -> Result<Option<SupabaseConnection>, SupabaseError> {
         Ok(serialized) => serde_json::from_str(&serialized).map(Some).map_err(|_| {
             SupabaseError::new(
                 "SUPABASE_COFRE_INDISPONIVEL",
-                "Os dados seguros da conexão Supabase estão corrompidos.",
+                "The secure Supabase connection data is corrupted.",
             )
         }),
         Err(KeyringError::NoEntry) => Ok(None),
@@ -28,7 +28,7 @@ pub fn save_connection(connection: &SupabaseConnection) -> Result<(), SupabaseEr
     let serialized = serde_json::to_string(connection).map_err(|_| {
         SupabaseError::new(
             "SUPABASE_COFRE_INDISPONIVEL",
-            "Não foi possível preparar os dados seguros da conexão Supabase.",
+            "Unable to prepare the secure Supabase connection data.",
         )
     })?;
     entry(CONNECTION_ACCOUNT)?
@@ -41,7 +41,7 @@ pub fn get_token() -> Result<String, SupabaseError> {
         Ok(token) => Ok(token),
         Err(KeyringError::NoEntry) => Err(SupabaseError::new(
             "SUPABASE_SEM_CONEXAO",
-            "Nenhuma conexão Supabase está configurada.",
+            "No Supabase connection is configured.",
         )),
         Err(error) => Err(SupabaseError::keyring(error)),
     }

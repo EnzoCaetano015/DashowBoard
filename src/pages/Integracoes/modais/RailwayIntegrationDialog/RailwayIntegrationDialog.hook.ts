@@ -29,14 +29,14 @@ export const useRailwayIntegrationDialog = () => {
 
     const save = () => {
         if (!token.trim()) {
-            toast.error("Informe o Account Token da Railway.")
+            toast.error("Enter your Railway Account Token.")
             return
         }
         toast.promise(saveConnection({ token: token.trim() }), {
-            loading: connection ? "Substituindo token Railway..." : "Conectando à Railway...",
+            loading: connection ? "Replacing Railway token..." : "Connecting to Railway...",
             success: () => {
                 resetForm()
-                return connection ? "Token Railway substituído." : "Railway conectada."
+                return connection ? "Railway token replaced." : "Railway connected."
             },
             error: (error) => normalizarErroRailway(error).message,
         })
@@ -47,25 +47,25 @@ export const useRailwayIntegrationDialog = () => {
             if (testedConnection.status === Enum.StatusIntegracao.Erro) {
                 return Promise.reject({
                     code: testedConnection.erroCodigo ?? "RAILWAY_ERRO_DESCONHECIDO",
-                    message: testedConnection.erro ?? "A conexão Railway apresentou um erro.",
+                    message: testedConnection.erro ?? "The Railway connection returned an error.",
                 })
             }
             return testedConnection
         })
         toast.promise(promise, {
-            loading: "Testando conexão Railway...",
-            success: "Conexão Railway validada.",
+            loading: "Testing Railway connection...",
+            success: "Railway connection validated.",
             error: (error) => normalizarErroRailway(error).message,
         })
     }
 
     const remove = () => {
         toast.promise(removeConnection(), {
-            loading: "Removendo conexão Railway...",
+            loading: "Removing Railway connection...",
             success: () => {
                 resetForm()
                 setModal("removerConexao", { open: false })
-                return "Conexão e token Railway removidos."
+                return "Railway connection and token removed."
             },
             error: (error) => normalizarErroRailway(error).message,
         })

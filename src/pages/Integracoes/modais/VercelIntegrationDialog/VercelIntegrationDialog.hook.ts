@@ -29,15 +29,15 @@ export const useVercelIntegrationDialog = () => {
 
     const save = () => {
         if (!token.trim()) {
-            toast.error("Informe o token da Vercel.")
+            toast.error("Enter your Vercel token.")
             return
         }
 
         toast.promise(saveConnection({ token: token.trim() }), {
-            loading: connection ? "Substituindo token Vercel..." : "Conectando à Vercel...",
+            loading: connection ? "Replacing Vercel token..." : "Connecting to Vercel...",
             success: () => {
                 resetForm()
-                return connection ? "Token Vercel substituído." : "Vercel conectada."
+                return connection ? "Vercel token replaced." : "Vercel connected."
             },
             error: (error) => normalizarErroVercel(error).message,
         })
@@ -48,7 +48,7 @@ export const useVercelIntegrationDialog = () => {
             if (testedConnection.status === Enum.StatusIntegracao.Erro) {
                 return Promise.reject({
                     code: "VERCEL_CONEXAO_INVALIDA",
-                    message: testedConnection.erro ?? "A conexão Vercel apresentou um erro.",
+                    message: testedConnection.erro ?? "The Vercel connection returned an error.",
                 })
             }
 
@@ -56,19 +56,19 @@ export const useVercelIntegrationDialog = () => {
         })
 
         toast.promise(testPromise, {
-            loading: "Testando conexão Vercel...",
-            success: "Conexão Vercel validada.",
+            loading: "Testing Vercel connection...",
+            success: "Vercel connection validated.",
             error: (error) => normalizarErroVercel(error).message,
         })
     }
 
     const remove = () => {
         toast.promise(removeConnection(), {
-            loading: "Removendo conexão Vercel...",
+            loading: "Removing Vercel connection...",
             success: () => {
                 resetForm()
                 setModal("removerConexao", { open: false })
-                return "Conexão e token Vercel removidos."
+                return "Vercel connection and token removed."
             },
             error: (error) => normalizarErroVercel(error).message,
         })

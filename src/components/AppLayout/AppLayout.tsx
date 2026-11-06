@@ -11,12 +11,16 @@ export const AppLayout = () => {
     useMonitoramentoProjetos()
 
     return (
-        <div className="flex h-dvh w-full overflow-hidden bg-background text-foreground">
+        <div className="relative flex h-dvh w-full overflow-hidden bg-transparent text-foreground">
+            <div
+                aria-hidden="true"
+                className="ambient-light pointer-events-none"
+            />
             <AppSidebar />
-            <div className="flex min-w-0 flex-1 flex-col">
+            <div className="relative z-10 flex min-w-0 flex-1 flex-col">
                 <TopBar />
                 <main className="scrollbar-thin flex-1 overflow-y-auto">
-                    <div className="mx-auto w-full max-w-screen-2xl p-4 md:p-6">
+                    <div className="mx-auto w-full max-w-screen-2xl p-4 pt-5 md:p-7 md:pt-6">
                         <Outlet />
                     </div>
                 </main>

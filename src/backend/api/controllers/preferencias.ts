@@ -58,7 +58,7 @@ export const useSalvarPreferencias = () => {
         mutationFn: (request: SalvarPreferencias.Request) => {
             if (!possuiRuntimeTauri()) {
                 return Promise.reject(
-                    new Error("As preferências só podem ser salvas no aplicativo desktop.")
+                    new Error("Preferences can only be saved in the desktop app.")
                 )
             }
             return salvarPreferencias(request)

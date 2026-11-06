@@ -25,14 +25,14 @@ export const ConfirmarRemocao = ({
                 disabled={isPending}
                 onClick={onClose}
             >
-                Cancelar
+                Cancel
             </Button>
             <Button
                 variant="destructive"
                 disabled={isPending}
                 onClick={onConfirm}
             >
-                Remover
+                Remove
             </Button>
         </Modal.Actions>
     </Modal.Content>

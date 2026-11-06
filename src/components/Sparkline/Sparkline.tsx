@@ -13,7 +13,7 @@ export const Sparkline = ({
     className,
 }: SparklineProps) => {
     const resumo = resumirSerie(dados)
-    if (!resumo) return <span className="sr-only">{titulo}. {descricao}. Sem dados.</span>
+    if (!resumo) return <span className="sr-only">{titulo}. {descricao}. No data.</span>
 
     const largura = 200
     const minimo = resumo.minimo
@@ -60,14 +60,14 @@ export const Sparkline = ({
             </svg>
             <div className="sr-only">
                 <p>
-                    {titulo}. {descricao}. Mínimo {formatarValorSerie(resumo.minimo, unidade)}, média{" "}
-                    {formatarValorSerie(resumo.media, unidade)} e máximo{" "}
+                    {titulo}. {descricao}. Minimum {formatarValorSerie(resumo.minimo, unidade)}, average{" "}
+                    {formatarValorSerie(resumo.media, unidade)} and maximum{" "}
                     {formatarValorSerie(resumo.maximo, unidade)}.
                 </p>
                 <ol>
                     {dados.map((valor, indice) => (
                         <li key={`${indice}-${valor}`}>
-                            Amostra {indice + 1} de {dados.length}: {formatarValorSerie(valor, unidade)}
+                            Sample {indice + 1} of {dados.length}: {formatarValorSerie(valor, unidade)}
                         </li>
                     ))}
                 </ol>

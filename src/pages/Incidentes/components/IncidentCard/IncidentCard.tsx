@@ -32,7 +32,7 @@ export const IncidentCard = ({ incidente }: IncidentCardProps) => {
                         <div className="flex flex-wrap items-center gap-2">
                             <h3 className="font-medium">{incidente.titulo}</h3>
                             <Badge variant={ativo ? "destructive" : "outline"}>
-                                {ativo ? "Ativo" : "Resolvido"}
+                                {ativo ? "Ativo" : "Resolved"}
                             </Badge>
                         </div>
                         <div className="mt-1">
@@ -45,7 +45,7 @@ export const IncidentCard = ({ incidente }: IncidentCardProps) => {
                 </div>
                 <dl className="grid grid-cols-2 gap-3 text-xs">
                     <div>
-                        <dt className="text-muted-foreground">Projeto</dt>
+                        <dt className="text-muted-foreground">Project</dt>
                         <dd className="mt-0.5">
                             <Link
                                 to={`/projetos/${incidente.projetoId}`}
@@ -57,7 +57,7 @@ export const IncidentCard = ({ incidente }: IncidentCardProps) => {
                         </dd>
                     </div>
                     <div>
-                        <dt className="text-muted-foreground">Serviço</dt>
+                        <dt className="text-muted-foreground">Service</dt>
                         <dd className="mt-0.5 flex flex-wrap items-center gap-1.5">
                             <span>{incidente.servico}</span>
                             {incidente.provider && (
@@ -76,14 +76,14 @@ export const IncidentCard = ({ incidente }: IncidentCardProps) => {
                         </dd>
                     </div>
                     <div>
-                        <dt className="text-muted-foreground">Início</dt>
+                        <dt className="text-muted-foreground">Started</dt>
                         <dd className="mt-0.5 inline-flex items-center gap-1.5">
                             <Clock className="size-3" />
                             {formatarDataHora(incidente.iniciadoEm)}
                         </dd>
                     </div>
                     <div>
-                        <dt className="text-muted-foreground">Duração</dt>
+                        <dt className="text-muted-foreground">Duration</dt>
                         <dd className="mt-0.5 font-mono tabular-nums">
                             {formatarDuracao(incidente.duracaoMinutos)}
                         </dd>

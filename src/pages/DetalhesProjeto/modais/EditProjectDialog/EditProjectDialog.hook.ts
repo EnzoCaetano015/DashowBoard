@@ -51,9 +51,9 @@ export const useEditProjectDialog = (projeto: ObterProjetos.Projeto, onClose: ()
         })
 
         toast.promise(atualizacao, {
-            loading: "Salvando projeto...",
-            success: "Projeto atualizado.",
-            error: (erro) => obterMensagemErro(erro, "Não foi possível atualizar o projeto."),
+            loading: "Saving project...",
+            success: "Project updated.",
+            error: (erro) => obterMensagemErro(erro, "Unable to refresh the project."),
         })
 
         try {

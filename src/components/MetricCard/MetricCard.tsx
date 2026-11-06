@@ -4,7 +4,11 @@ import { Card, CardContent } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 
 const estilos: Record<DestaqueMetrica, { texto: string; anel: string; cor: string }> = {
-    primary: { texto: "text-primary", anel: "ring-primary/30", cor: "var(--color-primary)" },
+    primary: {
+        texto: "text-primary",
+        anel: "ring-foreground/10",
+        cor: "var(--color-primary)",
+    },
     success: { texto: "text-success", anel: "ring-success/30", cor: "var(--color-success)" },
     warning: { texto: "text-warning", anel: "ring-warning/30", cor: "var(--color-warning)" },
     destructive: {
@@ -28,7 +32,7 @@ export const MetricCard = ({
     const estilo = estilos[destaque]
 
     return (
-        <Card className="gap-3 border-border bg-card py-4 shadow-none">
+        <Card className="group gap-3 bg-card py-4 hover:border-primary/30 hover:shadow-xl">
             <CardContent className="flex flex-col gap-3 px-4">
                 <div className="flex items-start justify-between gap-2">
                     <span className="text-xs uppercase tracking-wide text-muted-foreground">
@@ -37,7 +41,7 @@ export const MetricCard = ({
                     {icone && (
                         <span
                             className={cn(
-                                "flex size-7 items-center justify-center rounded-md bg-surface-2 ring-1",
+                                "flex size-9 items-center justify-center rounded-2xl bg-surface-2 shadow-sm ring-1",
                                 estilo.anel,
                                 estilo.texto
                             )}
@@ -60,9 +64,9 @@ export const MetricCard = ({
                 {tendencia?.length ? (
                     <Sparkline
                         dados={tendencia}
-                        titulo={`Tendência de ${titulo.toLocaleLowerCase("pt-BR")}`}
+                        titulo={`Trend for ${titulo.toLocaleLowerCase("en-US")}`}
                         unidade={unidadeTendencia}
-                        descricao="Evolução das amostras recentes desta métrica"
+                        descricao="Recent samples for this metric"
                         cor={estilo.cor}
                         altura={32}
                     />

@@ -1,3 +1,4 @@
+import { serviceTypeLabels } from "@/lib/utils/status"
 import { Server } from "lucide-react"
 import { Enum } from "@/backend/api/enums/enum"
 import type { ObterProjetos } from "@/backend/api/models/projeto.types"
@@ -23,8 +24,8 @@ export const ProjectServices = ({ servicos, onAtualizar, servicoAtualizando }: P
     if (servicos.length === 0) {
         return (
             <TemplateEstado.Vazio
-                titulo="Nenhum serviço associado"
-                subtitulo="Edite o projeto para associar serviços dos providers configurados."
+                titulo="No linked services"
+                subtitulo="Edit the project to link services from the configured providers."
                 Icon={Server}
             />
         )
@@ -46,11 +47,11 @@ export const ProjectServices = ({ servicos, onAtualizar, servicoAtualizando }: P
                                 </span>
                                 <h3 className="text-sm font-semibold">{labelProvider[provider]}</h3>
                                 <span className="text-xs text-muted-foreground">
-                                    · {lista.length} serviço{lista.length > 1 ? "s" : ""}
+                                    · {lista.length} service{lista.length > 1 ? "s" : ""}
                                 </span>
                                 {provider === Enum.Provider.Railway && (
                                     <span className="ml-2 inline-flex items-center gap-1.5 rounded-md border border-border bg-surface-2 px-2 py-0.5 text-xs text-muted-foreground">
-                                        status agregado{" "}
+                                        aggregate status{" "}
                                         <StatusDot status={agregarStatusServicos(lista)} />
                                     </span>
                                 )}
@@ -76,17 +77,17 @@ export const ProjectServices = ({ servicos, onAtualizar, servicoAtualizando }: P
 }
 
 const RailwayGroups = ({ servicos, onAtualizar, servicoAtualizando }: ProjectServicesProps) => {
-    const projetos = agrupar(servicos, (servico) => servico.projetoRailway ?? "Projeto padrão")
+    const projetos = agrupar(servicos, (servico) => servico.projetoRailway ?? "Default project")
     return (
         <div className="space-y-3">
             {Array.from(projetos.entries()).map(([nome, lista]) => (
                 <Card
                     key={nome}
-                    className="gap-0 overflow-hidden border-border py-0 shadow-none"
+                    className="gap-0 overflow-hidden py-0"
                 >
                     <div className="flex items-center justify-between border-b border-border bg-surface-2/60 px-4 py-2">
                         <span className="text-xs font-mono text-muted-foreground">
-                            projeto Railway · <b className="font-medium text-foreground">{nome}</b>
+                            Railway project · <b className="font-medium text-foreground">{nome}</b>
                         </span>
                         <StatusDot status={agregarStatusServicos(lista)} />
                     </div>
@@ -125,7 +126,7 @@ const ServiceList = ({ servicos, onAtualizar, servicoAtualizando }: ProjectServi
                 />
             ))}
         </div>
-        <Card className="hidden overflow-hidden border-border py-0 shadow-none md:block">
+        <Card className="hidden overflow-hidden py-0 md:block">
             <ServiceTable
                 servicos={servicos}
                 onAtualizar={onAtualizar}
@@ -140,12 +141,12 @@ const ServiceTable = ({ servicos, onAtualizar, servicoAtualizando }: ProjectServ
         <Table className="min-w-4xl">
             <TableHeader>
                 <TableRow>
-                    <TableHead>Serviço</TableHead>
-                    <TableHead>Tipo / ambiente</TableHead>
+                    <TableHead>Service</TableHead>
+                    <TableHead>Type / environment</TableHead>
                     <TableHead>Deployment</TableHead>
-                    <TableHead>Resposta</TableHead>
-                    <TableHead>Verificação</TableHead>
-                    <TableHead className="text-right">Ações</TableHead>
+                    <TableHead>Response</TableHead>
+                    <TableHead>Check</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
@@ -158,7 +159,7 @@ const ServiceTable = ({ servicos, onAtualizar, servicoAtualizando }: ProjectServ
                                     <span className="font-medium">{servico.nome}</span>
                                 </div>
                                 {servico.mensagemStatus && (
-                                    <p className="mt-1 max-w-64 text-xs text-warning">
+                                    <p className="mt-1 max-w-60 text-xs text-warning">
                                         {servico.mensagemStatus}
                                     </p>
                                 )}
@@ -167,7 +168,7 @@ const ServiceTable = ({ servicos, onAtualizar, servicoAtualizando }: ProjectServ
                         <TableCell>
                             <div className="flex gap-1.5">
                                 <span className="rounded bg-surface-2 px-1.5 py-0.5 text-xs">
-                                    {servico.tipo}
+                                    {serviceTypeLabels[servico.tipo]}
                                 </span>
                                 <span className="rounded bg-surface-2 px-1.5 py-0.5 text-xs text-muted-foreground">
                                     {servico.ambiente}
@@ -175,7 +176,7 @@ const ServiceTable = ({ servicos, onAtualizar, servicoAtualizando }: ProjectServ
                             </div>
                         </TableCell>
                         <TableCell className="text-xs text-muted-foreground">
-                            {servico.ultimoDeployment ?? "Não coletado"}
+                            {servico.ultimoDeployment ?? "Not collected"}
                         </TableCell>
                         <TableCell
                             className={cn(
@@ -184,11 +185,11 @@ const ServiceTable = ({ servicos, onAtualizar, servicoAtualizando }: ProjectServ
                             )}
                         >
                             {servico.tempoRespostaMs === null
-                                ? "Não coletado"
+                                ? "Not collected"
                                 : `${servico.tempoRespostaMs} ms`}
                         </TableCell>
                         <TableCell className="text-xs text-muted-foreground">
-                            {servico.ultimaVerificacao ?? "Aguardando primeira verificação"}
+                            {servico.ultimaVerificacao ?? "Waiting for the first check"}
                         </TableCell>
                         <TableCell>
                             <ProjectServiceActions

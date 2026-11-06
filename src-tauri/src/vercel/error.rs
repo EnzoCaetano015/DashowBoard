@@ -24,24 +24,21 @@ impl VercelError {
     pub fn keyring(_error: keyring::Error) -> Self {
         Self::new(
             "VERCEL_COFRE_INDISPONIVEL",
-            "Não foi possível acessar o cofre de credenciais do sistema.",
+            "Unable to access the system credential vault.",
         )
     }
 
     pub fn network(error: reqwest::Error) -> Self {
         if error.is_timeout() {
-            return Self::new("VERCEL_TIMEOUT", "A Vercel demorou demais para responder.");
+            return Self::new("VERCEL_TIMEOUT", "Vercel took too long to respond.");
         }
         if error.is_connect() {
             return Self::new(
                 "VERCEL_SEM_CONEXAO",
-                "Não foi possível conectar à Vercel. Verifique sua internet.",
+                "Unable to connect to Vercel. Check your internet connection.",
             );
         }
-        Self::new(
-            "VERCEL_INDISPONIVEL",
-            "A Vercel está indisponível no momento.",
-        )
+        Self::new("VERCEL_INDISPONIVEL", "Vercel is currently unavailable.")
     }
 
     pub fn status(status: StatusCode, headers: &HeaderMap, body: &str) -> Self {
@@ -49,11 +46,11 @@ impl VercelError {
         match status {
             StatusCode::UNAUTHORIZED if body.contains("expired") => Self::new(
                 "VERCEL_TOKEN_EXPIRADO",
-                "O token da Vercel expirou. Substitua-o para continuar.",
+                "The Vercel token has expired. Replace it to continue.",
             ),
             StatusCode::UNAUTHORIZED => Self::new(
                 "VERCEL_TOKEN_INVALIDO",
-                "O token informado é inválido ou foi revogado.",
+                "The supplied token is invalid or has been revoked.",
             ),
             StatusCode::TOO_MANY_REQUESTS => Self::rate_limit(headers),
             StatusCode::FORBIDDEN if header_u32(headers, "x-ratelimit-remaining") == Some(0) => {
@@ -61,15 +58,14 @@ impl VercelError {
             }
             StatusCode::FORBIDDEN => Self::new(
                 "VERCEL_SEM_PERMISSAO",
-                "O token não possui permissão para consultar este recurso da Vercel.",
+                "The token does not have permission to access this Vercel resource.",
             ),
-            status if status.is_server_error() => Self::new(
-                "VERCEL_INDISPONIVEL",
-                "A Vercel está indisponível no momento.",
-            ),
+            status if status.is_server_error() => {
+                Self::new("VERCEL_INDISPONIVEL", "Vercel is currently unavailable.")
+            }
             _ => Self::new(
                 "VERCEL_ERRO_DESCONHECIDO",
-                "Não foi possível concluir a operação na Vercel.",
+                "Unable to complete the Vercel operation.",
             ),
         }
     }
@@ -77,7 +73,7 @@ impl VercelError {
     fn rate_limit(headers: &HeaderMap) -> Self {
         Self {
             code: "VERCEL_RATE_LIMIT".to_owned(),
-            message: "O limite de requisições da Vercel foi atingido.".to_owned(),
+            message: "The Vercel rate limit has been reached.".to_owned(),
             reset_at: header_reset(headers),
         }
     }

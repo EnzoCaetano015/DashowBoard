@@ -46,8 +46,8 @@ export const VercelIntegrationDialog = ({ open, onClose }: VercelIntegrationDial
                 className="max-h-[90dvh] overflow-y-auto sm:max-w-2xl"
             >
                 <Modal.Header
-                    titulo="Integração Vercel"
-                    subTitulo="Consulte projetos pessoais e dos times acessíveis ao seu token."
+                    titulo="Vercel integration"
+                    subTitulo="Browse personal and team projects accessible with your token."
                 />
                 <Modal.Body className="space-y-4">
                     {!runtimeDisponivel ? (
@@ -55,7 +55,7 @@ export const VercelIntegrationDialog = ({ open, onClose }: VercelIntegrationDial
                             <CardContent className="py-10 text-center">
                                 <KeyRound className="mx-auto size-8 text-muted-foreground" />
                                 <p className="mt-3 text-sm">
-                                    A integração Vercel está disponível no aplicativo desktop.
+                                    The Vercel integration is available in the desktop app.
                                 </p>
                             </CardContent>
                         </Card>
@@ -108,16 +108,16 @@ export const VercelIntegrationDialog = ({ open, onClose }: VercelIntegrationDial
                                                     )}
                                                     {connection.status ===
                                                     Enum.StatusIntegracao.Conectado
-                                                        ? "Conectado"
-                                                        : "Erro"}
+                                                        ? "Connected"
+                                                        : "Error"}
                                                 </span>
                                             </div>
                                             <p className="text-xs text-muted-foreground">
                                                 @{connection.username} · {connection.quantidadeTimes}{" "}
-                                                time(s) · {connection.quantidadeProjetos} projeto(s)
+                                                team(s) · {connection.quantidadeProjetos} project(s)
                                             </p>
                                             <p className="mt-1 text-xs text-muted-foreground">
-                                                Última sincronização:{" "}
+                                                Last sync:{" "}
                                                 {formatarDataHora(connection.ultimaSincronizacao)}
                                             </p>
                                             {connection.erro && (
@@ -133,7 +133,7 @@ export const VercelIntegrationDialog = ({ open, onClose }: VercelIntegrationDial
                                                 disabled={isPending}
                                                 onClick={() => void test()}
                                             >
-                                                <RefreshCw /> Testar
+                                                <RefreshCw /> Test
                                             </Button>
                                             <Button
                                                 size="sm"
@@ -141,12 +141,12 @@ export const VercelIntegrationDialog = ({ open, onClose }: VercelIntegrationDial
                                                 disabled={isPending}
                                                 onClick={startUpdate}
                                             >
-                                                <KeyRound /> Substituir token
+                                                <KeyRound /> Replace token
                                             </Button>
                                             <IconAction
                                                 size="icon-sm"
                                                 variant="destructive"
-                                                label={`Remover conexão Vercel ${connection.nome || `@${connection.username}`}`}
+                                                label={`Remove Vercel connection ${connection.nome || `@${connection.username}`}`}
                                                 disabled={isPending}
                                                 onClick={startRemove}
                                             >
@@ -160,7 +160,7 @@ export const VercelIntegrationDialog = ({ open, onClose }: VercelIntegrationDial
                             {showForm && (
                                 <div className="space-y-4 rounded-lg border border-border bg-surface-2 p-4">
                                     <div className="space-y-2">
-                                        <Label htmlFor="vercel-token">Token Vercel</Label>
+                                        <Label htmlFor="vercel-token">Vercel token</Label>
                                         <Input
                                             id="vercel-token"
                                             type="password"
@@ -173,8 +173,7 @@ export const VercelIntegrationDialog = ({ open, onClose }: VercelIntegrationDial
                                     <div className="flex items-start gap-2 rounded-md border border-success/30 bg-success/10 p-3 text-xs text-muted-foreground">
                                         <ShieldCheck className="mt-0.5 size-4 shrink-0 text-success" />
                                         <span>
-                                            O token é validado antes de ser salvo e fica somente no cofre
-                                            nativo do sistema operacional.
+                                            The token is validated before being saved and stays in the operating system's native credential vault.
                                         </span>
                                     </div>
                                     <Modal.Actions>
@@ -183,14 +182,14 @@ export const VercelIntegrationDialog = ({ open, onClose }: VercelIntegrationDial
                                                 variant="ghost"
                                                 onClick={resetForm}
                                             >
-                                                Cancelar
+                                                Cancel
                                             </Button>
                                         )}
                                         <Button
                                             disabled={isPending}
                                             onClick={() => void save()}
                                         >
-                                            <ShieldCheck /> Salvar e validar
+                                            <ShieldCheck /> Save and validate
                                         </Button>
                                     </Modal.Actions>
                                 </div>
@@ -202,8 +201,8 @@ export const VercelIntegrationDialog = ({ open, onClose }: VercelIntegrationDial
             <ConfirmarRemocao
                 open={modal.removerConexao}
                 onClose={cancelRemove}
-                titulo="Remover conexão Vercel?"
-                descricao="O token será removido do cofre nativo do sistema."
+                titulo="Remove Vercel connection?"
+                descricao="The token will be removed from the system's native credential vault."
                 isPending={removeIsPending}
                 onConfirm={() => void remove()}
             />

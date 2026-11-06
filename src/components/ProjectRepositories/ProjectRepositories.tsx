@@ -1,3 +1,4 @@
+import { repositoryTagLabels } from "@/lib/utils/status"
 import { ArrowUpRight, CircleAlert, GitBranch, GitCommit, GitPullRequest } from "lucide-react"
 
 import type { ObterProjetos } from "@/backend/api/models/projeto.types"
@@ -12,8 +13,8 @@ export const ProjectRepositories = ({ repositorios }: { repositorios: ObterProje
     if (repositorios.length === 0) {
         return (
             <TemplateEstado.Vazio
-                titulo="Nenhum repositório associado"
-                subtitulo="Edite o projeto para associar repositórios das conexões GitHub."
+                titulo="No linked repositories"
+                subtitulo="Edit the project to link repositories from your GitHub connections."
                 Icon={GitBranch}
             />
         )
@@ -24,7 +25,7 @@ export const ProjectRepositories = ({ repositorios }: { repositorios: ObterProje
             {repositorios.map((repositorio) => (
                 <Card
                     key={repositorio.id}
-                    className="border-border py-4 shadow-none"
+                    className="py-4"
                 >
                 <CardContent className="flex flex-col gap-4 px-4 lg:flex-row lg:items-start lg:justify-between">
                     <div className="min-w-0 flex-1">
@@ -33,7 +34,7 @@ export const ProjectRepositories = ({ repositorios }: { repositorios: ObterProje
                             <h3 className="truncate font-semibold">{repositorio.nome}</h3>
                             <span className="inline-flex items-center gap-1 rounded bg-surface-2 px-1.5 py-0.5 font-mono text-[11px] text-muted-foreground">
                                 <GitBranch className="size-3" />
-                                {repositorio.branch ?? "Não coletado"}
+                                {repositorio.branch ?? "Not collected"}
                             </span>
                             {repositorio.statusWorkflow && (
                                 <WorkflowStatus status={repositorio.statusWorkflow} />
@@ -44,9 +45,9 @@ export const ProjectRepositories = ({ repositorios }: { repositorios: ObterProje
                             {repositorio.tags.map((tag) => (
                                 <span
                                     key={tag}
-                                    className="rounded-md border border-primary/30 bg-primary/10 px-1.5 py-0.5 text-[11px] text-primary"
+                                    className="rounded-md border border-foreground/10 bg-primary/10 px-1.5 py-0.5 text-[11px] text-primary"
                                 >
-                                    {tag}
+                                    {repositoryTagLabels[tag]}
                                 </span>
                             ))}
                         </div>
@@ -54,7 +55,7 @@ export const ProjectRepositories = ({ repositorios }: { repositorios: ObterProje
                             <div className="rounded-md bg-surface-2 p-2.5">
                                 <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                                     <GitCommit className="size-3" />
-                                    último commit
+                                    latest commit
                                 </div>
                                 {repositorio.ultimoCommit ? (
                                     <>
@@ -71,18 +72,18 @@ export const ProjectRepositories = ({ repositorios }: { repositorios: ObterProje
                                     </>
                                 ) : (
                                     <div className="mt-1 text-xs text-muted-foreground">
-                                        Não coletado
+                                        Not collected
                                     </div>
                                 )}
                             </div>
                             <Contador
                                 Icone={CircleAlert}
-                                titulo="issues abertas"
+                                titulo="open issues"
                                 valor={repositorio.issuesAbertas}
                             />
                             <Contador
                                 Icone={GitPullRequest}
-                                titulo="PRs abertas"
+                                titulo="open PRs"
                                 valor={repositorio.pullRequestsAbertas}
                             />
                         </div>
@@ -102,7 +103,7 @@ export const ProjectRepositories = ({ repositorios }: { repositorios: ObterProje
                             className="shrink-0"
                         >
                             <ArrowUpRight />
-                            Abrir no GitHub
+                            Open in GitHub
                         </Button>
                     )}
                 </CardContent>
@@ -126,6 +127,6 @@ const Contador = ({
             <Icone className="size-3" />
             {titulo}
         </div>
-        <div className="mt-1 text-lg font-semibold tabular-nums">{valor ?? "Não coletado"}</div>
+        <div className="mt-1 text-lg font-semibold tabular-nums">{valor ?? "Not collected"}</div>
     </div>
 )

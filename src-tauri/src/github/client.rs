@@ -31,7 +31,7 @@ impl GitHubClient {
         self.http.as_ref().map_err(|_| {
             GitHubError::new(
                 "GITHUB_ERRO_DESCONHECIDO",
-                "Não foi possível inicializar o cliente do GitHub.",
+                "Unable to initialize the GitHub client.",
             )
         })
     }
@@ -85,7 +85,7 @@ impl GitHubClient {
         let value = response.json::<T>().await.map_err(|_| {
             GitHubError::new(
                 "GITHUB_ERRO_DESCONHECIDO",
-                "O GitHub retornou dados em um formato inesperado.",
+                "GitHub returned data in an unexpected format.",
             )
         })?;
         Ok((value, headers))

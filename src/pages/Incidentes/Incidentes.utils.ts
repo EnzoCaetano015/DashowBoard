@@ -16,15 +16,15 @@ export const FILTROS_INCIDENTES_INICIAIS: FiltrosIncidentes = {
 }
 
 export const LABEL_STATUS_INCIDENTE: Record<Enum.StatusIncidente, string> = {
-    [Enum.StatusIncidente.EmAndamento]: "Em andamento",
-    [Enum.StatusIncidente.Monitorando]: "Monitorando",
-    [Enum.StatusIncidente.Resolvido]: "Resolvido",
+    [Enum.StatusIncidente.EmAndamento]: "In progress",
+    [Enum.StatusIncidente.Monitorando]: "Monitoring",
+    [Enum.StatusIncidente.Resolvido]: "Resolved",
 }
 
 export const LABEL_SEVERIDADE_INCIDENTE: Record<Enum.SeveridadeIncidente, string> = {
-    [Enum.SeveridadeIncidente.Baixa]: "Baixa",
-    [Enum.SeveridadeIncidente.Media]: "Média",
-    [Enum.SeveridadeIncidente.Alta]: "Alta",
+    [Enum.SeveridadeIncidente.Baixa]: "Low",
+    [Enum.SeveridadeIncidente.Media]: "Medium",
+    [Enum.SeveridadeIncidente.Alta]: "High",
 }
 
 export const filtrarIncidentes = (
@@ -74,7 +74,7 @@ export const obterProjetosFiltroIncidentes = (
     return [...projetos]
         .map(([id, nome]) => ({ id, nome }))
         .sort((primeiro, segundo) =>
-            primeiro.nome.localeCompare(segundo.nome, "pt-BR", { sensitivity: "base" })
+            primeiro.nome.localeCompare(segundo.nome, "en-US", { sensitivity: "base" })
         )
 }
 

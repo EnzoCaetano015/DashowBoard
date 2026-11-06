@@ -56,7 +56,7 @@ export const useIntegracoes = () => {
                 const falhas = resultados.filter(({ status }) => status === "rejected").length
                 if (falhas > 0) {
                     throw new Error(
-                        `${falhas} de ${resultados.length} conexões do GitHub falharam no teste.`
+                        `${falhas} of ${resultados.length} GitHub connections failed the test.`
                     )
                 }
             })
@@ -66,9 +66,9 @@ export const useIntegracoes = () => {
 
         toast.promise(teste, {
             id: `testar-integracao-${provider}`,
-            loading: `Testando ${labelProvider[provider]}...`,
-            success: `Conexão ${labelProvider[provider]} validada.`,
-            error: (erro) => obterMensagemErro(erro, `Falha ao testar ${labelProvider[provider]}.`),
+            loading: `Testing ${labelProvider[provider]}...`,
+            success: `Connection ${labelProvider[provider]} validated.`,
+            error: (erro) => obterMensagemErro(erro, `Unable to test ${labelProvider[provider]}.`),
         })
     }
 

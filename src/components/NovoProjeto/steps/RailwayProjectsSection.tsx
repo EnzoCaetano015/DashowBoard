@@ -1,3 +1,4 @@
+import { serviceTypeLabels } from "@/lib/utils/status"
 import { Boxes, RefreshCw } from "lucide-react"
 import { Link } from "react-router-dom"
 
@@ -28,9 +29,9 @@ export const RailwayProjectsSection = ({
     <section className="space-y-3">
         <div className="flex items-center justify-between gap-3">
             <div>
-                <h3 className="text-sm font-medium">Serviços Railway</h3>
+                <h3 className="text-sm font-medium">Railway services</h3>
                 <p className="text-xs text-muted-foreground">
-                    Escolha o tipo para incluir um serviço. O DashowBoard não o deduz automaticamente.
+                    Choose a type to include a service. DashowBoard does not infer it automatically.
                 </p>
             </div>
             {runtimeDisponivel && configurada && !isLoading && (
@@ -40,15 +41,15 @@ export const RailwayProjectsSection = ({
                     disabled={isFetching}
                     onClick={atualizar}
                 >
-                    <RefreshCw className={isFetching ? "animate-spin" : undefined} /> Atualizar
+                    <RefreshCw className={isFetching ? "animate-spin" : undefined} /> Refresh
                 </Button>
             )}
         </div>
 
         {!runtimeDisponivel ? (
-            <EstadoRailway descricao="A integração Railway está disponível no aplicativo desktop." />
+            <EstadoRailway descricao="The Railway integration is available in the desktop app." />
         ) : !isLoading && !configurada ? (
-            <EstadoRailway descricao="Conecte sua conta Railway para listar projetos e serviços." />
+            <EstadoRailway descricao="Connect your Railway account to list projects and services." />
         ) : isLoading ? (
             <TemplateEstado.Carregando
                 skeleton={{ quantidade: 3, orientacao: "vertical" }}
@@ -56,8 +57,8 @@ export const RailwayProjectsSection = ({
             />
         ) : projetos.length === 0 ? (
             <TemplateEstado.Vazio
-                titulo="Nenhum projeto Railway encontrado"
-                subtitulo="Nenhum projeto pessoal ou de workspace foi retornado pela conta."
+                titulo="No Railway projects found"
+                subtitulo="The account returned no personal or workspace projects."
                 Icon={Boxes}
             />
         ) : (
@@ -91,7 +92,7 @@ export const RailwayProjectsSection = ({
                                 className="border-t border-border p-3"
                             >
                                 <p className="mb-2 text-xs font-medium text-muted-foreground">
-                                    Ambiente · {ambiente.nome}
+                                    Environment · {ambiente.nome}
                                 </p>
                                 <div className="space-y-2">
                                     {ambiente.servicos.map((servico) => {
@@ -120,7 +121,7 @@ export const RailwayProjectsSection = ({
                                                                     selecionado.tipo
                                                                 )
                                                             }
-                                                            aria-label={`Remover ${servico.nome}`}
+                                                            aria-label={`Remove ${servico.nome}`}
                                                         />
                                                         <b className="truncate text-sm font-medium">
                                                             {servico.nome}
@@ -130,17 +131,17 @@ export const RailwayProjectsSection = ({
                                                     <p className="mt-1 text-xs text-muted-foreground">
                                                         Deployment:{" "}
                                                         {servico.deploymentStatusOriginal ??
-                                                            "Não disponível"}
+                                                            "Not available"}
                                                         {servico.deploymentCriadoEm
                                                             ? ` · ${formatarDataHora(servico.deploymentCriadoEm)}`
                                                             : ""}
                                                     </p>
                                                     <p className="text-xs text-muted-foreground">
-                                                        Região: {servico.regiao ?? "Não informada"} ·
-                                                        Réplicas: {servico.replicas ?? "Não informado"}
+                                                        Region: {servico.regiao ?? "Not specified"} · Replicas: {servico.replicas ?? "Not specified"}
                                                     </p>
                                                 </div>
                                                 <Select
+                                                    items={serviceTypeLabels}
                                                     value={selecionado?.tipo ?? ""}
                                                     onValueChange={(tipo) => {
                                                         if (!tipo) return
@@ -153,7 +154,7 @@ export const RailwayProjectsSection = ({
                                                     }}
                                                 >
                                                     <SelectTrigger className="w-full bg-surface-3">
-                                                        <SelectValue placeholder="Selecionar tipo" />
+                                                        <SelectValue placeholder="Select type" />
                                                     </SelectTrigger>
                                                     <SelectContent>
                                                         {Object.values(Enum.TipoServico).map((tipo) => (
@@ -161,7 +162,7 @@ export const RailwayProjectsSection = ({
                                                                 key={tipo}
                                                                 value={tipo}
                                                             >
-                                                                {tipo}
+                                                                {serviceTypeLabels[tipo]}
                                                             </SelectItem>
                                                         ))}
                                                     </SelectContent>
@@ -177,10 +178,10 @@ export const RailwayProjectsSection = ({
                                                                 )
                                                             }
                                                         />
-                                                        Crítico
+                                                        Critical
                                                     </label>
                                                 ) : (
-                                                    <Badge variant="outline">Escolha o tipo</Badge>
+                                                    <Badge variant="outline">Choose a type</Badge>
                                                 )}
                                             </div>
                                         )
@@ -207,7 +208,7 @@ const EstadoRailway = ({ descricao }: { descricao: string }) => (
             nativeButton={false}
             className="mt-4"
         >
-            Ir para Integrações
+            Go to integrations
         </Button>
     </div>
 )

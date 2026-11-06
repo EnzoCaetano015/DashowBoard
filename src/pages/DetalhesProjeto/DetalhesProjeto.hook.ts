@@ -64,9 +64,9 @@ export const useDetalhesProjeto = () => {
 
         toast.promise(atualizacao, {
             id: `atualizar-projeto-${id}`,
-            loading: "Atualizando projeto...",
-            success: "Recursos associados atualizados.",
-            error: "Não foi possível atualizar o projeto.",
+            loading: "Refreshing project...",
+            success: "Linked resources refreshed.",
+            error: "Unable to refresh the project.",
         })
     }
 
@@ -83,9 +83,9 @@ export const useDetalhesProjeto = () => {
         )
         toast.promise(atualizacao, {
             id: `atualizar-provider-${servico.provider}`,
-            loading: `Atualizando ${servico.nome}...`,
-            success: `Dados de ${servico.nome} atualizados.`,
-            error: `Não foi possível atualizar ${servico.nome}.`,
+            loading: `Updating ${servico.nome}...`,
+            success: `Data for ${servico.nome} refreshed.`,
+            error: `Unable to refresh ${servico.nome}.`,
         })
     }
 

@@ -19,16 +19,16 @@ export const ProjectCard = ({ projeto }: ProjectCardProps) => {
     return (
         <Link
             to={`/projetos/${projeto.id}`}
-            className="group block rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="group block rounded-3xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
             <Card
                 className={cn(
-                    "relative h-full gap-4 overflow-hidden border bg-card py-4 shadow-none transition-colors group-hover:border-primary/50 group-hover:bg-surface-2",
+                    "relative h-full gap-4 overflow-hidden bg-card py-5 transition-all group-hover:border-primary/40 group-hover:bg-surface-1 group-hover:shadow-2xl",
                     estilo.borda
                 )}
             >
-                <span className={cn("absolute inset-x-0 top-0 h-0.5", estilo.ponto)} />
-                <CardContent className="flex h-full flex-col gap-4 px-4">
+                <span className={cn("absolute left-6 right-6 top-0 h-px opacity-80", estilo.ponto)} />
+                <CardContent className="flex h-full flex-col gap-5 px-5">
                     <div className="flex items-start justify-between gap-3">
                         <div className="min-w-0">
                             <h3 className="truncate text-base font-semibold">{projeto.nome}</h3>
@@ -44,20 +44,20 @@ export const ProjectCard = ({ projeto }: ProjectCardProps) => {
                             <b className="font-medium text-foreground tabular-nums">
                                 {projeto.repositorios.length}
                             </b>{" "}
-                            repositórios
+                            repositories
                         </span>
                         <span className="flex items-center gap-2">
                             <Server className="size-3.5" />
                             <b className="font-medium text-foreground tabular-nums">
                                 {projeto.servicos.length}
                             </b>{" "}
-                            serviços
+                            services
                         </span>
                         <span className="flex items-center gap-2">
                             <Clock className="size-3.5" />
                             {projeto.ultimaVerificacao
                                 ? formatarDataHora(projeto.ultimaVerificacao)
-                                : "Ainda não verificado"}
+                                : "Not checked yet"}
                         </span>
                         <span
                             className={cn("flex items-center gap-2", offline > 0 && "text-destructive")}
@@ -71,7 +71,7 @@ export const ProjectCard = ({ projeto }: ProjectCardProps) => {
                             {projeto.providers.map((provider) => (
                                 <span
                                     key={provider}
-                                    className="flex size-6 items-center justify-center rounded-md bg-surface-3 ring-1 ring-border"
+                                    className="glass-subtle flex size-7 items-center justify-center rounded-xl"
                                 >
                                     <ProviderIcon
                                         provider={provider}
@@ -83,7 +83,7 @@ export const ProjectCard = ({ projeto }: ProjectCardProps) => {
                         <span className="flex min-w-0 items-center gap-1 text-xs text-muted-foreground">
                             {projeto.incidentes[0] && (
                                 <span className="truncate">
-                                    Últ. incidente: {formatarDataHora(projeto.incidentes[0].iniciadoEm)}
+                                    Latest incident: {formatarDataHora(projeto.incidentes[0].iniciadoEm)}
                                 </span>
                             )}
                             <ChevronRight className="size-3.5 shrink-0 transition-transform group-hover:translate-x-0.5" />

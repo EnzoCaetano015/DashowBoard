@@ -7,9 +7,9 @@ import { labelProvider } from "@/lib/utils/status"
 import { normalizarTextoBusca } from "@/lib/utils/text"
 
 export const LABEL_CATEGORIA_BUSCA: Record<CategoriaResultadoBuscaGlobal, string> = {
-    projeto: "Projetos",
-    servico: "Serviços",
-    repositorio: "Repositórios",
+    projeto: "Projects",
+    servico: "Services",
+    repositorio: "Repositories",
 }
 
 const ORDEM_CATEGORIA: Record<CategoriaResultadoBuscaGlobal, number> = {
@@ -37,7 +37,7 @@ export const buscarResultadosGlobais = (
                 categoria: "projeto",
                 projetoId: projeto.id,
                 titulo: projeto.nome,
-                descricao: projeto.descricao || "Projeto local",
+                descricao: projeto.descricao || "Local project",
                 destino: `/projetos/${projeto.id}`,
             })
         }
@@ -83,7 +83,7 @@ export const buscarResultadosGlobais = (
                     categoria: "repositorio",
                     projetoId: projeto.id,
                     titulo: repositorio.fullName || repositorio.nome,
-                    descricao: `${projeto.nome} · ${repositorio.descricao || "Sem descrição"}`,
+                    descricao: `${projeto.nome} · ${repositorio.descricao || "No description"}`,
                     destino: `/projetos/${projeto.id}?aba=repositorios`,
                 })
             }

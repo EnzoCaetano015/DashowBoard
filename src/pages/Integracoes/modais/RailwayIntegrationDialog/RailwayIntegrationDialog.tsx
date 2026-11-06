@@ -55,8 +55,8 @@ export const RailwayIntegrationDialog = ({ open, onClose }: RailwayIntegrationDi
                 className="max-h-[90dvh] overflow-y-auto sm:max-w-2xl"
             >
                 <Modal.Header
-                    titulo="Integração Railway"
-                    subTitulo="Consulte projetos pessoais e de todos os workspaces acessíveis à conta."
+                    titulo="Railway integration"
+                    subTitulo="Browse personal projects and all workspaces accessible to your account."
                 />
                 <Modal.Body className="space-y-4">
                     {!runtimeDisponivel ? (
@@ -64,7 +64,7 @@ export const RailwayIntegrationDialog = ({ open, onClose }: RailwayIntegrationDi
                             <CardContent className="py-10 text-center">
                                 <KeyRound className="mx-auto size-8 text-muted-foreground" />
                                 <p className="mt-3 text-sm">
-                                    A integração Railway está disponível no aplicativo desktop.
+                                    The Railway integration is available in the desktop app.
                                 </p>
                             </CardContent>
                         </Card>
@@ -115,23 +115,23 @@ export const RailwayIntegrationDialog = ({ open, onClose }: RailwayIntegrationDi
                                                     )}
                                                     {connection.status ===
                                                     Enum.StatusIntegracao.Conectado
-                                                        ? "Conectado"
-                                                        : "Erro"}
+                                                        ? "Connected"
+                                                        : "Error"}
                                                 </span>
                                             </div>
                                             <p className="text-xs text-muted-foreground">
                                                 {connection.email} · {connection.quantidadeWorkspaces}{" "}
-                                                workspace(s) · {connection.quantidadeProjetos} projeto(s)
+                                                workspace(s) · {connection.quantidadeProjetos} project(s)
                                             </p>
                                             <p className="mt-1 text-xs text-muted-foreground">
-                                                Última sincronização:{" "}
+                                                Last sync:{" "}
                                                 {formatarDataHora(connection.ultimaSincronizacao)}
                                             </p>
                                             <p className="mt-2 text-xs text-muted-foreground">
-                                                Uso atual: não exposto por uma consulta pública estável.
+                                                Current usage is not exposed through a stable public query.
                                             </p>
                                             <p className="mt-1 text-xs text-muted-foreground">
-                                                Saldo restante não exposto pela API pública.
+                                                Remaining balance is not exposed by the public API.
                                             </p>
                                             {connection.erro && (
                                                 <p className="mt-2 text-xs text-destructive">
@@ -146,7 +146,7 @@ export const RailwayIntegrationDialog = ({ open, onClose }: RailwayIntegrationDi
                                                 disabled={isPending}
                                                 onClick={() => void test()}
                                             >
-                                                <RefreshCw /> Testar
+                                                <RefreshCw /> Test
                                             </Button>
                                             <Button
                                                 size="sm"
@@ -154,12 +154,12 @@ export const RailwayIntegrationDialog = ({ open, onClose }: RailwayIntegrationDi
                                                 disabled={isPending}
                                                 onClick={startUpdate}
                                             >
-                                                <KeyRound /> Substituir token
+                                                <KeyRound /> Replace token
                                             </Button>
                                             <IconAction
                                                 size="icon-sm"
                                                 variant="destructive"
-                                                label={`Remover conexão Railway ${connection.nome}`}
+                                                label={`Remove Railway connection ${connection.nome}`}
                                                 disabled={isPending}
                                                 onClick={startRemove}
                                             >
@@ -180,7 +180,7 @@ export const RailwayIntegrationDialog = ({ open, onClose }: RailwayIntegrationDi
                                                 variant="link"
                                                 onClick={() => void openTokens()}
                                             >
-                                                Gerar token <ExternalLink />
+                                                Generate token <ExternalLink />
                                             </Button>
                                         </div>
                                         <Input
@@ -192,15 +192,13 @@ export const RailwayIntegrationDialog = ({ open, onClose }: RailwayIntegrationDi
                                             placeholder="••••••••••••••••"
                                         />
                                         <p className="text-xs text-muted-foreground">
-                                            Em Account Settings → Tokens, escolha “No workspace” para
-                                            criar um token de conta, não um Project Token.
+                                            In Account Settings → Tokens, select “No workspace” to create an account token rather than a Project Token.
                                         </p>
                                     </div>
                                     <div className="flex items-start gap-2 rounded-md border border-success/30 bg-success/10 p-3 text-xs text-muted-foreground">
                                         <ShieldCheck className="mt-0.5 size-4 shrink-0 text-success" />
                                         <span>
-                                            O token é validado antes de ser salvo no cofre nativo. A
-                                            integração é somente leitura e nunca devolve o token à tela.
+                                            The token is validated before being saved in the native vault. The integration is read-only and never returns the token to the interface.
                                         </span>
                                     </div>
                                     <Modal.Actions>
@@ -209,14 +207,14 @@ export const RailwayIntegrationDialog = ({ open, onClose }: RailwayIntegrationDi
                                                 variant="ghost"
                                                 onClick={resetForm}
                                             >
-                                                Cancelar
+                                                Cancel
                                             </Button>
                                         )}
                                         <Button
                                             disabled={isPending}
                                             onClick={() => void save()}
                                         >
-                                            <ShieldCheck /> Salvar e validar
+                                            <ShieldCheck /> Save and validate
                                         </Button>
                                     </Modal.Actions>
                                 </div>
@@ -228,8 +226,8 @@ export const RailwayIntegrationDialog = ({ open, onClose }: RailwayIntegrationDi
             <ConfirmarRemocao
                 open={modal.removerConexao}
                 onClose={cancelRemove}
-                titulo="Remover conexão Railway?"
-                descricao="O token será removido do cofre nativo. Projetos locais não serão excluídos."
+                titulo="Remove Railway connection?"
+                descricao="The token will be removed from the native vault. Local projects will not be deleted."
                 isPending={removeIsPending}
                 onConfirm={() => void remove()}
             />

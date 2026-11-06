@@ -11,7 +11,7 @@ export const normalizarErroGitHub = (error: unknown): ErroGitHub => {
     }
     return {
         code: "GITHUB_ERRO_DESCONHECIDO",
-        message: "Não foi possível concluir a operação com o GitHub.",
+        message: "Unable to complete the GitHub operation.",
     }
 }
 

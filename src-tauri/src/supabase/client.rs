@@ -30,7 +30,7 @@ impl SupabaseClient {
         self.http.as_ref().map_err(|_| {
             SupabaseError::new(
                 "SUPABASE_ERRO_DESCONHECIDO",
-                "Não foi possível inicializar o cliente do Supabase.",
+                "Unable to initialize the Supabase client.",
             )
         })
     }
@@ -105,7 +105,7 @@ impl SupabaseClient {
         serde_json::from_str(&body).map_err(|_| {
             SupabaseError::new(
                 "SUPABASE_ERRO_DESCONHECIDO",
-                "O Supabase retornou dados em um formato inesperado.",
+                "Supabase returned data in an unexpected format.",
             )
         })
     }

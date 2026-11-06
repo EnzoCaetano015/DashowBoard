@@ -18,7 +18,7 @@ export const normalizarErroVercel = (error: unknown): ErroVercel => {
     }
     return {
         code: "VERCEL_ERRO_DESCONHECIDO",
-        message: "Não foi possível concluir a operação com a Vercel.",
+        message: "Unable to complete the Vercel operation.",
     }
 }
 

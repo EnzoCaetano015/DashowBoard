@@ -22,9 +22,9 @@ export const ProjectHeader = ({
             className="mb-3 inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground"
         >
             <ArrowLeft className="size-3.5" />
-            Projetos
+            Projects
         </Link>
-        <div className="flex flex-wrap items-start justify-between gap-4 rounded-lg border border-border bg-card p-5">
+        <div className="glass-panel flex flex-wrap items-start justify-between gap-5 rounded-3xl bg-card p-6">
             <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-3">
                     <h1 className="truncate text-2xl font-semibold tracking-tight">{projeto.nome}</h1>
@@ -37,20 +37,20 @@ export const ProjectHeader = ({
                 <div className="mt-3 flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
                     <span className="inline-flex items-center gap-1.5">
                         <Clock className="size-3.5" />
-                        Última verificação{" "}
+                        Last check{" "}
                         {projeto.ultimaVerificacao
                             ? formatarDataHora(projeto.ultimaVerificacao)
-                            : "ainda não realizada"}
+                            : "not checked yet"}
                     </span>
                     <span className="inline-flex items-center gap-1.5">
                         <Server className="size-3.5" />
-                        {projeto.servicos.length} serviços · {projeto.repositorios.length} repositórios
+                        {projeto.servicos.length} services · {projeto.repositorios.length} repositories
                     </span>
                     <span className="flex flex-wrap items-center gap-1.5">
                         {projeto.providers.map((provider) => (
                             <span
                                 key={provider}
-                                className="inline-flex items-center gap-1 rounded bg-surface-2 px-1.5 py-0.5"
+                                className="glass-subtle inline-flex items-center gap-1 rounded-lg px-2 py-1"
                             >
                                 <ProviderIcon
                                     provider={provider}
@@ -69,7 +69,7 @@ export const ProjectHeader = ({
                     disabled={atualizando}
                 >
                     <RefreshCw className={cn(atualizando && "animate-spin")} />
-                    Atualizar agora
+                    Refresh now
                 </Button>
                 <Button
                     size="sm"
@@ -77,7 +77,7 @@ export const ProjectHeader = ({
                     onClick={onEditar}
                 >
                     <Pencil />
-                    Editar
+                    Edit
                 </Button>
                 {projeto.urlAplicacao && (
                     <Button
@@ -93,7 +93,7 @@ export const ProjectHeader = ({
                         variant="outline"
                     >
                         <ExternalLink />
-                        Abrir aplicação
+                        Open application
                     </Button>
                 )}
                 <Button
@@ -103,7 +103,7 @@ export const ProjectHeader = ({
                     onClick={onExcluir}
                 >
                     <Trash2 />
-                    Excluir
+                    Delete
                 </Button>
             </div>
         </div>

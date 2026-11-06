@@ -15,13 +15,13 @@ export const InformacoesStep = ({
 }: InformacoesStepProps) => (
     <div className="space-y-4">
         <div className="space-y-2">
-            <Label htmlFor="novo-projeto-nome">Nome do projeto</Label>
+            <Label htmlFor="novo-projeto-nome">Project name</Label>
             <Input
                 id="novo-projeto-nome"
                 value={nome}
                 onChange={({ target }) => alterarNome(target.value)}
                 onBlur={() => validarCampo("nome")}
-                placeholder="ex.: Easy Rifas"
+                placeholder="e.g. My application"
                 aria-invalid={Boolean(erros.nome)}
                 aria-describedby={erros.nome ? "novo-projeto-nome-erro" : undefined}
             />
@@ -35,24 +35,24 @@ export const InformacoesStep = ({
             )}
         </div>
         <div className="space-y-2">
-            <Label htmlFor="novo-projeto-descricao">Descrição curta</Label>
+            <Label htmlFor="novo-projeto-descricao">Short description</Label>
             <Textarea
                 id="novo-projeto-descricao"
                 value={descricao}
                 onChange={({ target }) => alterarDescricao(target.value)}
-                placeholder="Descreva o que é esse projeto…"
+                placeholder="Describe this project…"
                 rows={3}
             />
         </div>
         <div className="space-y-2">
-            <Label htmlFor="novo-projeto-url">URL da aplicação (opcional)</Label>
+            <Label htmlFor="novo-projeto-url">Application URL (optional)</Label>
             <Input
                 id="novo-projeto-url"
                 value={urlAplicacao}
                 onChange={({ target }) => alterarUrl(target.value)}
                 onBlur={() => validarCampo("urlAplicacao")}
                 type="url"
-                placeholder="https://app.exemplo.com"
+                placeholder="https://app.example.com"
                 aria-invalid={Boolean(erros.urlAplicacao)}
                 aria-describedby={erros.urlAplicacao ? "novo-projeto-url-erro" : undefined}
             />

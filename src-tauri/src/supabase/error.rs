@@ -24,26 +24,23 @@ impl SupabaseError {
     pub fn keyring(_error: keyring::Error) -> Self {
         Self::new(
             "SUPABASE_COFRE_INDISPONIVEL",
-            "Não foi possível acessar o cofre de credenciais do sistema.",
+            "Unable to access the system credential vault.",
         )
     }
 
     pub fn network(error: reqwest::Error) -> Self {
         if error.is_timeout() {
-            return Self::new(
-                "SUPABASE_TIMEOUT",
-                "O Supabase demorou demais para responder.",
-            );
+            return Self::new("SUPABASE_TIMEOUT", "Supabase took too long to respond.");
         }
         if error.is_connect() {
             return Self::new(
                 "SUPABASE_SEM_CONEXAO",
-                "Não foi possível conectar ao Supabase. Verifique sua internet.",
+                "Unable to connect to Supabase. Check your internet connection.",
             );
         }
         Self::new(
             "SUPABASE_INDISPONIVEL",
-            "O Supabase está indisponível no momento.",
+            "Supabase is currently unavailable.",
         )
     }
 
@@ -52,24 +49,24 @@ impl SupabaseError {
         match status {
             StatusCode::UNAUTHORIZED if body.contains("expired") => Self::new(
                 "SUPABASE_TOKEN_EXPIRADO",
-                "O token do Supabase expirou. Substitua-o para continuar.",
+                "The Supabase token has expired. Replace it to continue.",
             ),
             StatusCode::UNAUTHORIZED => Self::new(
                 "SUPABASE_TOKEN_INVALIDO",
-                "O token informado é inválido ou foi revogado.",
+                "The supplied token is invalid or has been revoked.",
             ),
             StatusCode::FORBIDDEN => Self::new(
                 "SUPABASE_SEM_PERMISSAO",
-                "O token não possui permissão para consultar este recurso do Supabase.",
+                "The token does not have permission to access this Supabase resource.",
             ),
             StatusCode::TOO_MANY_REQUESTS => Self::rate_limit(headers),
             status if status.is_server_error() => Self::new(
                 "SUPABASE_INDISPONIVEL",
-                "O Supabase está indisponível no momento.",
+                "Supabase is currently unavailable.",
             ),
             _ => Self::new(
                 "SUPABASE_ERRO_DESCONHECIDO",
-                "Não foi possível concluir a operação no Supabase.",
+                "Unable to complete the Supabase operation.",
             ),
         }
     }
@@ -77,7 +74,7 @@ impl SupabaseError {
     fn rate_limit(headers: &HeaderMap) -> Self {
         Self {
             code: "SUPABASE_RATE_LIMIT".to_owned(),
-            message: "O limite de requisições do Supabase foi atingido.".to_owned(),
+            message: "The Supabase rate limit has been reached.".to_owned(),
             reset_at: reset_at(headers),
         }
     }

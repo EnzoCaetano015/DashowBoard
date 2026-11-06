@@ -48,7 +48,7 @@ export const TopBar = () => {
     } = useTopBar()
 
     return (
-        <header className="flex min-h-14 shrink-0 items-center gap-2 border-b border-border bg-surface-1/80 px-3 backdrop-blur md:px-5">
+        <header className="glass-panel relative z-20 mx-3 mt-3 flex min-h-16 shrink-0 items-center gap-2 rounded-3xl px-3 md:ml-4 md:px-4">
             <Sheet>
                 <SheetTrigger
                     render={
@@ -56,7 +56,7 @@ export const TopBar = () => {
                             variant="ghost"
                             size="icon"
                             className="md:hidden"
-                            aria-label="Abrir navegação"
+                            aria-label="Open navigation"
                         />
                     }
                 >
@@ -64,11 +64,11 @@ export const TopBar = () => {
                 </SheetTrigger>
                 <SheetContent
                     side="left"
-                    className="w-64 gap-0 border-sidebar-border bg-sidebar p-0"
+                    className="w-60 gap-0 border-sidebar-border bg-sidebar p-0"
                 >
                     <SheetHeader className="sr-only">
-                        <SheetTitle>Navegação</SheetTitle>
-                        <SheetDescription>Links principais do DashowBoard</SheetDescription>
+                        <SheetTitle>Navigation</SheetTitle>
+                        <SheetDescription>DashowBoard main links</SheetDescription>
                     </SheetHeader>
                     <AppSidebar modo="mobile" />
                 </SheetContent>
@@ -85,9 +85,9 @@ export const TopBar = () => {
                     onFocus={abrirPainelBusca}
                     onKeyDown={controlarTecladoBusca}
                     type="search"
-                    placeholder="Buscar projeto, serviço, repositório…"
-                    className="h-9 bg-surface-2 pl-9 pr-14"
-                    aria-label="Busca global"
+                    placeholder="Search projects, services, repositories…"
+                    className="h-10 rounded-2xl bg-surface-2 pl-10 pr-14"
+                    aria-label="Global search"
                     role="combobox"
                     aria-autocomplete="list"
                     aria-expanded={painelBuscaAberto}
@@ -98,23 +98,23 @@ export const TopBar = () => {
                             : undefined
                     }
                 />
-                <kbd className="pointer-events-none absolute right-2 top-1/2 hidden -translate-y-1/2 rounded border border-border bg-surface-3 px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground sm:block">
+                <kbd className="pointer-events-none absolute right-2.5 top-1/2 hidden -translate-y-1/2 rounded-lg border border-border bg-surface-3 px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground shadow-sm sm:block">
                     Ctrl K
                 </kbd>
                 {painelBuscaAberto && (
                     <div
                         id="resultados-busca-global"
                         role="listbox"
-                        aria-label="Resultados da busca global"
-                        className="absolute left-0 right-0 top-full z-50 mt-2 max-h-96 overflow-y-auto rounded-lg border border-border bg-popover p-2 text-popover-foreground shadow-lg"
+                        aria-label="Global search results"
+                        className="glass-panel absolute left-0 right-0 top-full z-50 mt-3 max-h-96 overflow-y-auto rounded-2xl bg-popover p-2 text-popover-foreground"
                     >
                         {projetosIsLoading ? (
                             <p className="px-3 py-6 text-center text-sm text-muted-foreground">
-                                Carregando projetos...
+                                Loading projects...
                             </p>
                         ) : resultadosBusca.length === 0 ? (
                             <p className="px-3 py-6 text-center text-sm text-muted-foreground">
-                                Nenhum projeto, serviço ou repositório encontrado.
+                                No projects, services, or repositories found.
                             </p>
                         ) : (
                             CATEGORIAS_BUSCA.map((categoria) => {
@@ -149,7 +149,7 @@ export const TopBar = () => {
                                                     aria-selected={indice === indiceSelecionado}
                                                     onClick={() => selecionarResultado(resultado)}
                                                     className={cn(
-                                                        "flex w-full items-start gap-3 rounded-md px-2 py-2 text-left outline-none",
+                                                        "flex w-full items-start gap-3 rounded-xl px-3 py-2.5 text-left outline-none transition-colors",
                                                         indice === indiceSelecionado
                                                             ? "bg-accent text-accent-foreground"
                                                             : "hover:bg-accent/60"
@@ -179,7 +179,7 @@ export const TopBar = () => {
                     <Tooltip key={integracao.provider}>
                         <TooltipTrigger
                             className={cn(
-                                "flex size-8 items-center justify-center rounded-md border bg-surface-2 text-muted-foreground",
+                                "glass-subtle flex size-9 items-center justify-center rounded-xl text-muted-foreground",
                                 integracao.status === Enum.StatusIntegracao.Erro &&
                                     "border-destructive/40 bg-destructive/10 text-destructive"
                             )}
@@ -197,7 +197,7 @@ export const TopBar = () => {
                 ))}
             </div>
             <div className="hidden text-right leading-tight xl:block">
-                <div className="text-xs text-muted-foreground">Última atualização</div>
+                <div className="text-xs text-muted-foreground">Last updated</div>
                 <div className="font-mono text-xs tabular-nums">{ultimaAtualizacao}</div>
             </div>
             <Button
@@ -206,8 +206,8 @@ export const TopBar = () => {
                 className="relative hidden text-muted-foreground sm:inline-flex"
                 aria-label={
                     incidentesAtivos
-                        ? `Abrir incidentes, ${incidentesAtivos} ativo${incidentesAtivos === 1 ? "" : "s"}`
-                        : "Abrir incidentes"
+                        ? `Open incidents, ${incidentesAtivos} active${incidentesAtivos === 1 ? "" : "s"}`
+                        : "Open incidents"
                 }
                 onClick={abrirIncidentes}
             >
@@ -224,7 +224,7 @@ export const TopBar = () => {
                 className="gap-2 whitespace-nowrap"
             >
                 <RefreshCw className={cn(atualizacaoIsPending && "animate-spin")} />
-                <span className="hidden sm:inline">Atualizar tudo</span>
+                <span className="hidden sm:inline">Refresh all</span>
             </Button>
         </header>
     )

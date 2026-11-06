@@ -19,7 +19,7 @@ pub async fn salvar_conexao_supabase(
     if request.token.trim().is_empty() {
         return Err(SupabaseError::new(
             "SUPABASE_TOKEN_INVALIDO",
-            "Informe o Personal Access Token do Supabase.",
+            "Enter your Supabase Personal Access Token.",
         ));
     }
     let result = save_connection(&client, request.token.trim()).await;
@@ -49,7 +49,7 @@ pub async fn testar_conexao_supabase(
     let mut connection = storage::load_connection()?.ok_or_else(|| {
         SupabaseError::new(
             "SUPABASE_SEM_CONEXAO",
-            "Nenhuma conexão Supabase está configurada.",
+            "No Supabase connection is configured.",
         )
     })?;
     refresh_connection(&client, &mut connection).await;
@@ -215,7 +215,7 @@ fn map_failure(
         organizacao_nome: organization.name.clone(),
         code: "SUPABASE_ORGANIZACAO_INDISPONIVEL".to_owned(),
         message: format!(
-            "Não foi possível listar os projetos desta organização. {}",
+            "Unable to list this organization's projects. {}",
             error.message
         ),
         reset_at: error.reset_at,

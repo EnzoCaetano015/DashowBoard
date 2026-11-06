@@ -27,11 +27,11 @@ export const ProjectOverview = ({ projeto }: { projeto: ObterProjetos.Projeto })
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
             <div className="space-y-4 lg:col-span-2">
                 <Grafico
-                    titulo="Disponibilidade observada"
-                    subtitulo="Últimos 30 dias"
+                    titulo="Observed availability"
+                    subtitulo="Last 30 days"
                     valor={
                         resumo.disponibilidadeMedia === null
-                            ? "Sem dados"
+                            ? "No data"
                             : `${resumo.disponibilidadeMedia.toFixed(2)}%`
                     }
                     destaque="text-success"
@@ -39,9 +39,9 @@ export const ProjectOverview = ({ projeto }: { projeto: ObterProjetos.Projeto })
                     {projeto.disponibilidade.length > 0 ? (
                         <Sparkline
                             dados={projeto.disponibilidade}
-                            titulo="Disponibilidade observada"
+                            titulo="Observed availability"
                             unidade="%"
-                            descricao="Disponibilidade observada nas amostras dos últimos 30 dias"
+                            descricao="Observed availability in samples from the last 30 days"
                             cor="var(--color-success)"
                             altura={110}
                         />
@@ -56,11 +56,11 @@ export const ProjectOverview = ({ projeto }: { projeto: ObterProjetos.Projeto })
                     )}
                 </Grafico>
                 <Grafico
-                    titulo="Tempo de resposta"
-                    subtitulo="ms — janela de 30 dias"
+                    titulo="Response time"
+                    subtitulo="ms — 30-day window"
                     valor={
                         resumo.respostaMedia === null
-                            ? "Sem dados"
+                            ? "No data"
                             : `${Math.round(resumo.respostaMedia)} ms`
                     }
                     destaque="text-info"
@@ -68,9 +68,9 @@ export const ProjectOverview = ({ projeto }: { projeto: ObterProjetos.Projeto })
                     {projeto.tempoResposta.length > 0 ? (
                         <Sparkline
                             dados={projeto.tempoResposta}
-                            titulo="Tempo de resposta"
+                            titulo="Response time"
                             unidade="ms"
-                            descricao="Tempo de resposta nas amostras dos últimos 30 dias"
+                            descricao="Response times in samples from the last 30 days"
                             cor="var(--color-info)"
                             altura={110}
                         />
@@ -86,9 +86,9 @@ export const ProjectOverview = ({ projeto }: { projeto: ObterProjetos.Projeto })
                 </Grafico>
             </div>
             <div className="space-y-4">
-                <Card className="gap-3 border-border py-5 shadow-none">
+                <Card className="gap-3 py-5">
                     <CardContent className="px-5">
-                        <h3 className="text-sm font-medium">Resumo do status</h3>
+                        <h3 className="text-sm font-medium">Status summary</h3>
                         <div className="mt-3 flex items-center justify-between">
                             <StatusBadge
                                 status={projeto.status}
@@ -97,18 +97,18 @@ export const ProjectOverview = ({ projeto }: { projeto: ObterProjetos.Projeto })
                             <span className="text-xs text-muted-foreground">
                                 {projeto.ultimaVerificacao
                                     ? formatarDataHora(projeto.ultimaVerificacao)
-                                    : "Ainda não monitorado"}
+                                    : "Not monitored yet"}
                             </span>
                         </div>
                         <dl className="mt-4 grid grid-cols-2 gap-3 text-sm">
                             <div className="rounded-md bg-surface-2 p-3">
-                                <dt className="text-xs text-muted-foreground">Serviços saudáveis</dt>
+                                <dt className="text-xs text-muted-foreground">Healthy services</dt>
                                 <dd className="mt-1 text-lg font-semibold text-success tabular-nums">
                                     {resumo.online}
                                 </dd>
                             </div>
                             <div className="rounded-md bg-surface-2 p-3">
-                                <dt className="text-xs text-muted-foreground">Serviços offline</dt>
+                                <dt className="text-xs text-muted-foreground">Offline services</dt>
                                 <dd
                                     className={cn(
                                         "mt-1 text-lg font-semibold tabular-nums",
@@ -124,13 +124,13 @@ export const ProjectOverview = ({ projeto }: { projeto: ObterProjetos.Projeto })
                                 <div className="flex flex-wrap items-center justify-between gap-2">
                                     <span className="inline-flex items-center gap-1.5 text-xs font-medium">
                                         <Activity className="size-3.5" />
-                                        Health check da URL
+                                        URL health check
                                     </span>
                                     {healthCheck ? (
                                         <StatusBadge status={healthCheck.statusAtual} />
                                     ) : (
                                         <span className="text-xs text-muted-foreground">
-                                            Ainda não verificado
+                                            Not checked yet
                                         </span>
                                     )}
                                 </div>
@@ -141,7 +141,7 @@ export const ProjectOverview = ({ projeto }: { projeto: ObterProjetos.Projeto })
                                                 ? `HTTP ${healthCheck.statusHttp} · `
                                                 : ""}
                                             {healthCheck.responseTimeMs === null
-                                                ? "Tempo não disponível"
+                                                ? "Time not available"
                                                 : `${healthCheck.responseTimeMs} ms`}
                                             {` · ${formatarDataHora(healthCheck.verificadoEm)}`}
                                         </p>
@@ -152,9 +152,9 @@ export const ProjectOverview = ({ projeto }: { projeto: ObterProjetos.Projeto })
                         )}
                     </CardContent>
                 </Card>
-                <Card className="gap-3 border-border py-5 shadow-none">
+                <Card className="gap-3 py-5">
                     <CardContent className="px-5">
-                        <h3 className="text-sm font-medium">Último deployment</h3>
+                        <h3 className="text-sm font-medium">Latest deployment</h3>
                         {deployment ? (
                             <div className="mt-3 flex items-start gap-3">
                                 <span className="flex size-9 items-center justify-center rounded-md bg-surface-2">
@@ -167,8 +167,8 @@ export const ProjectOverview = ({ projeto }: { projeto: ObterProjetos.Projeto })
                                     </div>
                                     <div className="mt-0.5 flex items-center gap-2 font-mono text-xs text-muted-foreground">
                                         <GitCommit className="size-3" />
-                                        {deployment.commit ?? "Commit não coletado"} ·{" "}
-                                        {deployment.autor ?? "Autor não coletado"}
+                                        {deployment.commit ?? "Commit not collected"} ·{" "}
+                                        {deployment.autor ?? "Author not collected"}
                                     </div>
                                     <div className="mt-0.5 text-xs text-muted-foreground">
                                         {formatarDataHora(deployment.data)}
@@ -177,14 +177,14 @@ export const ProjectOverview = ({ projeto }: { projeto: ObterProjetos.Projeto })
                             </div>
                         ) : (
                             <p className="mt-2 text-sm text-muted-foreground">
-                                Nenhum deployment recente.
+                                No recent deployments.
                             </p>
                         )}
                     </CardContent>
                 </Card>
-                <Card className="gap-3 border-border py-5 shadow-none">
+                <Card className="gap-3 py-5">
                     <CardContent className="px-5">
-                        <h3 className="text-sm font-medium">Último incidente</h3>
+                        <h3 className="text-sm font-medium">Latest incident</h3>
                         {incidente ? (
                             <div className="mt-3 space-y-1">
                                 <div className="flex items-center gap-2 text-sm font-medium">
@@ -203,7 +203,7 @@ export const ProjectOverview = ({ projeto }: { projeto: ObterProjetos.Projeto })
                             </div>
                         ) : (
                             <p className="mt-2 text-sm text-muted-foreground">
-                                Sem incidentes registrados.
+                                No recorded incidents.
                             </p>
                         )}
                     </CardContent>
@@ -226,7 +226,7 @@ const Grafico = ({
     destaque: string
     children: React.ReactNode
 }) => (
-    <Card className="gap-3 border-border py-5 shadow-none">
+    <Card className="gap-3 py-5">
         <CardHeader className="flex-row items-start justify-between px-5">
             <div>
                 <CardTitle className="text-sm">{titulo}</CardTitle>
@@ -234,7 +234,7 @@ const Grafico = ({
             </div>
             <div className="text-right">
                 <strong className={cn("text-2xl font-semibold tabular-nums", destaque)}>{valor}</strong>
-                <div className="text-xs text-muted-foreground">média</div>
+                <div className="text-xs text-muted-foreground">average</div>
             </div>
         </CardHeader>
         <CardContent className="px-5">{children}</CardContent>
@@ -243,6 +243,6 @@ const Grafico = ({
 
 const EstadoSemDados = () => (
     <div className="flex h-28 items-center justify-center rounded-md border border-dashed text-sm text-muted-foreground">
-        Ainda não há snapshots suficientes.
+        Not enough snapshots yet.
     </div>
 )

@@ -1,3 +1,4 @@
+import { serviceTypeLabels } from "@/lib/utils/status"
 import { Enum } from "@/backend/api/enums/enum"
 import { ProjectServiceActions } from "@/components/ProjectServices/ProjectServiceActions"
 import type { ProjectServiceActionsProps } from "@/components/ProjectServices/ProjectServiceActions.types"
@@ -6,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 
 export const ProjectServiceCard = ({ servico, atualizando, onAtualizar }: ProjectServiceActionsProps) => (
-    <Card className="gap-3 border-border py-4 shadow-none">
+    <Card className="gap-3 py-4">
         <CardContent className="space-y-3 px-4">
             <div className="flex items-start justify-between gap-3">
                 <div className="flex min-w-0 items-center gap-2">
@@ -20,7 +21,7 @@ export const ProjectServiceCard = ({ servico, atualizando, onAtualizar }: Projec
                 />
             </div>
             <div className="flex flex-wrap gap-1.5">
-                <span className="rounded bg-surface-2 px-1.5 py-0.5 text-xs">{servico.tipo}</span>
+                <span className="rounded bg-surface-2 px-1.5 py-0.5 text-xs">{serviceTypeLabels[servico.tipo]}</span>
                 <span className="rounded bg-surface-2 px-1.5 py-0.5 text-xs text-muted-foreground">
                     {servico.ambiente}
                 </span>
@@ -28,10 +29,10 @@ export const ProjectServiceCard = ({ servico, atualizando, onAtualizar }: Projec
             <dl className="grid grid-cols-2 gap-3 text-xs">
                 <div>
                     <dt className="text-muted-foreground">Deployment</dt>
-                    <dd className="mt-0.5 break-words">{servico.ultimoDeployment ?? "Não coletado"}</dd>
+                    <dd className="mt-0.5 break-words">{servico.ultimoDeployment ?? "Not collected"}</dd>
                 </div>
                 <div>
-                    <dt className="text-muted-foreground">Resposta</dt>
+                    <dt className="text-muted-foreground">Response</dt>
                     <dd
                         className={cn(
                             "mt-0.5 font-mono tabular-nums",
@@ -39,19 +40,19 @@ export const ProjectServiceCard = ({ servico, atualizando, onAtualizar }: Projec
                         )}
                     >
                         {servico.tempoRespostaMs === null
-                            ? "Não coletado"
+                            ? "Not collected"
                             : `${servico.tempoRespostaMs} ms`}
                     </dd>
                 </div>
                 <div className="col-span-2">
-                    <dt className="text-muted-foreground">Última verificação</dt>
+                    <dt className="text-muted-foreground">Last check</dt>
                     <dd className="mt-0.5">
-                        {servico.ultimaVerificacao ?? "Aguardando primeira verificação"}
+                        {servico.ultimaVerificacao ?? "Waiting for the first check"}
                     </dd>
                 </div>
                 {servico.mensagemStatus && (
                     <div className="col-span-2">
-                        <dt className="text-muted-foreground">Detalhe do monitoramento</dt>
+                        <dt className="text-muted-foreground">Monitoring details</dt>
                         <dd className="mt-0.5 text-warning">{servico.mensagemStatus}</dd>
                     </div>
                 )}

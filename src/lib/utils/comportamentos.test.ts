@@ -112,13 +112,13 @@ describe("comportamentos de busca e ordenação", () => {
             new Date().toISOString()
         )
         const ativo = criarIncidente(
-            "ativo",
+            "active",
             Enum.StatusIncidente.EmAndamento,
             new Date(Date.now() - 60_000).toISOString()
         )
         expect(
             filtrarIncidentes([recenteResolvido, ativo], FILTROS_INCIDENTES_INICIAIS)[0]?.id
-        ).toBe("ativo")
+        ).toBe("active")
     })
 })
 

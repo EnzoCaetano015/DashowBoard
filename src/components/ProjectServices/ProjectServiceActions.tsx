@@ -8,7 +8,7 @@ export const ProjectServiceActions = ({ servico, atualizando, onAtualizar }: Pro
         <IconAction
             size="icon-sm"
             variant="ghost"
-            label={`Atualizar dados do serviço ${servico.nome}`}
+            label={`Refresh service data ${servico.nome}`}
             disabled={atualizando}
             onClick={() => onAtualizar(servico)}
         >
@@ -26,7 +26,7 @@ export const ProjectServiceActions = ({ servico, atualizando, onAtualizar }: Pro
                 nativeButton={false}
                 size="icon-sm"
                 variant="ghost"
-                label={`Abrir ${servico.nome} no provider`}
+                label={`Open ${servico.nome} on the provider`}
             >
                 <ExternalLink />
             </IconAction>

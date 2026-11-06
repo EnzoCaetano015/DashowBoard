@@ -16,7 +16,7 @@ pub fn load_connection() -> Result<Option<VercelConnection>, VercelError> {
         Ok(serialized) => serde_json::from_str(&serialized).map(Some).map_err(|_| {
             VercelError::new(
                 "VERCEL_COFRE_INDISPONIVEL",
-                "Os dados seguros da conexão Vercel estão corrompidos.",
+                "The secure Vercel connection data is corrupted.",
             )
         }),
         Err(KeyringError::NoEntry) => Ok(None),
@@ -28,7 +28,7 @@ pub fn save_connection(connection: &VercelConnection) -> Result<(), VercelError>
     let serialized = serde_json::to_string(connection).map_err(|_| {
         VercelError::new(
             "VERCEL_COFRE_INDISPONIVEL",
-            "Não foi possível preparar os dados seguros da conexão Vercel.",
+            "Unable to prepare the secure Vercel connection data.",
         )
     })?;
     entry(CONNECTION_ACCOUNT)?
@@ -41,7 +41,7 @@ pub fn get_token() -> Result<String, VercelError> {
         Ok(token) => Ok(token),
         Err(KeyringError::NoEntry) => Err(VercelError::new(
             "VERCEL_SEM_CONEXAO",
-            "Nenhuma conexão Vercel está configurada.",
+            "No Vercel connection is configured.",
         )),
         Err(error) => Err(VercelError::keyring(error)),
     }

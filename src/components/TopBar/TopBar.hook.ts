@@ -149,9 +149,9 @@ export const useTopBar = () => {
 
         toast.promise(atualizacao, {
             id: "atualizar-todos-os-dados",
-            loading: "Atualizando dados...",
-            success: "Dados atualizados.",
-            error: "Não foi possível atualizar todos os dados.",
+            loading: "Refreshing data...",
+            success: "Data refreshed.",
+            error: "Unable to refresh all data.",
         })
     }
 
@@ -165,7 +165,7 @@ export const useTopBar = () => {
         containerBuscaRef,
         ultimaAtualizacao: ultimaAtualizacaoTimestamp
             ? formatarAgora(new Date(ultimaAtualizacaoTimestamp))
-            : "Ainda não atualizado",
+            : "Not refreshed yet",
         atualizacaoIsPending,
         integracoes,
         incidentesAtivos,

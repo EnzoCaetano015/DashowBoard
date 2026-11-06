@@ -27,7 +27,7 @@ export const resolverAtualizacaoMonitoramento = ({
         return {
             servicoId,
             status: Enum.StatusProjeto.Desconhecido,
-            mensagemStatus: obterMensagemErro(erro, "Não foi possível consultar o provider."),
+            mensagemStatus: obterMensagemErro(erro, "Unable to query the provider."),
         }
     }
     if (recurso) {
@@ -41,6 +41,6 @@ export const resolverAtualizacaoMonitoramento = ({
     return {
         servicoId,
         status: Enum.StatusProjeto.Desconhecido,
-        mensagemStatus: mensagemFalhaParcial ?? "Recurso não localizado no provider.",
+        mensagemStatus: mensagemFalhaParcial ?? "Resource not found on the provider.",
     }
 }

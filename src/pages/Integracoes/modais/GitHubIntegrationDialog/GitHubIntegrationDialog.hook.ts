@@ -53,7 +53,7 @@ export const useGitHubIntegrationDialog = () => {
 
     const save = () => {
         if (!nome.trim() || !resourceOwner.trim() || !token.trim()) {
-            toast.error("Preencha nome, resource owner e token.")
+            toast.error("Enter a name, resource owner, and token.")
             return
         }
 
@@ -69,11 +69,11 @@ export const useGitHubIntegrationDialog = () => {
             }),
             {
                 loading: updatingConnection
-                    ? "Atualizando conexão GitHub..."
-                    : "Adicionando conexão GitHub...",
+                    ? "Updating GitHub connection..."
+                    : "Adding GitHub connection...",
                 success: () => {
                     resetForm()
-                    return updatingConnection ? "Conexão atualizada." : "Conexão GitHub adicionada."
+                    return updatingConnection ? "Connection updated." : "GitHub connection added."
                 },
                 error: (error) => normalizarErroGitHub(error).message,
             }
@@ -85,7 +85,7 @@ export const useGitHubIntegrationDialog = () => {
             if (connection.status === Enum.StatusIntegracao.Erro) {
                 return Promise.reject({
                     code: "GITHUB_CONEXAO_INVALIDA",
-                    message: connection.erro ?? "A conexão apresentou um erro.",
+                    message: connection.erro ?? "The connection returned an error.",
                 })
             }
 
@@ -93,8 +93,8 @@ export const useGitHubIntegrationDialog = () => {
         })
 
         toast.promise(testPromise, {
-            loading: "Testando conexão GitHub...",
-            success: (connection) => `Conexão ${connection.nome} validada.`,
+            loading: "Testing GitHub connection...",
+            success: (connection) => `Connection ${connection.nome} validated.`,
             error: (error) => normalizarErroGitHub(error).message,
         })
     }
@@ -116,12 +116,12 @@ export const useGitHubIntegrationDialog = () => {
         const connection = connectionToRemove
 
         toast.promise(removeConnection({ connectionId: connection.id }), {
-            loading: "Removendo conexão GitHub...",
+            loading: "Removing GitHub connection...",
             success: () => {
                 if (connectionId === connection.id) resetForm()
                 setModal("removerConexao", { open: false })
                 setConnectionToRemove(null)
-                return "Conexão e token removidos."
+                return "Connection and token removed."
             },
             error: (error) => normalizarErroGitHub(error).message,
         })

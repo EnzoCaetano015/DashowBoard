@@ -8,12 +8,12 @@ import type {
 import { validarInformacoesProjeto } from "@/lib/utils/projeto"
 
 export const etapasNovoProjeto = [
-    { id: 1, titulo: "Informações" },
-    { id: 2, titulo: "Repositórios" },
-    { id: 3, titulo: "Serviços" },
-    { id: 4, titulo: "Relacionamentos" },
-    { id: 5, titulo: "Monitoramento" },
-    { id: 6, titulo: "Revisão" },
+    { id: 1, titulo: "Information" },
+    { id: 2, titulo: "Repositories" },
+    { id: 3, titulo: "Services" },
+    { id: 4, titulo: "Relationships" },
+    { id: 5, titulo: "Monitoring" },
+    { id: 6, titulo: "Review" },
 ] as const
 
 export const criarFormularioNovoProjeto = (): FormularioNovoProjeto => ({

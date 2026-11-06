@@ -1,3 +1,4 @@
+import { serviceTypeLabels, repositoryTagLabels } from "@/lib/utils/status"
 import type { ReactNode } from "react"
 
 import type { RevisaoStepProps } from "@/components/NovoProjeto/NovoProjeto.types"
@@ -16,36 +17,36 @@ export const RevisaoStep = ({ formulario, repositorios, editarEtapa }: RevisaoSt
     return (
         <div className="space-y-4">
             <p className="text-sm text-muted-foreground">
-                Confira os dados antes de criar o agrupamento local. Nenhum recurso externo será criado.
+                Review the information before creating the local group. No external resources will be created.
             </p>
 
             <SecaoRevisao
-                titulo="Informações"
+                titulo="Information"
                 onEditar={() => editarEtapa(1)}
             >
                 <dl className="grid gap-3 text-sm sm:grid-cols-2">
                     <ItemRevisao
-                        titulo="Nome"
+                        titulo="Name"
                         valor={formulario.nome.trim()}
                     />
                     <ItemRevisao
                         titulo="URL"
-                        valor={formulario.urlAplicacao.trim() || "Não informada"}
+                        valor={formulario.urlAplicacao.trim() || "Not specified"}
                     />
                     <ItemRevisao
-                        titulo="Descrição"
-                        valor={formulario.descricao.trim() || "Sem descrição"}
+                        titulo="Description"
+                        valor={formulario.descricao.trim() || "No description"}
                         className="sm:col-span-2"
                     />
                 </dl>
             </SecaoRevisao>
 
             <SecaoRevisao
-                titulo={`Repositórios (${repositoriosSelecionados.length})`}
+                titulo={`Repositories (${repositoriosSelecionados.length})`}
                 onEditar={() => editarEtapa(2)}
             >
                 {repositoriosSelecionados.length === 0 ? (
-                    <p className="text-sm text-muted-foreground">Nenhum repositório selecionado.</p>
+                    <p className="text-sm text-muted-foreground">No repositories selected.</p>
                 ) : (
                     <ul className="space-y-2">
                         {repositoriosSelecionados.map(({ repositorio, tag }) => (
@@ -54,7 +55,7 @@ export const RevisaoStep = ({ formulario, repositorios, editarEtapa }: RevisaoSt
                                 className="flex flex-wrap items-center justify-between gap-2 rounded-md bg-surface-2 px-3 py-2"
                             >
                                 <span className="min-w-0 truncate text-sm">{repositorio.fullName}</span>
-                                <Badge variant="outline">{tag}</Badge>
+                                <Badge variant="outline">{repositoryTagLabels[tag]}</Badge>
                             </li>
                         ))}
                     </ul>
@@ -62,11 +63,11 @@ export const RevisaoStep = ({ formulario, repositorios, editarEtapa }: RevisaoSt
             </SecaoRevisao>
 
             <SecaoRevisao
-                titulo={`Serviços (${formulario.servicos.length})`}
+                titulo={`Services (${formulario.servicos.length})`}
                 onEditar={() => editarEtapa(3)}
             >
                 {formulario.servicos.length === 0 ? (
-                    <p className="text-sm text-muted-foreground">Nenhum serviço selecionado.</p>
+                    <p className="text-sm text-muted-foreground">No services selected.</p>
                 ) : (
                     <ul className="space-y-2">
                         {formulario.servicos.map((servico) => (
@@ -80,8 +81,8 @@ export const RevisaoStep = ({ formulario, repositorios, editarEtapa }: RevisaoSt
                                 </span>
                                 <span className="flex flex-wrap items-center gap-2">
                                     <Badge variant="outline">{labelProvider[servico.provider]}</Badge>
-                                    <Badge variant="outline">{servico.tipo}</Badge>
-                                    {servico.critico && <Badge variant="destructive">Crítico</Badge>}
+                                    <Badge variant="outline">{serviceTypeLabels[servico.tipo]}</Badge>
+                                    {servico.critico && <Badge variant="destructive">Critical</Badge>}
                                 </span>
                             </li>
                         ))}
@@ -90,11 +91,11 @@ export const RevisaoStep = ({ formulario, repositorios, editarEtapa }: RevisaoSt
             </SecaoRevisao>
 
             <SecaoRevisao
-                titulo="Relacionamentos"
+                titulo="Relationships"
                 onEditar={() => editarEtapa(4)}
             >
                 {formulario.servicos.length === 0 ? (
-                    <p className="text-sm text-muted-foreground">Nenhum relacionamento necessário.</p>
+                    <p className="text-sm text-muted-foreground">No relationships needed.</p>
                 ) : (
                     <ul className="space-y-2 text-sm">
                         {formulario.servicos.map((servico) => {
@@ -108,7 +109,7 @@ export const RevisaoStep = ({ formulario, repositorios, editarEtapa }: RevisaoSt
                                     <span className="truncate">{servico.nome}</span>
                                     <span className="text-muted-foreground" aria-hidden="true">→</span>
                                     <span className="truncate text-muted-foreground sm:text-right">
-                                        {repositorio?.fullName ?? "Sem repositório relacionado"}
+                                        {repositorio?.fullName ?? "No linked repository"}
                                     </span>
                                 </li>
                             )
@@ -118,12 +119,12 @@ export const RevisaoStep = ({ formulario, repositorios, editarEtapa }: RevisaoSt
             </SecaoRevisao>
 
             <SecaoRevisao
-                titulo="Monitoramento"
+                titulo="Monitoring"
                 onEditar={() => editarEtapa(5)}
             >
                 <dl className="grid gap-3 text-sm sm:grid-cols-2">
                     <ItemRevisao
-                        titulo="Intervalo"
+                        titulo="Interval"
                         valor={formatarSegundos(formulario.intervaloVerificacao)}
                     />
                     <ItemRevisao
@@ -131,12 +132,12 @@ export const RevisaoStep = ({ formulario, repositorios, editarEtapa }: RevisaoSt
                         valor={formatarSegundos(formulario.timeout)}
                     />
                     <ItemRevisao
-                        titulo="Notificações"
+                        titulo="Notifications"
                         valor={formulario.notificacoes ? "Ativadas" : "Desativadas"}
                     />
                     <ItemRevisao
                         titulo="Deployments"
-                        valor={formulario.coletarDeployments ? "Coleta ativada" : "Coleta desativada"}
+                        valor={formulario.coletarDeployments ? "Collection enabled" : "Collection disabled"}
                     />
                 </dl>
             </SecaoRevisao>
@@ -161,7 +162,7 @@ const SecaoRevisao = ({
                 size="xs"
                 onClick={onEditar}
             >
-                Editar
+                Edit
             </Button>
         </div>
         {children}
@@ -186,4 +187,4 @@ const ItemRevisao = ({
 const formatarSegundos = (segundos: number) =>
     segundos >= 60 && segundos % 60 === 0
         ? `${segundos / 60} ${segundos === 60 ? "minuto" : "minutos"}`
-        : `${segundos} segundos`
+        : `${segundos} seconds`

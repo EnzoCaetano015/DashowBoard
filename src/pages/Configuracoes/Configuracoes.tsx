@@ -44,40 +44,40 @@ export const ConfiguracoesPage = () => {
     return (
         <div aria-busy={preferenciasIsPending || armazenamentoIsPending}>
             <div className="mb-6">
-                <h1 className="text-2xl font-semibold tracking-tight">Configurações</h1>
+                <h1 className="text-2xl font-semibold tracking-tight">Settings</h1>
                 <p className="mt-1 text-sm text-muted-foreground">
-                    Preferências globais do DashowBoard neste computador.
+                    Global DashowBoard preferences on this computer.
                 </p>
             </div>
 
             {!runtimeDisponivel ? (
                 <TemplateEstado.Vazio
                     Icon={Settings}
-                    titulo="Configurações disponíveis no aplicativo desktop"
-                    subtitulo="As preferências e o SQLite não são persistidos durante o desenvolvimento no navegador."
+                    titulo="Settings are available in the desktop app"
+                    subtitulo="Preferences and SQLite data are not persisted during browser development."
                 />
             ) : preferenciasIsLoading ? (
                 <TemplateEstado.Carregando
                     Icon={Settings}
-                    titulo="Carregando configurações"
-                    subtitulo="Consultando as preferências salvas neste computador."
+                    titulo="Loading settings"
+                    subtitulo="Loading preferences saved on this computer."
                     skeleton={{ quantidade: 6, orientacao: "horizontal" }}
                     className="**:data-[slot=skeleton]:h-52"
                 />
             ) : preferenciasIsError ? (
                 <TemplateEstado.Erro
-                    titulo="Falha ao carregar configurações"
+                    titulo="Unable to load settings"
                     subtitulo={preferenciasError}
-                    acao={<Button onClick={() => void atualizar()}>Tentar novamente</Button>}
+                    acao={<Button onClick={() => void atualizar()}>Try again</Button>}
                 />
             ) : (
                 <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
                     <Secao
-                        titulo="Aplicativo"
-                        descricao="Comportamento geral do desktop."
+                        titulo="Application"
+                        descricao="General desktop behavior."
                     >
                         <Campo
-                            titulo="Iniciar com o sistema"
+                            titulo="Launch at startup"
                             controleId="iniciar-sistema"
                         >
                             <Checkbox
@@ -90,7 +90,7 @@ export const ConfiguracoesPage = () => {
                             />
                         </Campo>
                         <Campo
-                            titulo="Verificação em segundo plano"
+                            titulo="Background monitoring"
                             controleId="segundo-plano"
                         >
                             <Checkbox
@@ -103,7 +103,7 @@ export const ConfiguracoesPage = () => {
                             />
                         </Campo>
                         <Campo
-                            titulo="Intervalo padrão"
+                            titulo="Default interval"
                             controleId="intervalo-padrao"
                         >
                             <Select
@@ -133,11 +133,11 @@ export const ConfiguracoesPage = () => {
                         </Campo>
                     </Secao>
                     <Secao
-                        titulo="Armazenamento"
-                        descricao="Banco local em SQLite."
+                        titulo="Storage"
+                        descricao="Local SQLite database."
                     >
                         <div className="space-y-1 text-sm">
-                            <div className="text-muted-foreground">Caminho</div>
+                            <div className="text-muted-foreground">Path</div>
                             <div className="truncate rounded-md border border-border bg-surface-2 px-3 py-2 font-mono text-xs">
                                 {informacoes.caminhoBanco}
                             </div>
@@ -149,7 +149,7 @@ export const ConfiguracoesPage = () => {
                                 disabled={armazenamentoIsPending}
                                 onClick={() => void abrirPasta()}
                             >
-                                Abrir pasta
+                                Open folder
                             </Button>
                             <Button
                                 variant="outline"
@@ -157,16 +157,16 @@ export const ConfiguracoesPage = () => {
                                 disabled={armazenamentoIsPending}
                                 onClick={() => void exportarBackup()}
                             >
-                                Exportar backup
+                                Export backup
                             </Button>
                         </div>
                     </Secao>
                     <Secao
-                        titulo="Notificações"
-                        descricao="Como o app avisa você."
+                        titulo="Notifications"
+                        descricao="How the app notifies you."
                     >
                         <Campo
-                            titulo="Notificações do sistema"
+                            titulo="System notifications"
                             controleId="notificacoes-sistema"
                         >
                             <Checkbox
@@ -179,7 +179,7 @@ export const ConfiguracoesPage = () => {
                             />
                         </Campo>
                         <Campo
-                            titulo="Som ao detectar incidente"
+                            titulo="Play a sound when an incident is detected"
                             controleId="som-incidente"
                         >
                             <Checkbox
@@ -190,7 +190,7 @@ export const ConfiguracoesPage = () => {
                             />
                         </Campo>
                         <Campo
-                            titulo="Badge de contagem no ícone"
+                            titulo="Incident count on the app icon"
                             controleId="badge-icone"
                         >
                             <Checkbox
@@ -202,11 +202,11 @@ export const ConfiguracoesPage = () => {
                         </Campo>
                     </Secao>
                     <Secao
-                        titulo="Aparência"
-                        descricao="Tema e densidade."
+                        titulo="Appearance"
+                        descricao="Theme and density."
                     >
                         <Campo
-                            titulo="Tema"
+                            titulo="Theme"
                             controleId="tema"
                         >
                             <Select
@@ -233,7 +233,7 @@ export const ConfiguracoesPage = () => {
                             </Select>
                         </Campo>
                         <Campo
-                            titulo="Densidade"
+                            titulo="Density"
                             controleId="densidade"
                         >
                             <Select
@@ -261,11 +261,11 @@ export const ConfiguracoesPage = () => {
                         </Campo>
                     </Secao>
                     <Secao
-                        titulo="Conta local"
-                        descricao="Identificação usada no SQLite."
+                        titulo="Local account"
+                        descricao="Identity used in SQLite."
                     >
                         <div className="space-y-2">
-                            <Label htmlFor="nome-desenvolvedor">Nome do desenvolvedor</Label>
+                            <Label htmlFor="nome-desenvolvedor">Developer name</Label>
                             <Input
                                 id="nome-desenvolvedor"
                                 value={nomeDesenvolvedor}
@@ -276,12 +276,12 @@ export const ConfiguracoesPage = () => {
                         </div>
                     </Secao>
                     <Secao
-                        titulo="Sobre"
-                        descricao="Versão e diagnóstico."
+                        titulo="About"
+                        descricao="Version and diagnostics."
                     >
                         <dl className="space-y-1 text-sm">
                             <Item
-                                titulo="Versão"
+                                titulo="Version"
                                 valor={informacoes.versao}
                             />
                             <Item

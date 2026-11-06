@@ -1,40 +1,43 @@
 <div align="center">
 
-<img src="./src/img/logo_without_background.png" alt="Logo do DashowBoard" width="220" />
+<img src="./src/img/logo_without_background.png" alt="DashowBoard logo" width="220" />
 
 # DashowBoard
 
-Seu cockpit desktop para acompanhar projetos, deploys, serviços e incidentes em um só lugar.
+Your stack. One clear view.
+
+A local-first desktop workspace for projects, deployments, services, and incidents.
 
 ![Tauri](https://img.shields.io/badge/Tauri-2-24C8DB?style=for-the-badge&logo=tauri&logoColor=white)
 ![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=111)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
 ![SQLite](https://img.shields.io/badge/SQLite-Local-003B57?style=for-the-badge&logo=sqlite&logoColor=white)
 
-[Conheça o projeto](https://enzocaetano015.github.io/DashowBoard/)
+[Explore the project](https://enzocaetano015.github.io/DashowBoard/) · [Download for Windows](https://github.com/EnzoCaetano015/DashowBoard/releases/latest)
 
 </div>
 
-## Sobre
+## About
 
-O DashowBoard é um aplicativo desktop open-source que centraliza informações de projetos distribuídos entre GitHub, Vercel, Railway e Supabase.
+DashowBoard is an open-source desktop app that brings visibility across GitHub, Vercel, Railway, and Supabase into one workspace.
 
-Ele organiza vínculos locais, monitora serviços e deployments, registra incidentes e mantém configurações e histórico em um banco SQLite local. O aplicativo não exclui nem administra recursos externos.
+Group repositories and services, monitor deployments and availability, and follow meaningful incidents. Settings, resource links, and history stay in a local SQLite database. Provider credentials are handled by the native credential vault. The app does not create, administer, or delete external resources.
 
-## Principais recursos
+## Features
 
-- visão geral de projetos e serviços;
-- integrações com GitHub, Vercel, Railway e Supabase;
-- monitoramento de disponibilidade e health checks;
-- histórico de status e incidentes;
-- persistência local com SQLite;
-- aplicativo desktop com Tauri 2.
+- A combined view of projects and monitored services.
+- Independent GitHub, Vercel, Railway, and Supabase integrations.
+- Availability monitoring and optional URL health checks.
+- Local status history, snapshots, and incidents.
+- Glass surfaces with light and dark themes, comfortable and compact layouts.
+- English interface, accessibility labels, errors, and documentation.
+- Tauri 2 desktop runtime with packaged Windows releases.
 
 ## Stack
 
-React 19, TypeScript, Vite, Tauri 2, Rust, TanStack Query, React Router, Tailwind CSS, shadcn/ui e SQLite.
+React 19, TypeScript, Vite, Tauri 2, Rust, TanStack Query, React Router, Tailwind CSS, shadcn/ui, and SQLite.
 
-## Início rápido
+## Quick start
 
 ```bash
 git clone https://github.com/EnzoCaetano015/DashowBoard.git
@@ -43,28 +46,26 @@ pnpm install
 pnpm tauri dev
 ```
 
-Para executar apenas a interface no navegador:
+For a visual browser preview:
 
 ```bash
 pnpm dev
 ```
 
-Recursos nativos, integrações e o banco local exigem o runtime do Tauri.
+Native integrations, credential storage, notifications, and the local database require Tauri. The static landing page lives in `site/` and requires no build step.
 
-## Documentação
+## Documentation
 
-| Guia | Conteúdo |
+| Guide | Contents |
 |---|---|
-| [Arquitetura](./docs/arquitetura.md) | Fluxo da aplicação, camadas e estrutura do código. |
-| [Domínio e monitoramento](./docs/dominio-e-monitoramento.md) | Projetos, repositórios, serviços, status e incidentes. |
-| [Desenvolvimento](./docs/desenvolvimento.md) | Ambiente local, comandos, testes e banco de dados. |
-| [Integrações e segurança](./docs/integracoes-e-seguranca.md) | Providers, tokens, permissões e tratamento de erros. |
-| [Publicação e contribuição](./docs/publicacao-e-contribuicao.md) | Landing page, CI, releases e fluxo de contribuição. |
+| [Architecture](./docs/architecture.md) | Application flow, layers, and source layout. |
+| [Domain and monitoring](./docs/domain-and-monitoring.md) | Projects, repositories, services, statuses, and incidents. |
+| [Development](./docs/development.md) | Local setup, commands, tests, database, themes, and brand assets. |
+| [Integrations and security](./docs/integrations-and-security.md) | Providers, tokens, permissions, and error handling. |
+| [Publishing and contributing](./docs/publishing-and-contributing.md) | Landing page, CI, releases, and contribution workflow. |
 
-## Autor
+## Author
 
-Desenvolvido por **Enzo Caetano**.
+Built by **Enzo Caetano**.
 
-- [GitHub](https://github.com/EnzoCaetano015)
-- [Portfólio](https://www.caetanodev.com/)
-- [LinkedIn](https://www.linkedin.com/in/enzo-caetano-814736290/)
+[GitHub](https://github.com/EnzoCaetano015) · [Portfolio](https://www.caetanodev.com/) · [LinkedIn](https://www.linkedin.com/in/enzo-caetano-814736290/)

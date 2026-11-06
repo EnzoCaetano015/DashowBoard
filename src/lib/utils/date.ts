@@ -9,12 +9,12 @@ export const formatarDuracao = (minutos: number) => {
 }
 
 export const formatarAgora = (data = new Date()) => {
-    const dia = data.toLocaleDateString("pt-BR", {
+    const dia = data.toLocaleDateString("en-US", {
         day: "2-digit",
         month: "short",
         year: "numeric",
     })
-    const hora = data.toLocaleTimeString("pt-BR", {
+    const hora = data.toLocaleTimeString("en-US", {
         hour: "2-digit",
         minute: "2-digit",
         second: "2-digit",
@@ -25,5 +25,5 @@ export const formatarAgora = (data = new Date()) => {
 
 export const formatarDataHora = (value: string) => {
     const date = new Date(value)
-    return Number.isNaN(date.getTime()) ? "Data indisponível" : date.toLocaleString("pt-BR")
+    return Number.isNaN(date.getTime()) ? "Date unavailable" : date.toLocaleString("en-US")
 }

@@ -24,8 +24,8 @@ export const resumirSerie = (dados: number[]): ResumoSerie | null => {
 
 export const formatarValorSerie = (valor: number, unidade: string) => {
     const valorFormatado = Number.isInteger(valor)
-        ? valor.toLocaleString("pt-BR")
-        : valor.toLocaleString("pt-BR", { maximumFractionDigits: 2 })
+        ? valor.toLocaleString("en-US")
+        : valor.toLocaleString("en-US", { maximumFractionDigits: 2 })
 
     return unidade === "%" ? `${valorFormatado}%` : `${valorFormatado}${unidade ? ` ${unidade}` : ""}`
 }

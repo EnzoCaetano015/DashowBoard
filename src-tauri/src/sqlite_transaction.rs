@@ -21,11 +21,11 @@ async fn executar_operacoes(
     let mut connection = pool
         .acquire()
         .await
-        .map_err(|_| "Não foi possível obter a conexão SQLite.".to_owned())?;
+        .map_err(|_| "Unable to obtain the SQLite connection.".to_owned())?;
     sqlx::query("BEGIN IMMEDIATE")
         .execute(&mut *connection)
         .await
-        .map_err(|_| "Não foi possível iniciar a transação SQLite.".to_owned())?;
+        .map_err(|_| "Unable to start the SQLite transaction.".to_owned())?;
 
     for (indice, operacao) in operacoes.into_iter().enumerate() {
         let mut query = sqlx::query(&operacao.query);
@@ -48,7 +48,7 @@ async fn executar_operacoes(
         }
         if query.execute(&mut *connection).await.is_err() {
             let mensagem = format!(
-                "Não foi possível executar a operação {} da transação SQLite.",
+                "Unable to execute operation {} in the SQLite transaction.",
                 indice + 1
             );
             let _ = sqlx::query("ROLLBACK").execute(&mut *connection).await;
@@ -60,7 +60,7 @@ async fn executar_operacoes(
         .execute(&mut *connection)
         .await
         .map(|_| ())
-        .map_err(|_| "Não foi possível concluir a transação SQLite.".to_owned())
+        .map_err(|_| "Unable to complete the SQLite transaction.".to_owned())
 }
 
 #[tauri::command]
@@ -71,7 +71,7 @@ pub async fn executar_transacao_sqlite(
     let instances = instances.0.read().await;
     let database = instances
         .get(DATABASE_URL)
-        .ok_or_else(|| "O banco SQLite ainda não foi carregado.".to_owned())?;
+        .ok_or_else(|| "The SQLite database has not been loaded yet.".to_owned())?;
     let DbPool::Sqlite(pool) = database;
     executar_operacoes(pool, operacoes).await
 }

@@ -18,13 +18,12 @@ export const DeleteProjectDialog = ({
             className="border-border bg-card"
         >
             <Modal.Header
-                titulo="Excluir projeto"
-                subTitulo={`Você vai remover o agrupamento local ${nomeProjeto}.`}
+                titulo="Delete project"
+                subTitulo={`You are about to remove the local group ${nomeProjeto}.`}
             />
             <Modal.Body>
                 <div className="rounded-md border border-warning/40 bg-warning/10 p-3 text-sm text-warning">
-                    Isso <strong>não</strong> exclui repositórios no GitHub, projetos na Vercel, serviços
-                    do Railway ou bases no Supabase. Somente o vínculo local no DashowBoard é removido.
+                    This <strong>does not</strong> delete GitHub repositories, Vercel projects, Railway services, or Supabase databases. Only the local DashowBoard link is removed.
                 </div>
             </Modal.Body>
             <Modal.Actions>
@@ -33,14 +32,14 @@ export const DeleteProjectDialog = ({
                     onClick={onClose}
                     disabled={excluirProjetoIsPending}
                 >
-                    Cancelar
+                    Cancel
                 </Button>
                 <Button
                     variant="destructive"
                     onClick={() => void excluir()}
                     disabled={excluirProjetoIsPending}
                 >
-                    {excluirProjetoIsPending ? "Excluindo..." : "Excluir agrupamento"}
+                    {excluirProjetoIsPending ? "Deleting..." : "Delete group"}
                 </Button>
             </Modal.Actions>
         </Modal.Content>

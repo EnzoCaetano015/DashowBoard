@@ -28,27 +28,21 @@ impl RailwayError {
     pub fn keyring(_error: keyring::Error) -> Self {
         Self::new(
             "RAILWAY_COFRE_INDISPONIVEL",
-            "Não foi possível acessar o cofre de credenciais do sistema.",
+            "Unable to access the system credential vault.",
         )
     }
 
     pub fn network(error: reqwest::Error) -> Self {
         if error.is_timeout() {
-            return Self::new(
-                "RAILWAY_TIMEOUT",
-                "A Railway demorou demais para responder.",
-            );
+            return Self::new("RAILWAY_TIMEOUT", "Railway took too long to respond.");
         }
         if error.is_connect() {
             return Self::new(
                 "RAILWAY_SEM_CONEXAO",
-                "Não foi possível conectar à Railway. Verifique sua internet.",
+                "Unable to connect to Railway. Check your internet connection.",
             );
         }
-        Self::new(
-            "RAILWAY_INDISPONIVEL",
-            "A Railway está indisponível no momento.",
-        )
+        Self::new("RAILWAY_INDISPONIVEL", "Railway is currently unavailable.")
     }
 
     pub fn status(status: StatusCode, headers: &HeaderMap, body: &str) -> Self {
@@ -56,24 +50,23 @@ impl RailwayError {
         match status {
             StatusCode::UNAUTHORIZED if body.contains("expired") => Self::new(
                 "RAILWAY_TOKEN_EXPIRADO",
-                "O token da Railway expirou. Substitua-o para continuar.",
+                "The Railway token has expired. Replace it to continue.",
             ),
             StatusCode::UNAUTHORIZED => Self::new(
                 "RAILWAY_TOKEN_INVALIDO",
-                "O token informado é inválido ou foi revogado.",
+                "The supplied token is invalid or has been revoked.",
             ),
             StatusCode::FORBIDDEN => Self::new(
                 "RAILWAY_SEM_PERMISSAO",
-                "O token não possui permissão para consultar este recurso da Railway.",
+                "The token does not have permission to access this Railway resource.",
             ),
             StatusCode::TOO_MANY_REQUESTS => Self::rate_limit(headers),
-            status if status.is_server_error() => Self::new(
-                "RAILWAY_INDISPONIVEL",
-                "A Railway está indisponível no momento.",
-            ),
+            status if status.is_server_error() => {
+                Self::new("RAILWAY_INDISPONIVEL", "Railway is currently unavailable.")
+            }
             _ => Self::new(
                 "RAILWAY_ERRO_DESCONHECIDO",
-                "Não foi possível concluir a operação na Railway.",
+                "Unable to complete the Railway operation.",
             ),
         }
     }
@@ -81,21 +74,21 @@ impl RailwayError {
     pub fn graphql() -> Self {
         Self::new(
             "RAILWAY_GRAPHQL",
-            "A Railway rejeitou a consulta GraphQL. Tente novamente mais tarde.",
+            "Railway rejected the GraphQL query. Please try again later.",
         )
     }
 
     pub fn project_not_found() -> Self {
         Self::new(
             "RAILWAY_PROJETO_NAO_ENCONTRADO",
-            "O projeto Railway informado não foi encontrado.",
+            "The requested Railway project was not found.",
         )
     }
 
     fn rate_limit(headers: &HeaderMap) -> Self {
         Self {
             code: "RAILWAY_RATE_LIMIT".to_owned(),
-            message: "O limite de requisições da Railway foi atingido.".to_owned(),
+            message: "The Railway rate limit has been reached.".to_owned(),
             reset_at: reset_at(headers),
             rate_limit: header_number(headers, "x-ratelimit-limit"),
             rate_limit_remaining: header_number(headers, "x-ratelimit-remaining"),

@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import type { SecaoProps } from "./Secao.types"
 
 export const Secao = ({ titulo, descricao, children }: SecaoProps) => (
-    <Card className="border-border py-5 shadow-none">
+    <Card className="py-5">
         <CardHeader className="px-5">
             <CardTitle>
                 <h2 className="text-sm">{titulo}</h2>

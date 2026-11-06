@@ -16,7 +16,7 @@ export const DeploymentStatus = ({ status }: { status: Enum.StatusDeployment }) 
             Icone: AlertCircle,
         },
         [Enum.StatusDeployment.EmAndamento]: {
-            titulo: "em progresso",
+            titulo: "in progress",
             classe: "text-info border-info/40 bg-info/10",
             Icone: Play,
         },
@@ -38,17 +38,17 @@ export const DeploymentStatus = ({ status }: { status: Enum.StatusDeployment }) 
 export const WorkflowStatus = ({ status }: { status: Enum.StatusWorkflow }) => {
     const dados = {
         [Enum.StatusWorkflow.Sucesso]: {
-            titulo: "CI ok",
+            titulo: "CI passed",
             classe: "text-success border-success/30 bg-success/10",
             Icone: CheckCircle2,
         },
         [Enum.StatusWorkflow.Falha]: {
-            titulo: "CI falhou",
+            titulo: "CI failed",
             classe: "text-destructive border-destructive/40 bg-destructive/10",
             Icone: AlertCircle,
         },
         [Enum.StatusWorkflow.EmAndamento]: {
-            titulo: "CI rodando",
+            titulo: "CI running",
             classe: "text-info border-info/40 bg-info/10",
             Icone: Loader2,
         },
@@ -88,7 +88,7 @@ export const IncidentStatus = ({
     }[status]
     const titulo = {
         [Enum.StatusIncidente.Resolvido]: "resolvido",
-        [Enum.StatusIncidente.EmAndamento]: "em andamento",
+        [Enum.StatusIncidente.EmAndamento]: "in progress",
         [Enum.StatusIncidente.Monitorando]: "monitorando",
     }[status]
 
@@ -99,7 +99,7 @@ export const IncidentStatus = ({
                 classe
             )}
         >
-            {titulo} · severidade {severidade}
+            {titulo} · severity {severidade}
         </span>
     )
 }

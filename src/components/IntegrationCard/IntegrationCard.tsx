@@ -9,9 +9,9 @@ import { cn } from "@/lib/utils"
 import { labelProvider } from "@/lib/utils/status"
 
 const labelStatus: Record<Enum.StatusIntegracao, string> = {
-    [Enum.StatusIntegracao.Conectado]: "Conectado",
-    [Enum.StatusIntegracao.Desconectado]: "Desconectado",
-    [Enum.StatusIntegracao.Erro]: "Erro",
+    [Enum.StatusIntegracao.Conectado]: "Connected",
+    [Enum.StatusIntegracao.Desconectado]: "Disconnected",
+    [Enum.StatusIntegracao.Erro]: "Error",
 }
 
 export const IntegrationCard = ({
@@ -26,14 +26,14 @@ export const IntegrationCard = ({
     return (
         <Card
             className={cn(
-                "border-border py-5 shadow-none",
+                "bg-card py-6 transition-all hover:shadow-xl",
                 integracao.status === Enum.StatusIntegracao.Erro && "border-destructive/40"
             )}
         >
-            <CardContent className="px-5">
+            <CardContent className="px-6">
                 <div className="flex items-start justify-between gap-3">
                     <div className="flex min-w-0 items-center gap-3">
-                        <span className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-surface-2 ring-1 ring-border">
+                        <span className="glass-subtle flex size-12 shrink-0 items-center justify-center rounded-2xl">
                             <ProviderIcon
                                 provider={integracao.provider}
                                 className="size-5"
@@ -68,7 +68,7 @@ export const IntegrationCard = ({
                 )}
                 <div className="mt-4 flex items-center gap-2 text-xs text-muted-foreground">
                     <Clock className="size-3.5" />
-                    Última sincronização:{" "}
+                    Last sync:{" "}
                     <span className="text-foreground">{integracao.ultimaSincronizacao}</span>
                 </div>
                 <div className="mt-4 flex flex-wrap gap-2">
@@ -80,7 +80,7 @@ export const IntegrationCard = ({
                             onClick={onTestar}
                         >
                             <RefreshCw className={cn(isTesting && "animate-spin")} />
-                            {isTesting ? "Testando..." : "Testar conexão"}
+                            {isTesting ? "Testing..." : "Test connection"}
                         </Button>
                     )}
                     <Button
@@ -89,7 +89,7 @@ export const IntegrationCard = ({
                         onClick={onConfigurar}
                     >
                         <KeyRound />
-                        {podeTestar ? "Atualizar token" : "Configurar token"}
+                        {podeTestar ? "Update token" : "Configure token"}
                     </Button>
                 </div>
             </CardContent>

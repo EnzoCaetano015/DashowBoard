@@ -36,14 +36,14 @@ export const BarChart = ({
                 <p>
                     {titulo}. {descricao}.{" "}
                     {resumo
-                        ? `Mínimo ${formatarValorSerie(resumo.minimo, unidade)}, média ${formatarValorSerie(resumo.media, unidade)} e máximo ${formatarValorSerie(resumo.maximo, unidade)}.`
-                        : "Sem dados."}
+                        ? `Minimum ${formatarValorSerie(resumo.minimo, unidade)}, average ${formatarValorSerie(resumo.media, unidade)} and maximum ${formatarValorSerie(resumo.maximo, unidade)}.`
+                        : "No data."}
                 </p>
                 {dados.length > 0 && (
                     <ol>
                         {dados.map((valor, indice) => (
                             <li key={`${indice}-${valor}`}>
-                                Amostra {indice + 1} de {dados.length}: {formatarValorSerie(valor, unidade)}
+                                Sample {indice + 1} of {dados.length}: {formatarValorSerie(valor, unidade)}
                             </li>
                         ))}
                     </ol>

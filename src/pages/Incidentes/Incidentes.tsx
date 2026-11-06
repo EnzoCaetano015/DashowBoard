@@ -45,9 +45,9 @@ export const IncidentesPage = () => {
         <div>
             <div className="mb-4">
                 <div>
-                    <h1 className="text-2xl font-semibold tracking-tight">Incidentes</h1>
+                    <h1 className="text-2xl font-semibold tracking-tight">Incidents</h1>
                     <p className="mt-1 text-sm text-muted-foreground">
-                        Todos os eventos detectados nos projetos monitorados.
+                        All events detected across monitored projects.
                     </p>
                 </div>
             </div>
@@ -57,8 +57,8 @@ export const IncidentesPage = () => {
                     <Input
                         value={filtros.busca}
                         onChange={(evento) => alterarFiltro("busca", evento.target.value)}
-                        placeholder="Filtrar incidentes nesta página…"
-                        aria-label="Filtrar incidentes nesta página"
+                        placeholder="Filter incidents on this page…"
+                        aria-label="Filter incidents on this page"
                         className="h-9 bg-surface-2 pl-8"
                     />
                 </div>
@@ -72,22 +72,22 @@ export const IncidentesPage = () => {
                             aria-pressed={filtros.periodo === periodoMonitoramento}
                             className={cn(
                                 filtros.periodo === periodoMonitoramento &&
-                                    "bg-primary/20 text-primary"
+                                    "bg-primary/15 text-primary"
                             )}
                         >
-                            {periodoMonitoramento} dias
+                            {periodoMonitoramento} days
                         </Button>
                     ))}
                 </div>
                 <FiltroSelect
                     value={filtros.status}
                     placeholder="Status"
-                    ariaLabel="Filtrar incidentes por status"
+                    ariaLabel="Filter incidents by status"
                     onValueChange={(valor) =>
                         alterarFiltro("status", valor as FiltrosIncidentes["status"])
                     }
                     opcoes={[
-                        ["todos", "Todos status"],
+                        ["todos", "All statuses"],
                         ...Object.values(Enum.StatusIncidente).map(
                             (valor) => [valor, LABEL_STATUS_INCIDENTE[valor]] as const
                         ),
@@ -95,13 +95,13 @@ export const IncidentesPage = () => {
                 />
                 <FiltroSelect
                     value={filtros.severidade}
-                    placeholder="Severidade"
-                    ariaLabel="Filtrar incidentes por severidade"
+                    placeholder="Severity"
+                    ariaLabel="Filter incidents by severity"
                     onValueChange={(valor) =>
                         alterarFiltro("severidade", valor as FiltrosIncidentes["severidade"])
                     }
                     opcoes={[
-                        ["todos", "Todas severidades"],
+                        ["todos", "All severities"],
                         ...Object.values(Enum.SeveridadeIncidente).map(
                             (valor) => [valor, LABEL_SEVERIDADE_INCIDENTE[valor]] as const
                         ),
@@ -110,12 +110,12 @@ export const IncidentesPage = () => {
                 <FiltroSelect
                     value={filtros.provider}
                     placeholder="Provider"
-                    ariaLabel="Filtrar incidentes por provider"
+                    ariaLabel="Filter incidents by provider"
                     onValueChange={(valor) =>
                         alterarFiltro("provider", valor as FiltrosIncidentes["provider"])
                     }
                     opcoes={[
-                        ["todos", "Todos providers"],
+                        ["todos", "All providers"],
                         ...Object.values(Enum.Provider).map(
                             (valor) => [valor, labelProvider[valor]] as const
                         ),
@@ -123,11 +123,11 @@ export const IncidentesPage = () => {
                 />
                 <FiltroSelect
                     value={filtros.projetoId}
-                    placeholder="Projeto"
-                    ariaLabel="Filtrar incidentes por projeto"
+                    placeholder="Project"
+                    ariaLabel="Filter incidents by project"
                     onValueChange={(valor) => alterarFiltro("projetoId", valor)}
                     opcoes={[
-                        ["todos", "Todos projetos"],
+                        ["todos", "All projects"],
                         ...projetos.map(({ id, nome }) => [id, nome] as const),
                     ]}
                     className="min-w-44"
@@ -139,14 +139,14 @@ export const IncidentesPage = () => {
                         onClick={limparFiltros}
                     >
                         <RotateCcw />
-                        Limpar filtros ({quantidadeFiltrosAtivos})
+                        Clear filters ({quantidadeFiltrosAtivos})
                     </Button>
                 )}
             </div>
             {!runtimeDisponivel ? (
                 <TemplateEstado.Vazio
-                    titulo="Incidentes disponíveis no aplicativo desktop"
-                    subtitulo="O histórico real é persistido no SQLite pelo runtime nativo."
+                    titulo="Incidents are available in the desktop app"
+                    subtitulo="Actual history is saved in SQLite by the native runtime."
                     Icon={AlertCircle}
                 />
             ) : isLoading ? (
@@ -156,9 +156,9 @@ export const IncidentesPage = () => {
                 />
             ) : isError ? (
                 <TemplateEstado.Erro
-                    titulo="Falha ao carregar incidentes"
-                    subtitulo="Não foi possível consultar o histórico local."
-                    acao={<Button onClick={() => void atualizar()}>Tentar novamente</Button>}
+                    titulo="Unable to load incidents"
+                    subtitulo="Unable to load local history."
+                    acao={<Button onClick={() => void atualizar()}>Try again</Button>}
                 />
             ) : (
                 <>
@@ -169,20 +169,20 @@ export const IncidentesPage = () => {
                             classe="text-info"
                         />
                         <Resumo
-                            titulo="Em andamento"
+                            titulo="In progress"
                             valor={emAndamento}
                             classe="text-destructive"
                         />
                         <Resumo
-                            titulo="Resolvidos"
+                            titulo="Resolved"
                             valor={resolvidos}
                             classe="text-success"
                         />
                     </div>
                     {incidentes.length === 0 ? (
                         <TemplateEstado.Vazio
-                            titulo="Nenhum incidente detectado"
-                            subtitulo="Não há incidentes reais nesta janela ou para a busca informada."
+                            titulo="No incidents detected"
+                            subtitulo="No incidents were found for this period or search."
                             Icon={AlertCircle}
                             className="mt-6"
                         />
@@ -196,17 +196,17 @@ export const IncidentesPage = () => {
                                     />
                                 ))}
                             </div>
-                            <Card className="mt-6 hidden overflow-hidden border-border py-0 shadow-none md:block">
+                            <Card className="mt-6 hidden overflow-hidden py-0 md:block">
                             <div className="overflow-x-auto">
                                 <Table className="min-w-5xl">
                                     <TableHeader>
                                         <TableRow>
-                                            <TableHead>Incidente</TableHead>
-                                            <TableHead>Projeto</TableHead>
-                                            <TableHead>Serviço</TableHead>
+                                            <TableHead>Incident</TableHead>
+                                            <TableHead>Project</TableHead>
+                                            <TableHead>Service</TableHead>
                                             <TableHead>Status</TableHead>
-                                            <TableHead>Início</TableHead>
-                                            <TableHead className="text-right">Duração</TableHead>
+                                            <TableHead>Started</TableHead>
+                                            <TableHead className="text-right">Duration</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
@@ -234,7 +234,7 @@ export const IncidentesPage = () => {
                                                         </span>
                                                         {ativo && (
                                                             <span className="sr-only">
-                                                                Incidente ativo
+                                                                Active incident
                                                             </span>
                                                         )}
                                                     </div>
@@ -291,8 +291,8 @@ export const IncidentesPage = () => {
                         </>
                     )}
                     <p className="mt-4 text-xs text-muted-foreground">
-                        {projetosMonitorados} projetos com incidentes registrados · janela de{" "}
-                        {filtros.periodo} dias.
+                        {projetosMonitorados} projects with recorded incidents · window of{" "}
+                        {filtros.periodo} days.
                     </p>
                 </>
             )}

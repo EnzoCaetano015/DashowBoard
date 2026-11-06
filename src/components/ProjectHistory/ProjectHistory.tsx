@@ -29,7 +29,7 @@ export const ProjectHistory = ({ projeto }: { projeto: ObterProjetos.Projeto }) 
         <div className="space-y-4">
             <div className="flex flex-wrap items-center justify-between gap-3">
                 <p className="text-sm text-muted-foreground">
-                    Linha do tempo de incidentes, mudanças de status e deployments.
+                    A timeline of incidents, status changes, and deployments.
                 </p>
                 <div className="inline-flex rounded-md border border-border bg-surface-2 p-0.5">
                     {PERIODOS_MONITORAMENTO.map((valor) => (
@@ -39,31 +39,33 @@ export const ProjectHistory = ({ projeto }: { projeto: ObterProjetos.Projeto }) 
                             size="xs"
                             onClick={() => setPeriodo(valor)}
                             aria-pressed={periodo === valor}
-                            className={cn(periodo === valor && "bg-primary/20 text-primary")}
+                            className={cn(
+                                periodo === valor && "bg-primary/15 text-primary"
+                            )}
                         >
-                            {valor} dias
+                            {valor} days
                         </Button>
                     ))}
                 </div>
             </div>
-            <Card className="gap-3 border-border py-5 shadow-none">
+            <Card className="gap-3 py-5">
                 <CardHeader className="flex-row items-center justify-between px-5">
-                    <CardTitle className="text-sm">Tempo de resposta — {periodo} dias</CardTitle>
-                    <span className="text-xs text-muted-foreground">ms por dia</span>
+                    <CardTitle className="text-sm">Response time — {periodo} days</CardTitle>
+                    <span className="text-xs text-muted-foreground">ms per day</span>
                 </CardHeader>
                 <CardContent className="px-5">
                     {projeto.tempoResposta.length > 0 ? (
                         <BarChart
                             dados={temposResposta}
-                            titulo={`Tempo de resposta em ${periodo} dias`}
+                            titulo={`Response time over ${periodo} days`}
                             unidade="ms"
-                            descricao={`Tempos de resposta das últimas ${temposResposta.length} amostras disponíveis`}
+                            descricao={`Response times from the last ${temposResposta.length} available samples`}
                             cor="var(--color-info)"
                             altura={120}
                         />
                     ) : (
                         <div className="flex h-30 items-center justify-center rounded-md border border-dashed text-sm text-muted-foreground">
-                            Ainda não há tempos de resposta coletados.
+                            No response times have been collected yet.
                         </div>
                     )}
                     {resumoTemposResposta && (
@@ -74,15 +76,15 @@ export const ProjectHistory = ({ projeto }: { projeto: ObterProjetos.Projeto }) 
                     )}
                 </CardContent>
             </Card>
-            <Card className="gap-4 border-border py-5 shadow-none">
+            <Card className="gap-4 py-5">
                 <CardHeader className="px-5">
-                    <CardTitle className="text-sm">Eventos</CardTitle>
+                    <CardTitle className="text-sm">Events</CardTitle>
                 </CardHeader>
                 <CardContent className="px-5">
                     {eventos.length === 0 ? (
                         <TemplateEstado.Vazio
-                            titulo={`Nenhum evento nos últimos ${periodo} dias`}
-                            subtitulo="Selecione outro período ou aguarde novas observações do monitoramento."
+                            titulo={`No events in the last ${periodo} days`}
+                            subtitulo="Select another period or wait for new monitoring observations."
                             Icon={History}
                         />
                     ) : (
@@ -131,7 +133,7 @@ export const ProjectHistory = ({ projeto }: { projeto: ObterProjetos.Projeto }) 
                                                     "border-info/40 bg-info/10 text-info"
                                             )}
                                         >
-                                            {evento.tipo}
+                                            {evento.tipo === "incidente" ? "Incident" : evento.tipo}
                                         </span>
                                     </li>
                                 ))}

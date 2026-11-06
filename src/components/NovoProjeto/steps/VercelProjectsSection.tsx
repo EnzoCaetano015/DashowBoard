@@ -23,9 +23,9 @@ export const VercelProjectsSection = ({
     <section className="space-y-3">
         <div className="flex items-center justify-between gap-3">
             <div>
-                <h3 className="text-sm font-medium">Projetos Vercel</h3>
+                <h3 className="text-sm font-medium">Vercel projects</h3>
                 <p className="text-xs text-muted-foreground">
-                    Selecione projetos pessoais ou dos times acessíveis ao token.
+                    Select personal or team projects accessible with the token.
                 </p>
             </div>
             {runtimeDisponivel && configurada && !isLoading && (
@@ -35,15 +35,15 @@ export const VercelProjectsSection = ({
                     disabled={isFetching}
                     onClick={atualizar}
                 >
-                    <RefreshCw className={isFetching ? "animate-spin" : undefined} /> Atualizar
+                    <RefreshCw className={isFetching ? "animate-spin" : undefined} /> Refresh
                 </Button>
             )}
         </div>
 
         {!runtimeDisponivel ? (
-            <EstadoVercel descricao="A integração Vercel está disponível no aplicativo desktop." />
+            <EstadoVercel descricao="The Vercel integration is available in the desktop app." />
         ) : !isLoading && !configurada ? (
-            <EstadoVercel descricao="Conecte sua conta Vercel para listar os projetos." />
+            <EstadoVercel descricao="Connect your Vercel account to list projects." />
         ) : isLoading ? (
             <TemplateEstado.Carregando
                 skeleton={{ quantidade: 3, orientacao: "vertical" }}
@@ -52,8 +52,8 @@ export const VercelProjectsSection = ({
         ) : projetos.length === 0 ? (
             <div className="space-y-3">
                 <TemplateEstado.Vazio
-                    titulo="Nenhum projeto Vercel encontrado"
-                    subtitulo="Nenhum projeto acessível foi encontrado nos escopos configurados."
+                    titulo="No Vercel projects found"
+                    subtitulo="No accessible projects were found in the configured scopes."
                     Icon={Boxes}
                 />
                 {falhas.length > 0 && (
@@ -99,12 +99,12 @@ export const VercelProjectsSection = ({
                                 <span className="flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
                                     <span>{projeto.escopo.nome}</span>
                                     <span>·</span>
-                                    <span>{projeto.framework || "Framework não informado"}</span>
+                                    <span>{projeto.framework || "Framework not specified"}</span>
                                     <span>·</span>
                                     <span>{Enum.TipoServico.Frontend}</span>
                                 </span>
                                 <span className="mt-1 block truncate text-[11px] text-muted-foreground">
-                                    {projeto.productionUrl || "Sem deployment de produção"}
+                                    {projeto.productionUrl || "No production deployment"}
                                 </span>
                             </span>
                             {projeto.ultimoDeployment ? (
@@ -115,11 +115,11 @@ export const VercelProjectsSection = ({
                                           ? "Falha"
                                           : projeto.ultimoDeployment.estado ===
                                               Enum.StatusDeployment.EmAndamento
-                                            ? "Em andamento"
+                                            ? "In progress"
                                             : projeto.ultimoDeployment.estadoOriginal}
                                 </Badge>
                             ) : (
-                                <Badge variant="outline">Sem deployment</Badge>
+                                <Badge variant="outline">No deployment</Badge>
                             )}
                         </label>
                     )
@@ -141,7 +141,7 @@ const EstadoVercel = ({ descricao }: { descricao: string }) => (
             nativeButton={false}
             className="mt-4"
         >
-            Ir para Integrações
+            Go to integrations
         </Button>
     </div>
 )

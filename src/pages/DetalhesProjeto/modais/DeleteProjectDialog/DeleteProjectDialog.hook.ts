@@ -10,9 +10,9 @@ export const useDeleteProjectDialog = (projetoId: string, onClose: () => void) =
     const excluir = async () => {
         const exclusao = excluirProjeto({ id: projetoId })
         toast.promise(exclusao, {
-            loading: "Excluindo agrupamento local...",
-            success: "Agrupamento local excluído.",
-            error: "Não foi possível excluir o agrupamento local.",
+            loading: "Deleting local group...",
+            success: "Local group deleted.",
+            error: "Unable to delete the local group.",
         })
         try {
             await exclusao

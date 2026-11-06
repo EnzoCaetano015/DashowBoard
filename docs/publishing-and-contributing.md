@@ -10,6 +10,10 @@ The [`pages.yml`](../.github/workflows/pages.yml) workflow deploys only `site/` 
 
 Published page: <https://enzocaetano015.github.io/DashowBoard/>
 
+### Deployment timeouts
+
+The Pages job allows 30 minutes, with a 20-minute deployment timeout. Time spent in the GitHub Pages queue counts toward the deployment timeout. If artifact upload succeeds but deployment remains in `deployment_queued` or `updating_pages`, inspect the run logs and GitHub's service status before changing the site files. Start a new workflow run after the updated workflow reaches `main`; rerunning an older run uses its original commit and time limits.
+
 The page links to GitHub's latest release for downloads. Its workspace preview is illustrative data, not a live account or uptime claim. Branding and glass materials follow the desktop app, including light and dark themes.
 
 ## Continuous integration
